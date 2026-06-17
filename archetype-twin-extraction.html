@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Archetype Twin — Extraction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,900&family=Archivo:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0C0A;        /* warm near-black ground */
+    --char:#15110C;       /* panel */
+    --smoke:#1E1812;      /* raised */
+    --bone:#ECE4D8;       /* primary text */
+    --dust:#9A9082;       /* muted text */
+    --faint:#6A6259;      /* faintest */
+    --gold:#C4A44A;       /* the protagonist */
+    --gold-bright:#D9BC63;
+    --line:rgba(236,228,216,.12);
+    --line-strong:rgba(236,228,216,.22);
+    --shadow:0 24px 60px -20px rgba(0,0,0,.8);
+    --display:'Fraunces',Georgia,serif;
+    --body:'Archivo',system-ui,sans-serif;
+    --mono:'Space Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--ink);color:var(--bone);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5}
+  body{
+    min-height:100vh;
+    padding:clamp(18px,4vw,56px) clamp(16px,4vw,40px);
+    background-image:
+      radial-gradient(ellipse 60% 50% at 50% -10%, rgba(196,164,74,.07), transparent 70%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+    display:flex;justify-content:center;
+  }
+  .stage{width:100%;max-width:760px;margin:0 auto}
+
+  /* eyebrow / labels */
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:700}
+  .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--dust)}
+
+  /* ---------- intro ---------- */
+  .intro{padding-top:clamp(20px,7vh,80px);animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+  .intro .eyebrow{margin-bottom:22px}
+  .intro h1{
+    font-family:var(--display);font-weight:900;font-optical-sizing:auto;
+    font-size:clamp(40px,9vw,82px);line-height:.92;letter-spacing:-.02em;
+    margin-bottom:26px;text-wrap:balance;
+  }
+  .intro h1 em{font-style:italic;font-weight:400;color:var(--gold)}
+  .lede{font-size:clamp(15px,2.1vw,18px);color:var(--dust);max-width:52ch;line-height:1.65}
+  .lede strong{color:var(--bone);font-weight:500}
+  .meta-row{display:flex;gap:26px;flex-wrap:wrap;margin:32px 0 38px}
+  .meta-row .m{display:flex;flex-direction:column;gap:5px}
+  .meta-row .m b{font-family:var(--display);font-size:22px;font-weight:600;color:var(--bone)}
+
+  .btn{
+    appearance:none;border:none;cursor:pointer;font-family:var(--mono);
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;
+    background:var(--gold);color:#181206;padding:17px 30px;border-radius:2px;
+    transition:transform .18s ease, background .18s ease, box-shadow .18s ease;
+    display:inline-flex;align-items:center;gap:12px;
+  }
+  .btn:hover{background:var(--gold-bright);transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(196,164,74,.6)}
+  .btn:active{transform:translateY(0)}
+  .btn .arr{font-size:14px;transition:transform .2s}
+  .btn:hover .arr{transform:translateX(4px)}
+  .btn.ghost{background:transparent;color:var(--dust);border:1px solid var(--line-strong);padding:15px 24px}
+  .btn.ghost:hover{color:var(--bone);border-color:var(--gold);background:transparent;box-shadow:none;transform:translateY(-2px)}
+
+  /* ---------- quiz ---------- */
+  .quiz{display:none}
+  .quiz.on{display:block;animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+  .qhead{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:8px}
+  .counter{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--dust)}
+  .counter b{color:var(--gold)}
+  .bar{height:2px;background:var(--line);position:relative;margin:18px 0 34px;overflow:hidden}
+  .bar i{position:absolute;inset:0 auto 0 0;background:var(--gold);width:0;transition:width .45s cubic-bezier(.2,.7,.2,1)}
+  .qtext{font-family:var(--display);font-weight:500;font-size:clamp(24px,4.4vw,38px);line-height:1.12;letter-spacing:-.015em;margin-bottom:30px;text-wrap:balance;min-height:1.2em}
+  .opts{display:flex;flex-direction:column;gap:11px}
+  .opt{
+    text-align:left;cursor:pointer;background:var(--char);color:var(--bone);
+    border:1px solid var(--line);border-radius:3px;padding:17px 20px;
+    font-size:clamp(14.5px,1.9vw,16px);line-height:1.4;font-family:var(--body);
+    display:flex;align-items:flex-start;gap:15px;
+    transition:border-color .16s ease, background .16s ease, transform .1s ease;
+  }
+  .opt .tick{
+    flex:0 0 auto;width:20px;height:20px;border:1px solid var(--line-strong);border-radius:50%;
+    margin-top:1px;position:relative;transition:border-color .16s ease;
+  }
+  .opt .tick::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--gold);transform:scale(0);transition:transform .2s cubic-bezier(.2,.7,.2,1)}
+  .opt:hover{border-color:var(--gold);background:var(--smoke)}
+  .opt:hover .tick{border-color:var(--gold)}
+  .opt.sel{border-color:var(--gold);background:var(--smoke)}
+  .opt.sel .tick{border-color:var(--gold)}
+  .opt.sel .tick::after{transform:scale(1)}
+  .opt:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
+  .qfoot{margin-top:26px;display:flex;align-items:center;gap:18px}
+  .back{appearance:none;background:none;border:none;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);transition:color .16s}
+  .back:hover{color:var(--bone)}
+  .back[disabled]{opacity:.3;cursor:default}
+
+  /* ---------- result ---------- */
+  .result{display:none}
+  .result.on{display:block;animation:rise .65s cubic-bezier(.2,.7,.2,1) both}
+  .result .eyebrow{margin-bottom:18px}
+
+  .plate{
+    position:relative;border:1px solid var(--line-strong);background:linear-gradient(180deg,var(--char),var(--ink));
+    padding:clamp(26px,5vw,46px) clamp(22px,5vw,46px);box-shadow:var(--shadow);
+  }
+  /* film-frame corner ticks */
+  .plate::before,.plate::after{content:"";position:absolute;width:14px;height:14px;border-color:var(--gold);border-style:solid;opacity:.8}
+  .plate::before{top:-1px;left:-1px;border-width:1px 0 0 1px}
+  .plate::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0}
+  .corner-tr,.corner-bl{position:absolute;width:14px;height:14px;border-color:var(--gold);border-style:solid;opacity:.8}
+  .corner-tr{top:-1px;right:-1px;border-width:1px 1px 0 0}
+  .corner-bl{bottom:-1px;left:-1px;border-width:0 0 1px 1px}
+
+  .blendline{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--dust);margin-bottom:14px}
+  .twinname{font-family:var(--display);font-weight:900;font-optical-sizing:auto;line-height:.95;letter-spacing:-.02em;font-size:clamp(36px,8vw,68px)}
+  .twinname .sec{display:block;font-weight:400;font-style:italic;font-size:.62em;color:var(--gold);margin-top:6px}
+  .tagline{font-family:var(--display);font-style:italic;font-weight:400;font-size:clamp(17px,2.6vw,22px);color:var(--bone);margin:20px 0 26px;max-width:46ch}
+
+  .ratio{margin:26px 0 30px}
+  .ratiobar{height:8px;border-radius:6px;overflow:hidden;display:flex;border:1px solid var(--line)}
+  .ratiobar .d{background:var(--gold);height:100%}
+  .ratiobar .s{background:var(--faint);height:100%}
+  .ratiokey{display:flex;justify-content:space-between;margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .ratiokey .kd{color:var(--gold)}
+  .ratiokey .ks{color:var(--dust)}
+
+  .desire{border-left:2px solid var(--gold);padding:4px 0 4px 18px;margin:0 0 34px;color:var(--dust);font-size:15px;max-width:52ch}
+  .desire b{color:var(--bone);font-weight:500}
+
+  .spec-h{display:flex;align-items:center;gap:14px;margin:38px 0 22px}
+  .spec-h .label{white-space:nowrap}
+  .spec-h .rule{height:1px;background:var(--line);flex:1}
+
+  .spec{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+  .cell{background:var(--ink);padding:20px}
+  .cell.full{grid-column:1/-1}
+  .cell h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:11px;font-weight:700}
+  .cell p{font-size:14.5px;line-height:1.55;color:var(--bone)}
+  .swatches{display:flex;gap:0;border-radius:2px;overflow:hidden;margin-bottom:12px;height:46px;border:1px solid var(--line)}
+  .swatches span{flex:1;position:relative}
+  .swatchcode{display:flex;flex-wrap:wrap;gap:6px 14px;font-family:var(--mono);font-size:10.5px;color:var(--dust)}
+  .swatchcode span{display:inline-flex;align-items:center;gap:6px}
+  .swatchcode i{width:9px;height:9px;border-radius:50%;display:inline-block;border:1px solid rgba(255,255,255,.15)}
+  .watch{color:var(--dust)!important}
+  .watch::before{content:"⚠ ";color:var(--gold)}
+
+  .undercurrent{margin:34px 0 0;padding:22px 24px;border:1px dashed var(--line-strong);border-radius:3px;background:rgba(196,164,74,.03)}
+  .undercurrent h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-weight:700}
+  .undercurrent p{font-size:14.5px;line-height:1.6;color:var(--bone)}
+  .undercurrent p b{color:var(--gold-bright);font-weight:500}
+
+  .nextstep{margin-top:40px;padding-top:34px;border-top:1px solid var(--line)}
+  .nextstep .eyebrow{color:var(--bone);margin-bottom:16px}
+  .nextstep p{color:var(--dust);font-size:15px;line-height:1.65;max-width:54ch;margin-bottom:8px}
+  .nextstep p b{color:var(--bone);font-weight:500}
+  .actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px;align-items:center}
+  .copied{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);opacity:0;transition:opacity .25s}
+  .copied.show{opacity:1}
+
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  @media (max-width:560px){
+    .spec{grid-template-columns:1fr}
+    .meta-row{gap:20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .bar i{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- INTRO -->
+  <section class="intro" id="intro">
+    <div class="eyebrow">Archetype Twin™ · Extraction</div>
+    <h1>Find your<br>archetype <em>twin</em>.</h1>
+    <p class="lede">You don't need a chart to find your archetype. Human Design is one instrument. This is another, and it lands in the same place. <strong>Answer how the brand actually behaves, not how you wish it did.</strong> Ten questions, about three minutes. At the end you get your archetype blend and the creative direction that flows straight out of it.</p>
+    <div class="meta-row">
+      <div class="m"><span class="label">Questions</span><b>10</b></div>
+      <div class="m"><span class="label">Time</span><b>~3 min</b></div>
+      <div class="m"><span class="label">You get</span><b>A blend + visual direction</b></div>
+    </div>
+    <button class="btn" id="start">Begin extraction <span class="arr">→</span></button>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz" id="quiz">
+    <div class="qhead">
+      <div class="counter"><b id="qnum">01</b> / 10</div>
+      <div class="label" id="qkicker">Reading the signal</div>
+    </div>
+    <div class="bar"><i id="barfill"></i></div>
+    <h2 class="qtext" id="qtext"></h2>
+    <div class="opts" id="opts"></div>
+    <div class="qfoot">
+      <button class="back" id="back" disabled>← Back</button>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="result" id="result"></section>
+
+</div>
+
+<script>
+/* ---------------- data ---------------- */
+const QUESTIONS = [
+  { kicker:"The core desire", q:"What's the desire actually driving the brand?", opts:[
+    {t:"Freedom. Room to move, on my own terms, never boxed in.", w:{Explorer:3,Rebel:1}},
+    {t:"Transformation. Showing people a reality they couldn't see before.", w:{Magician:3,Creator:1}},
+    {t:"Legacy. Building something that leads and lasts.", w:{Ruler:3,Hero:1}},
+    {t:"Closeness. Beauty, devotion, connection you can feel.", w:{Lover:3,Caregiver:1}},
+    {t:"Understanding. Knowing how it actually works, underneath.", w:{Sage:3,Magician:1}},
+    {t:"Mastery. Rising to the challenge and winning it.", w:{Hero:3,Ruler:1}},
+  ]},
+  { kicker:"The role you play", q:"What role do you naturally play for your people?", opts:[
+    {t:"The one who protects them and holds the space.", w:{Caregiver:3,Lover:1}},
+    {t:"The one who explains it until it finally clicks.", w:{Sage:3,Innocent:1}},
+    {t:"The one who says what nobody else will.", w:{Rebel:3,Explorer:1}},
+    {t:"The one who makes it light and actually fun.", w:{Jester:3,Creator:1}},
+    {t:"The one who's right there with them, no pedestal.", w:{Everyman:3,Caregiver:1}},
+    {t:"The one who shows them a whole different reality.", w:{Magician:3,Sage:1}},
+  ]},
+  { kicker:"The direction", q:"What are you really moving toward, or against?", opts:[
+    {t:"Tearing down what's broken and refusing the script.", w:{Rebel:3,Magician:1}},
+    {t:"Protecting something good, honest, and simple.", w:{Innocent:3,Caregiver:1}},
+    {t:"The next horizon, whatever's past the edge.", w:{Explorer:3,Hero:1}},
+    {t:"The top. The standard everyone measures against.", w:{Ruler:3,Hero:1}},
+    {t:"A body of work that's unmistakably mine.", w:{Creator:3,Magician:1}},
+    {t:"A worthy fight, and the win at the end of it.", w:{Hero:3,Rebel:1}},
+  ]},
+  { kicker:"Decision style", q:"How do you actually make decisions?", opts:[
+    {t:"I gather what's true until the answer is obvious.", w:{Sage:3,Ruler:1}},
+    {t:"I move fast and prove it by doing.", w:{Hero:3,Explorer:1}},
+    {t:"I follow what feels beautiful and right.", w:{Lover:3,Creator:1}},
+    {t:"I try it, watch what happens, adjust.", w:{Explorer:3,Jester:1}},
+    {t:"I weigh the long game and decide with authority.", w:{Ruler:3,Sage:1}},
+    {t:"I go with what feels good in the moment.", w:{Jester:3,Lover:1}},
+  ]},
+  { kicker:"The voice", q:"What's your natural voice?", opts:[
+    {t:"Blunt, provocative, allergic to corporate polish.", w:{Rebel:3,Hero:1}},
+    {t:"Warm and reassuring. People feel safe.", w:{Caregiver:3,Innocent:1}},
+    {t:"Precise and structured. It teaches as it goes.", w:{Sage:3,Ruler:1}},
+    {t:"Playful, quick, a little mischievous.", w:{Jester:3,Explorer:1}},
+    {t:"Intimate and sensory. It makes things feel desirable.", w:{Lover:3,Magician:1}},
+    {t:"Imaginative and vivid, full of ideas.", w:{Creator:3,Magician:1}},
+  ]},
+  { kicker:"What premium means", q:"What does premium actually mean to you?", opts:[
+    {t:"Authority. The name people trust at the top.", w:{Ruler:3,Hero:1}},
+    {t:"Sensual quality you can feel.", w:{Lover:3,Creator:1}},
+    {t:"Originality nobody else could make.", w:{Creator:3,Magician:1}},
+    {t:"Depth and mastery behind every detail.", w:{Sage:3,Ruler:1}},
+    {t:"A shift that changes the person who bought it.", w:{Magician:3,Hero:1}},
+    {t:"Honest value, no inflated mystique.", w:{Innocent:3,Everyman:1}},
+  ]},
+  { kicker:"The aesthetic pull", q:"Which aesthetic pulls you, gut level?", opts:[
+    {t:"High contrast, dark, edgy, a little dangerous.", w:{Rebel:3,Magician:1}},
+    {t:"Soft and sensual. Warm light, rich texture.", w:{Lover:3,Caregiver:1}},
+    {t:"Sharp, structured, luxurious, commanding.", w:{Ruler:3,Sage:1}},
+    {t:"Natural and raw. Earthy, wide open.", w:{Explorer:3,Everyman:1}},
+    {t:"Clean, bright, light, uncluttered.", w:{Innocent:3,Sage:1}},
+    {t:"Bold and unexpected. Color and art-driven.", w:{Creator:3,Jester:1}},
+  ]},
+  { kicker:"The contrast", q:"What can't you stand in other brands?", opts:[
+    {t:"Rule-followers who all sound identical.", w:{Rebel:3,Explorer:1}},
+    {t:"Big claims with nothing real underneath.", w:{Magician:3,Sage:1}},
+    {t:"Glossy fake perfection that feels unreachable.", w:{Everyman:3,Innocent:1}},
+    {t:"Cold and transactional, no warmth at all.", w:{Caregiver:3,Lover:1}},
+    {t:"Playing small and refusing to compete.", w:{Hero:3,Ruler:1}},
+    {t:"Taking themselves way too seriously.", w:{Jester:3,Explorer:1}},
+  ]},
+  { kicker:"The felt result", q:"How do you want people to feel after they meet the brand?", opts:[
+    {t:"Like something just shifted in how they see themselves.", w:{Magician:3,Sage:1}},
+    {t:"Safe. Held. Taken care of.", w:{Caregiver:3,Lover:1}},
+    {t:"Fired up and capable, ready to move.", w:{Hero:3,Rebel:1}},
+    {t:"Hopeful and lighter, reassured.", w:{Innocent:3,Caregiver:1}},
+    {t:"Free and curious, like the world got bigger.", w:{Explorer:3,Creator:1}},
+    {t:"Delighted, grinning, glad they showed up.", w:{Jester:3,Everyman:1}},
+  ]},
+  { kicker:"The deepest compliment", q:"Which compliment lands the deepest?", opts:[
+    {t:"Nobody makes things the way you do.", w:{Creator:3,Magician:1}},
+    {t:"You're the authority I trust.", w:{Ruler:3,Sage:1}},
+    {t:"You made me finally understand it.", w:{Sage:3,Caregiver:1}},
+    {t:"You said the thing everyone was thinking.", w:{Rebel:3,Hero:1}},
+    {t:"Being around your brand just feels gorgeous.", w:{Lover:3,Creator:1}},
+    {t:"You're so real, I feel like I already know you.", w:{Everyman:3,Innocent:1}},
+  ]},
+];
+
+const ARCH = {
+  Innocent:{ tag:"The clean promise. Trust on sight.",
+    desire:"Safety and honesty. The simple good thing, done well, with nothing to decode.",
+    palette:[["#F3EEE6","Bone"],["#BFD3E6","Sky"],["#E8C97A","Soft gold"],["#D9A48C","Clay"],["#2B2B2B","Ink"]],
+    type:"Rounded humanist sans, generous spacing, lowercase ease. Nothing sharp or shouting.",
+    light:"Soft daylight, airy high-key exposure, eye-level lens, lots of negative space. Skin clean and warm.",
+    wardrobe:"Simple and fresh. White, cream, soft pastels. One honest texture like linen or cotton.",
+    voice:"Plain, warm, reassuring. Short true sentences. Promises kept, never oversold.",
+    watch:"Going so safe it reads as bland. Add one clear point of view." },
+  Sage:{ tag:"The one who actually understands it.",
+    desire:"Truth. To know how it really works and hand that clarity to other people.",
+    palette:[["#2E3A46","Slate"],["#ECE6DA","Bone"],["#14181C","Ink"],["#B79A56","Brass"],["#8C8577","Stone"]],
+    type:"Classic serif for authority, clean grotesque for clarity. Structured, generous leading.",
+    light:"Controlled, even, slightly cool. 50mm honesty, no theatrics. Balanced, often centered. Books and instruments in frame.",
+    wardrobe:"Considered and quiet. Tailored neutrals, glasses, one intelligent detail. Quality over flash.",
+    voice:"Precise and structured, teaches as it goes. Names the through-line. Earns claims with specifics.",
+    watch:"Lecturing. Show the insight, don't bury people in proof." },
+  Explorer:{ tag:"Don't fence the brand in.",
+    desire:"Freedom. The next horizon, found on your own terms.",
+    palette:[["#2F4A3C","Pine"],["#CBB892","Sand"],["#A8552E","Rust"],["#9FB7C4","Sky"],["#1B1B17","Ink"]],
+    type:"Sturdy sans with character, a little rugged. Wide tracking on labels.",
+    light:"Natural, raw, wide. Golden hour or overcast honesty, environmental shots, movement in frame. Real locations, never studio-perfect.",
+    wardrobe:"Functional and lived-in. Earth tones, denim, boots, layers that have a story.",
+    voice:"Direct, restless, first-person. Talks about the road and what's past the edge. No fuss.",
+    watch:"Always leaving, never landing. Let some moments be still." },
+  Rebel:{ tag:"Says the thing the room is avoiding.",
+    desire:"Disruption. Tear down what's broken and refuse the script everyone else follows.",
+    palette:[["#0E0C0A","Void"],["#ECE4D8","Bone"],["#C41E1E","Signal red"],["#2A2A2A","Smoke"],["#6E6E6E","Steel"]],
+    type:"Condensed heavy display, high contrast, ALL CAPS moments. Type used as a weapon.",
+    light:"Hard contrast, deep shadow, a little dangerous. Direct flash or single hard key, tight crops, off-center tension. Grain welcome.",
+    wardrobe:"Sharp, dark, deliberate. Black, leather, structure with an edge. One disruptive piece.",
+    voice:"Blunt and provocative, allergic to corporate polish. Clear villains. Light strategic profanity. No softening.",
+    watch:"Edge without substance. The no needs something real underneath it." },
+  Magician:{ tag:"Makes the shift feel inevitable.",
+    desire:"Transformation. Show people a reality they couldn't see, then make it real.",
+    palette:[["#2A1B36","Aubergine"],["#ECE6DA","Bone"],["#C4A44A","Gold"],["#1E2747","Indigo"],["#C85A2E","Ember"]],
+    type:"Elegant high-contrast serif with a clean sans counterweight. A little mystery in the display.",
+    light:"Dramatic, directional, dimensional. Chiaroscuro, glow, reflections, depth. A lens that flatters and intrigues, composition that pulls the eye through.",
+    wardrobe:"Intentional and rich, a touch otherworldly. Deep jewel tones, texture that catches light, one transformative detail.",
+    voice:"Vision-led and pattern-naming. Names the through-line others missed. Transformation talk that earns its place through specifics.",
+    watch:"Going woo without rigor. Keep the structure under the magic." },
+  Hero:{ tag:"Built to win, and proves it.",
+    desire:"Mastery. Rise to the challenge, do the hard thing, earn the result.",
+    palette:[["#16181D","Ink"],["#ECE6DA","Bone"],["#2E5BBF","Cobalt"],["#5A6470","Steel"],["#B83A2B","Flag red"]],
+    type:"Strong, athletic, confident. Bold weights, tight and decisive. Nothing fragile.",
+    light:"Bold and high-energy. Strong key light, power and motion in frame, low angles that elevate. Crisp and punchy.",
+    wardrobe:"Sharp and capable. Structured, clean lines, strong silhouette. Nothing that reads as soft.",
+    voice:"Direct and motivating, action-driven. Challenge and capability. Verbs that move.",
+    watch:"Pushing so hard it exhausts. Strength includes knowing when to rest." },
+  Lover:{ tag:"Being near it feels gorgeous.",
+    desire:"Intimacy and beauty. Closeness, devotion, pleasure you can feel.",
+    palette:[["#5A1F2B","Wine"],["#E7C3BE","Blush"],["#F1E7DD","Bone"],["#C4A44A","Gold"],["#3A2230","Plum"]],
+    type:"Elegant, sensual serif with flowing curves. Soft tracking, intimate scale.",
+    light:"Warm, soft, sensual. Glow, close intimate framing, shallow depth, skin and texture rendered lovingly. Touchable.",
+    wardrobe:"Rich and tactile. Silk, velvet, warm tones, one piece you want to touch. Detail at the skin.",
+    voice:"Intimate and sensory, makes things feel desirable. Speaks to one person. Beauty as the argument.",
+    watch:"All surface, no spine. Let the beauty carry a point of view." },
+  Jester:{ tag:"Glad you showed up, every time.",
+    desire:"Joy. Play, lightness, living fully in the moment.",
+    palette:[["#F2ECDF","Bone"],["#2C6FB0","Cobalt"],["#F2B33A","Sun"],["#E2614A","Coral"],["#20211C","Ink"]],
+    type:"Playful and friendly, a little unexpected. Mixed weights, room to wink. Nothing stiff.",
+    light:"Bright, colorful, candid. Movement, expression, real laughter. Wider lens, energy over polish, the off moments kept.",
+    wardrobe:"Bold and expressive. Color, pattern, one piece that makes people smile. Never trying too hard.",
+    voice:"Playful, quick, a little mischievous. Wit over weight. Doesn't take itself too seriously.",
+    watch:"Funny but forgettable. Let the play carry something true." },
+  Everyman:{ tag:"So real you feel like you know them.",
+    desire:"Belonging. Be one of the people. No pedestal, no performance.",
+    palette:[["#3A4A5A","Denim"],["#EBE4D7","Bone"],["#9C5A44","Brick"],["#6B6B4E","Olive"],["#1C1E20","Ink"]],
+    type:"Honest, friendly, unpretentious sans. Readable and grounded, no airs.",
+    light:"Natural and candid. Real settings, everyday light, eye-level framing. Authentic over flawless, real faces and real moments.",
+    wardrobe:"Approachable and everyday. Denim, knits, comfortable quality. Nothing that creates distance.",
+    voice:"Plain-spoken, warm, inclusive. Talks with people, not at them. We, not you.",
+    watch:"So plain it disappears. Real still needs a signature." },
+  Caregiver:{ tag:"You're held the second you arrive.",
+    desire:"Service. Protect, nurture, take care of people.",
+    palette:[["#8FA08C","Sage"],["#F0EADE","Bone"],["#C57B5A","Terracotta"],["#E9DCC7","Cream"],["#2A2622","Ink"]],
+    type:"Warm and soft, reassuring. Rounded edges, comfortable spacing, calm.",
+    light:"Soft, warm, enveloping. Gentle diffusion, comforting tones, close but safe framing. Hands, care, connection in frame.",
+    wardrobe:"Soft and warm. Knits, natural fibers, comforting textures and tones. Nothing sharp.",
+    voice:"Warm, reassuring, generous. Makes people feel safe. Service before self.",
+    watch:"Over-giving until you vanish. Care includes a boundary." },
+  Ruler:{ tag:"The standard everyone else measures against.",
+    desire:"Control and legacy. Lead, set the order, build what lasts.",
+    palette:[["#121316","Onyx"],["#ECE4D2","Bone"],["#C4A44A","Gold"],["#1E3A2F","Deep green"],["#7A7D82","Pewter"]],
+    type:"Authoritative and refined. Structured serif or sharp luxe sans. Confident scale, exacting spacing.",
+    light:"Polished and commanding. Clean key, deliberate shadow, symmetry and power. Premium surfaces, architectural lines.",
+    wardrobe:"Tailored and luxurious. Sharp suiting, rich neutrals, quality that telegraphs status. One signature piece.",
+    voice:"Authoritative and decisive, refined. Sets the terms, doesn't ask permission. The name at the top.",
+    watch:"Control tipping into cold. Authority lands warmer with a human edge." },
+  Creator:{ tag:"Nobody else could have made this.",
+    desire:"Make something original and enduring. Self-expression with craft.",
+    palette:[["#1A1A1A","Ink"],["#EFE9DC","Bone"],["#2D6BE0","Electric blue"],["#E9A93A","Marigold"],["#B5347E","Magenta"]],
+    type:"Expressive and design-forward. Type as art, unexpected pairings, intentional rule-breaks.",
+    light:"Bold, artful, composed. Strong concept, color and shape driving the frame, editorial staging. The image is a made object.",
+    wardrobe:"Original and authored. Architectural shapes, artful color, pieces that look designed. Nothing off-the-rack-obvious.",
+    voice:"Imaginative, vivid, idea-dense. Speaks in concepts and craft. Pride in the making.",
+    watch:"Polishing forever. Ship the work, the world needs to see it." },
+};
+
+/* ---------------- engine ---------------- */
+const scores = {};
+Object.keys(ARCH).forEach(a=>scores[a]=0);
+let idx = 0;
+const answers = new Array(QUESTIONS.length).fill(null);
+
+const $=s=>document.querySelector(s);
+const intro=$("#intro"), quiz=$("#quiz"), result=$("#result");
+
+$("#start").addEventListener("click", ()=>{
+  intro.style.display="none";
+  quiz.classList.add("on");
+  render();
+});
+
+function render(){
+  const Q=QUESTIONS[idx];
+  $("#qnum").textContent=String(idx+1).padStart(2,"0");
+  $("#qkicker").textContent=Q.kicker;
+  $("#qtext").textContent=Q.q;
+  $("#barfill").style.width=((idx)/QUESTIONS.length*100)+"%";
+  const wrap=$("#opts"); wrap.innerHTML="";
+  Q.opts.forEach((o,i)=>{
+    const b=document.createElement("button");
+    b.className="opt"+(answers[idx]===i?" sel":"");
+    b.innerHTML='<span class="tick"></span><span>'+o.t+'</span>';
+    b.addEventListener("click",()=>choose(i));
+    wrap.appendChild(b);
+  });
+  $("#back").disabled = idx===0;
+}
+
+function choose(i){
+  // remove previous answer's weights if re-answering
+  if(answers[idx]!==null){
+    const prev=QUESTIONS[idx].opts[answers[idx]].w;
+    for(const k in prev) scores[k]-=prev[k];
+  }
+  answers[idx]=i;
+  const w=QUESTIONS[idx].opts[i].w;
+  for(const k in w) scores[k]+=w[k];
+  // visual select
+  document.querySelectorAll(".opt").forEach((el,j)=>el.classList.toggle("sel",j===i));
+  const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setTimeout(()=>{
+    if(idx<QUESTIONS.length-1){ idx++; render(); }
+    else finish();
+  }, reduce?60:340);
+}
+
+$("#back").addEventListener("click",()=>{
+  if(idx>0){ idx--; render(); }
+});
+
+function topTwo(){
+  const order=Object.keys(ARCH); // stable tiebreak by definition order
+  const ranked=order.slice().sort((a,b)=> scores[b]-scores[a] || order.indexOf(a)-order.indexOf(b));
+  return [ranked[0], ranked[1]];
+}
+
+function blendRatio(dom,sec){
+  const d=scores[dom], s=scores[sec];
+  let pd = (d+s)===0 ? 70 : Math.round(d/(d+s)*100/5)*5;
+  pd=Math.max(55,Math.min(80,pd));
+  return [pd,100-pd];
+}
+
+function finish(){
+  $("#barfill").style.width="100%";
+  const [dom,sec]=topTwo();
+  const [pd,ps]=blendRatio(dom,sec);
+  const D=ARCH[dom], S=ARCH[sec];
+  // the archetype they score LOWEST on = a sharp "you're posting like the thing you're least like" example
+  const order=Object.keys(ARCH);
+  const least=order.slice().sort((a,b)=> scores[a]-scores[b] || order.indexOf(a)-order.indexOf(b))[0];
+
+  const swStrip = D.palette.map(p=>`<span style="background:${p[0]}"></span>`).join("");
+  const swCode = D.palette.map(p=>`<span><i style="background:${p[0]}"></i>${p[1]} ${p[0]}</span>`).join("");
+
+  result.innerHTML = `
+    <div class="eyebrow">Your archetype twin</div>
+    <div class="plate">
+      <span class="corner-tr"></span><span class="corner-bl"></span>
+      <div class="blendline">${pd} / ${ps} blend · extracted</div>
+      <div class="twinname">${dom}<span class="sec">with a ${sec} undercurrent</span></div>
+      <div class="tagline">${D.tag}</div>
+
+      <div class="ratio">
+        <div class="ratiobar"><div class="d" style="width:${pd}%"></div><div class="s" style="width:${ps}%"></div></div>
+        <div class="ratiokey"><span class="kd">${dom} · ${pd}%</span><span class="ks">${sec} · ${ps}%</span></div>
+      </div>
+
+      <div class="desire"><b>What drives it:</b> ${D.desire}</div>
+
+      <div class="spec-h"><span class="label">Creative direction</span><span class="rule"></span></div>
+      <div class="spec">
+        <div class="cell full">
+          <h4>Palette</h4>
+          <div class="swatches">${swStrip}</div>
+          <div class="swatchcode">${swCode}</div>
+        </div>
+        <div class="cell"><h4>Typography</h4><p>${D.type}</p></div>
+        <div class="cell"><h4>Light &amp; lens</h4><p>${D.light}</p></div>
+        <div class="cell"><h4>Wardrobe</h4><p>${D.wardrobe}</p></div>
+        <div class="cell"><h4>Voice</h4><p>${D.voice}</p></div>
+        <div class="cell full"><h4>Watch for</h4><p class="watch">${D.watch}</p></div>
+      </div>
+
+      <div class="undercurrent">
+        <h4>How your ${sec} undercurrent modulates it</h4>
+        <p>${dom} governs the system. Your ${sec} layer seasons it. Think: <b>${S.tag}</b> It shows up in the details, not the headline. When ${dom} and ${sec} pull in different directions, ${dom} wins the look and ${sec} adds the texture.</p>
+      </div>
+    </div>
+
+    <div class="nextstep">
+      <div class="eyebrow">Your next move</div>
+      <p>Now audit your current brand against this. Website, socials, anything you put out. <b>Find the single biggest place it contradicts your ${dom} direction.</b></p>
+      <p>Then send me your blend and that one contradiction. Example: "I'm ${dom} / ${sec} but my whole Instagram still reads like ${/^[AEIOU]/.test(least)?'an':'a'} ${least}." That gap is where the work starts.</p>
+      <div class="actions">
+        <button class="btn" id="copy">Copy my result <span class="arr">⧉</span></button>
+        <button class="btn ghost" id="again">Retake</button>
+        <span class="copied" id="copied">Copied</span>
+      </div>
+    </div>
+  `;
+  quiz.classList.remove("on");
+  result.classList.add("on");
+  result.scrollIntoView({behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block:"start"});
+
+  $("#again").addEventListener("click", ()=>{
+    Object.keys(scores).forEach(k=>scores[k]=0);
+    answers.fill(null); idx=0;
+    result.classList.remove("on");
+    quiz.classList.add("on");
+    render();
+    window.scrollTo({top:0});
+  });
+
+  $("#copy").addEventListener("click", ()=>{
+    const txt =
+`MY ARCHETYPE TWIN
+${dom} / ${sec}  (${pd}/${ps} blend)
+${D.tag}
+
+WHAT DRIVES IT: ${D.desire}
+
+CREATIVE DIRECTION
+Palette: ${D.palette.map(p=>p[1]+" "+p[0]).join(", ")}
+Typography: ${D.type}
+Light & lens: ${D.light}
+Wardrobe: ${D.wardrobe}
+Voice: ${D.voice}
+Watch for: ${D.watch}
+
+UNDERCURRENT (${sec}): ${S.tag}
+
+The biggest contradiction in my current brand right now:
+[ write it here ]`;
+    navigator.clipboard?.writeText(txt).then(()=>{
+      $("#copied").classList.add("show");
+      setTimeout(()=>$("#copied").classList.remove("show"),1800);
+    });
+  });
+}
+</script>
+</body>
+</html>
