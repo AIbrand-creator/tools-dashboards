@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platform Cheat Sheet — Archetype Twin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Archivo:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3F0EA;--paper-2:#FBFAF7;--paper-3:#ECE7DD;
+    --ink:#141019;--ink-soft:#4A4356;--muted:#8A8294;--faint:#B9B2A6;
+    --teal:#0C7A82;--teal-deep:#06484E;--pink:#FF5DA2;--magenta:#D6207E;
+    --charge:linear-gradient(135deg,var(--teal) 0%,var(--magenta) 58%,var(--pink) 100%);
+    --line:rgba(20,16,25,.12);--line-2:rgba(20,16,25,.20);
+    --display:'Syne',system-ui,sans-serif;--body:'Archivo',system-ui,sans-serif;--mono:'Space Mono',ui-monospace,monospace;
+    --shadow:0 18px 40px -22px rgba(20,16,25,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5}
+  body{min-height:100vh;padding:clamp(18px,4vw,52px) clamp(14px,4vw,40px);display:flex;justify-content:center;
+    background-image:radial-gradient(ellipse 70% 40% at 12% 0%,rgba(12,122,130,.10),transparent 60%),radial-gradient(ellipse 60% 40% at 92% 3%,rgba(214,32,126,.10),transparent 60%);}
+  .wrap{width:100%;max-width:960px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--magenta);font-weight:700}
+  .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+
+  header{margin-bottom:8px}
+  header .eyebrow{margin-bottom:16px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(40px,8vw,74px);line-height:.9;letter-spacing:-.02em}
+  h1 .glow{background:var(--charge);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin-top:16px;color:var(--ink-soft);font-size:clamp(15px,2vw,17px);max-width:58ch;line-height:1.6}
+  .meta{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted)}
+  .meta a{color:var(--magenta);text-decoration:none;border-bottom:1px solid transparent}
+  .meta a:hover{border-color:var(--magenta)}
+
+  /* vault banner */
+  .vaultbar{margin:26px 0 4px;background:var(--ink);color:#fff;border-radius:14px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;position:relative;overflow:hidden}
+  .vaultbar::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 90% at 100% 0%,rgba(255,93,162,.25),transparent 55%),radial-gradient(ellipse 50% 90% at 0% 100%,rgba(12,122,130,.28),transparent 55%);pointer-events:none}
+  .vaultbar .ve{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--pink);position:relative;z-index:1}
+  .vaultbar .vm{margin-top:7px;color:rgba(255,255,255,.82);font-size:14px;line-height:1.55;max-width:62ch;position:relative;z-index:1}
+  .vaultbar a.btn{position:relative;z-index:1;flex:0 0 auto}
+
+  /* principles */
+  .principles{margin:30px 0 8px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .pr{background:var(--paper-2);padding:18px}
+  .pr h4{font-family:var(--display);font-weight:700;font-size:15px;margin-bottom:7px;display:flex;align-items:center;gap:8px}
+  .pr h4 i{width:7px;height:7px;border-radius:50%;background:var(--charge);display:inline-block}
+  .pr p{font-size:13px;color:var(--ink-soft);line-height:1.5}
+  @media (max-width:760px){.principles{grid-template-columns:1fr 1fr}}
+  @media (max-width:460px){.principles{grid-template-columns:1fr}}
+
+  /* section nav */
+  .nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:8px;padding:14px 0;margin:26px 0 6px;
+    background:linear-gradient(var(--paper) 70%,rgba(243,240,234,0));backdrop-filter:blur(2px)}
+  .nav a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);
+    background:var(--paper-2);border:1px solid var(--line);padding:8px 14px;border-radius:20px;text-decoration:none;transition:.16s}
+  .nav a:hover{border-color:transparent;color:#fff;background:var(--ink)}
+
+  .sect{margin-top:26px;scroll-margin-top:64px}
+  .sect-h{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  .sect-h h2{font-family:var(--display);font-weight:800;font-size:clamp(20px,3.4vw,28px);letter-spacing:-.01em;white-space:nowrap}
+  .sect-h .rule{height:2px;flex:1;background:var(--charge);opacity:.5;border-radius:2px}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:760px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--paper-2);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+  .card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .card .name{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.015em;line-height:1}
+  .card .type{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:7px}
+  .chip{flex:0 0 auto;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);
+    background:rgba(12,122,130,.1);border:1px solid rgba(12,122,130,.25);padding:4px 9px;border-radius:20px;white-space:nowrap}
+  .best{font-size:14px;color:var(--ink);line-height:1.5}
+  .best b{color:var(--magenta);font-weight:600;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:5px}
+  .pc{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:460px){.pc{grid-template-columns:1fr}}
+  .pc h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+  .pc .pros h5{color:var(--teal)}
+  .pc .cons h5{color:var(--magenta)}
+  .pc ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .pc li{font-size:12.5px;line-height:1.45;color:var(--ink-soft);display:flex;gap:7px}
+  .pc li::before{flex:0 0 auto;font-family:var(--mono);font-weight:700;font-size:11px;margin-top:1px}
+  .pros li::before{content:"+";color:var(--teal)}
+  .cons li::before{content:"–";color:var(--magenta)}
+  .tnote{border-top:1px dashed var(--line-2);padding-top:13px;font-size:13px;line-height:1.5;color:var(--ink)}
+  .tnote b{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--magenta);display:block;margin-bottom:5px}
+
+  .endcta{margin-top:38px;background:var(--ink);color:#fff;border-radius:16px;padding:26px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden}
+  .endcta::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 90% at 100% 0%,rgba(255,93,162,.28),transparent 55%),radial-gradient(ellipse 50% 90% at 0% 100%,rgba(12,122,130,.3),transparent 55%);pointer-events:none}
+  .endcta>*{position:relative;z-index:1}
+  .endcta .t{font-family:var(--display);font-weight:700;font-size:clamp(18px,3vw,24px);letter-spacing:-.01em}
+  .endcta .t span{color:var(--pink)}
+  .endcta p{color:rgba(255,255,255,.7);font-size:13.5px;margin-top:6px}
+  .btn{appearance:none;border:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;border-radius:30px;padding:14px 26px;text-decoration:none;background:var(--charge);color:#fff;display:inline-flex;align-items:center;gap:9px;transition:transform .16s,box-shadow .18s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 16px 34px -16px rgba(214,32,126,.6)}
+
+  .sitefoot{margin-top:clamp(40px,7vh,60px);padding-top:24px;border-top:1px solid var(--line);text-align:center}
+  .sitefoot .cred{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink);text-transform:uppercase}
+  .sitefoot .rights{font-size:12px;color:var(--muted);margin:9px auto 0;line-height:1.6;max-width:48ch}
+  .sitefoot .links{margin-top:14px;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+  .sitefoot .links a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .16s,border-color .16s;padding-bottom:1px}
+  .sitefoot .links a:hover{color:var(--magenta);border-color:var(--magenta)}
+  .sitefoot .dot{color:var(--faint)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+  html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Archetype Twin™ · Operator System</div>
+    <h1>Platform <span class="glow">Cheat Sheet</span></h1>
+    <p class="sub">Your production stack, decoded. What each tool is, what it's best for, and the honest pros and cons, so you reach for the right one instead of the loudest one.</p>
+    <div class="meta">Reviewed June 2026 · these tools move fast, so treat versions and pricing as a snapshot · Need to choose fast? <a href="tool-router.html">Use the Tool Router →</a></div>
+  </header>
+
+  <div class="vaultbar">
+    <div>
+      <div class="ve">◆ Part of the Archetype Twin™ Vault</div>
+      <div class="vm">This cheat sheet is one piece of the full system. If you landed here without the Vault, that's where the method, the modules, and the rest of the operator tools live.</div>
+    </div>
+    <a class="btn" href="https://personalbrandstudio.eu/archetype-twin-vault/" target="_blank" rel="noopener">Get the Vault →</a>
+  </div>
+
+  <div class="principles" id="principles"></div>
+
+  <nav class="nav">
+    <a href="#image">Image &amp; Character</a>
+    <a href="#video">Video &amp; Motion</a>
+    <a href="#finish">Finish &amp; Distribute</a>
+  </nav>
+
+  <div id="sections"></div>
+
+  <div class="endcta">
+    <div>
+      <div class="t">Not sure which to press? <span>Let the router decide.</span></div>
+      <p>Answer a few questions and land on the exact tool for what you're making.</p>
+    </div>
+    <a class="btn" href="tool-router.html">Open the Tool Router →</a>
+  </div>
+
+  <footer class="sitefoot">
+    <div class="cred">Created by Ing. Tereza Skranka Prochazkova, BBA</div>
+    <div class="rights">All rights reserved. This tool may not be resold, copied, or recreated without permission.</div>
+    <div class="links">
+      <a href="https://personalbrandstudio.eu" target="_blank" rel="noopener">personalbrandstudio.eu</a>
+      <span class="dot">·</span>
+      <a href="https://humandesignredefined.com" target="_blank" rel="noopener">humandesignredefined.com</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const PRINCIPLES = [
+  ["Lock the face first","Every asset inherits the base identity. Don't generate scenes before the face is locked."],
+  ["Generate better, don't rescue","Refinement polishes a strong image. It will not fix a broken one."],
+  ["Motion amplifies","It amplifies what's good and what's bad. Animate your strongest stills, never your tests."],
+  ["Audio is identity","A sonic signature is part of the brand, not a final-step afterthought."],
+];
+
+const SECTIONS = [
+  { id:"image", title:"Image & Character", cards:[
+    { name:"KREA", type:"Image model + creative platform", chip:"Base · 04",
+      best:"Base avatar and character creation when you want taste and style, not just a literal prompt. Train a consistent face from 20+ clean reference images. Moodboard-led art direction.",
+      pros:["Aesthetic-first: reads mood and style, not just keywords","Up to 10 style-reference images (Style Mixing)","Large variant for expressive photorealism, film stills, commercial","Real-time generation, very simple interface","Built-in enhance and upscale up to 22K","Free daily credits to test"],
+      cons:["Aesthetic lean means less literal prompt adherence when you need exactness","Modest native resolution, you upscale for huge output","Limited free generations, lock the prompt before you burn them"],
+      note:"Your identity anchor. For a real person, this is the 20+ image training route. KREA Flux lives here for refinement, polish not rescue." },
+    { name:"Magnific", type:"Enhancement, upscaling & model hub", chip:"Refine · 06",
+      best:"Push a strong image to print or production resolution, relight portraits and product, and run your Seedream and NanoBanana generations.",
+      pros:["Best-in-class generative upscaling, 4x to 16x, up to ~10K","Hallucinates plausible detail (skin, fabric, foliage), not just sharpening","Creativity slider from faithful upscale to full reimagining","Relighting for portrait and product","Reference-image and inpainting tools"],
+      cons:["Premium pricing, no real free tier","Prompt-based controls can intimidate first-timers","High creativity can drift from the original if you push it"],
+      note:"Use Magnific, not Freepik, for Seedream and NanoBanana. Reserve the upscaler for finals, not every frame." },
+    { name:"Nano Banana", type:"Google Gemini image model (2 / Pro)", chip:"Reference · 04",
+      best:"One-image reference work, product shots, and anything with text in the frame. Fast, clean, realistic edits.",
+      pros:["Top-ranked photorealism, benchmark-leading text-to-image","Best-in-class text and layout rendering inside images","Character consistency up to 5 subjects, multi-image fusion","512px to 4K, many aspect ratios","2 is fast and cheap, Pro is highest fidelity","Free tier via Gemini"],
+      cons:["Look can read clean and commercial rather than artful","Pro access and pricing fragmented across surfaces","SynthID watermarking on outputs"],
+      note:"In your stack, the one-image real-person route. Run it inside Magnific." },
+    { name:"Seedream", type:"ByteDance image model (4.5)", chip:"Base / Env · 04–05",
+      best:"Several images as a character reference, complicated backgrounds, product and commercial scenes, and storyboards.",
+      pros:["Up to 14 reference images, strong character consistency","Cinematic lighting, real shadow and texture (4.5)","Handles complex spatial scenes and busy backgrounds","Native 4K, fast, batch up to 9 consistent images","Built-in editing: inpaint, outpaint, object replace","Strong multilingual typography"],
+      cons:["Rewards precise prompting, vague inputs go generic","Accessed through host platforms, not a single home","Credit cost per generation adds up at volume"],
+      note:"Your multi-image real-person route and your complex-background workhorse. Run it in Magnific." },
+  ]},
+  { id:"video", title:"Video & Motion", cards:[
+    { name:"Seedance 2.0", type:"ByteDance AI video · your primary", chip:"Motion · 07",
+      best:"Cinematic motion and B-roll from your strongest stills. Multi-shot scenes with consistent characters and native sound.",
+      pros:["Multimodal: text, up to 9 images, 3 clips, 3 audio in one pass","Native audio generated with the video, lip sync in 8+ languages","Multi-shot storytelling with character and scene continuity","1080p, Fast mode for testing, Standard for finals","Near the top of the video arena, strong instruction-following"],
+      cons:["1080p ceiling, Kling goes higher if you need 4K","Best results still depend on a strong starting image","Credits burn faster on long multi-shot generations"],
+      note:"Your main pick for AI video. Animate your best, never your tests." },
+    { name:"Kling 3.0", type:"Kuaishou AI video · alternative", chip:"Motion · 07",
+      best:"Highest-resolution cinematic clips, marketing video with legible on-screen text, and storyboard-controlled sequences.",
+      pros:["Native 4K at 60fps, not upscaled, print and broadcast ready","Up to 15-second clips, multi-shot storyboard (AI Director)","Best-in-class text and logo fidelity inside video","Synchronized native audio, multilingual lip sync","Character and scene consistency across shots"],
+      cons:["Slower renders, a 15s multi-shot can take 5+ minutes","Pricing is harder to read","Shot transitions can get a little clunky"],
+      note:"The magnificent alternative to Seedance. Reach for it when you need 4K or readable text in the frame." },
+    { name:"Higgsfield", type:"Cinematic video + lip sync platform", chip:"Motion · 07",
+      best:"Talking-head and lip-sync video, and character-driven cinematic shots with director-level camera control. Can build an AI character via Soul ID if you already live here.",
+      pros:["Lip-Sync Studio: talking avatars from one image, multilingual, 1080p/48fps","Soul ID trains a consistent character from 3 to 5 photos in minutes","Cinema Studio camera and lens control, Viral Presets","Aggregates 15+ models (Seedance, Kling, Veo, Sora)","Audio module: text-to-speech, voice swap, video translation"],
+      cons:["Paid beyond a small daily free tier, watermarked free output","Soul ID can drift on heavy motion or very distinctive features","So many tools it can overwhelm at first"],
+      note:"Your lip-sync answer. Already on the platform? You can build the AI character here too, no need to switch." },
+    { name:"HeyGen", type:"AI avatar / digital twin", chip:"Talking head",
+      best:"An exact AI clone of your face and voice delivering any script. Presenter-style talking-head video at scale, no camera after the initial setup, in 140+ languages.",
+      pros:["Photorealistic digital twin from a short video, plus a voice clone","Avatar V is the most expressive generation yet, less of the old robotic tell","Talking Photo animates a single still into a speaking avatar","140+ languages with synced lip movement, strong for multilingual content","Fully automated: script to avatar to voice to finished video, no studio"],
+      cons:["Static environment, the background and framing stay fixed (not cinematic motion)","Works best with a waist-up shot, limited body movement","Reads presenter-ish rather than cinematic, by design","Credit-based pricing, digital twin and voice clone sit on higher tiers"],
+      note:"Your exact-clone route when the message is simply you speaking to camera. For moving cinematic scenes, reach for Seedance or Kling instead." },
+  ]},
+  { id:"finish", title:"Finish & Distribute", cards:[
+    { name:"CapCut", type:"Video editor", chip:"Edit · 08",
+      best:"Fast assembly of clips into finished short-form using templates and presets. Now also runs Seedance generations inside the editor.",
+      pros:["Template and preset driven, fast cinematic edits","Strong for short-form (Reels, TikTok, Shorts)","Seedance 2.0 integrated into its AI tools","Free for most editing"],
+      cons:["An efficiency tool, not a creativity tool","Heavy manual grading and frame-by-frame work fights the tool","Template look if you lean on presets without taste"],
+      note:"Speed is the point. Assemble, don't reinvent." },
+    { name:"Suno", type:"AI music generator (v5.5)", chip:"Sound layer",
+      best:"Your sonic signature, brand soundtracks, and music beds for video. A sound layer is what separates premium from commodity.",
+      pros:["Full song with vocals and production from a prompt in ~90s","Suno Studio DAW: multitrack, stems, MIDI export","Voice cloning and 8+ minute tracks (v5.5)","Not in Content ID databases, friendly to faceless channels","Free tier to explore"],
+      cons:["Purely AI-generated audio can't be copyrighted in the US, plan licensing","Vocals can sheen on high notes at high creativity","Commercial rights need a paid plan"],
+      note:"Generate several in one session, keep the strongest. Audio is part of the brand." },
+    { name:"Canva", type:"Design & publishing", chip:"Distribute · 09",
+      best:"Final packaging, social graphics, slide decks, and getting the brand out the door. Not for building identity.",
+      pros:["Fast layout and publishing, huge template library","Bulk Create for volume","Easy handoff and team collaboration","Packages a built brand for every platform"],
+      cons:["Not an identity tool, the brand should be built before you arrive","Template-heavy work can flatten a distinctive brand","Designing one by one wastes its strengths"],
+      note:"Final stage only. By here the identity is built, you're just pushing it public." },
+  ]},
+];
+
+const $=s=>document.querySelector(s);
+$("#principles").innerHTML = PRINCIPLES.map(p=>`<div class="pr"><h4><i></i>${p[0]}</h4><p>${p[1]}</p></div>`).join("");
+
+$("#sections").innerHTML = SECTIONS.map(sec=>`
+  <section class="sect" id="${sec.id}">
+    <div class="sect-h"><h2>${sec.title}</h2><span class="rule"></span></div>
+    <div class="cards">
+      ${sec.cards.map(c=>`
+        <div class="card">
+          <div class="top">
+            <div><div class="name">${c.name}</div><div class="type">${c.type}</div></div>
+            <span class="chip">${c.chip}</span>
+          </div>
+          <div class="best"><b>Best for</b>${c.best}</div>
+          <div class="pc">
+            <div class="pros"><h5>Pros</h5><ul>${c.pros.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+            <div class="cons"><h5>Cons</h5><ul>${c.cons.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+          </div>
+          <div class="tnote"><b>In your pipeline</b>${c.note}</div>
+        </div>`).join("")}
+    </div>
+  </section>`).join("");
+</script>
+</body>
+</html>

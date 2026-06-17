@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operator Readiness Map — Archetype Twin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Archivo:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3F0EA;       /* light ground */
+    --paper-2:#FBFAF7;     /* card */
+    --paper-3:#ECE7DD;     /* inset / track */
+    --ink:#141019;         /* near-black, hint of violet (magician) */
+    --ink-soft:#4A4356;
+    --muted:#8A8294;
+    --faint:#B9B2A6;
+    --teal:#0C7A82;
+    --teal-deep:#06484E;
+    --pink:#FF5DA2;
+    --magenta:#D6207E;
+    --charge:linear-gradient(135deg,var(--teal) 0%,var(--magenta) 58%,var(--pink) 100%);
+    --charge-soft:linear-gradient(135deg,rgba(12,122,130,.14),rgba(214,32,126,.12) 60%,rgba(255,93,162,.14));
+    --line:rgba(20,16,25,.12);
+    --line-2:rgba(20,16,25,.20);
+    --display:'Syne',system-ui,sans-serif;
+    --body:'Archivo',system-ui,sans-serif;
+    --mono:'Space Mono',ui-monospace,monospace;
+    --shadow:0 18px 40px -22px rgba(20,16,25,.45);
+    --shadow-charge:0 16px 34px -16px rgba(214,32,126,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5}
+  body{
+    min-height:100vh;padding:clamp(18px,4vw,52px) clamp(14px,4vw,40px);
+    display:flex;justify-content:center;
+    background-image:
+      radial-gradient(ellipse 70% 45% at 12% 0%, rgba(12,122,130,.10), transparent 60%),
+      radial-gradient(ellipse 60% 45% at 92% 4%, rgba(214,32,126,.10), transparent 60%);
+  }
+  .wrap{width:100%;max-width:920px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--magenta);font-weight:700}
+  .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+  a.txtlink{color:inherit}
+
+  /* ---------- header ---------- */
+  header{margin-bottom:26px}
+  header .eyebrow{margin-bottom:16px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(40px,8vw,76px);line-height:.9;letter-spacing:-.02em}
+  h1 .glow{background:var(--charge);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin-top:16px;color:var(--ink-soft);font-size:clamp(15px,2vw,17px);max-width:52ch;line-height:1.6}
+
+  /* vault banner */
+  .vaultbar{margin:26px 0 4px;background:var(--ink);color:#fff;border-radius:14px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;position:relative;overflow:hidden}
+  .vaultbar::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 90% at 100% 0%,rgba(255,93,162,.25),transparent 55%),radial-gradient(ellipse 50% 90% at 0% 100%,rgba(12,122,130,.28),transparent 55%);pointer-events:none}
+  .vaultbar .ve{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--pink);position:relative;z-index:1}
+  .vaultbar .vm{margin-top:7px;color:rgba(255,255,255,.82);font-size:14px;line-height:1.55;max-width:62ch;position:relative;z-index:1}
+  .vaultbar a.btn{position:relative;z-index:1;flex:0 0 auto}
+
+  /* ---------- HUD ---------- */
+  .hud{
+    margin:26px 0 14px;background:var(--ink);color:#fff;border-radius:18px;
+    padding:clamp(20px,3.5vw,30px);display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,40px);
+    align-items:center;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .hud::after{content:"";position:absolute;inset:0;background:
+    radial-gradient(ellipse 50% 80% at 100% 0%,rgba(255,93,162,.22),transparent 60%),
+    radial-gradient(ellipse 55% 90% at 0% 100%,rgba(12,122,130,.28),transparent 60%);pointer-events:none}
+  .ring{position:relative;width:128px;height:128px;flex:0 0 auto;z-index:1}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .pct b{font-family:var(--display);font-weight:800;font-size:34px;line-height:1}
+  .ring .pct span{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:3px}
+  .hud-info{z-index:1;min-width:0}
+  .rank-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .rank-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+  .rank{font-family:var(--display);font-weight:800;font-size:clamp(26px,4.5vw,38px);letter-spacing:-.01em;
+    background:var(--charge);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat-row{display:flex;gap:26px;flex-wrap:wrap;margin-top:18px}
+  .stat .k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+  .stat .v{font-family:var(--display);font-weight:700;font-size:22px;margin-top:3px}
+  .stat .v small{font-weight:400;color:rgba(255,255,255,.45);font-family:var(--body);font-size:13px}
+  .hud-hint{margin:14px 0 22px;display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px}
+  .hud-hint b{color:var(--ink);font-weight:600}
+  .dotpulse{width:8px;height:8px;border-radius:50%;background:var(--magenta);box-shadow:0 0 0 0 rgba(214,32,126,.5);animation:pulse 2.2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(214,32,126,.45)}70%{box-shadow:0 0 0 9px rgba(214,32,126,0)}100%{box-shadow:0 0 0 0 rgba(214,32,126,0)}}
+
+  /* ---------- stages ---------- */
+  .stage{margin-top:34px}
+  .stage-head{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+  .stage-num{font-family:var(--display);font-weight:800;font-size:clamp(30px,5vw,44px);line-height:1;
+    color:transparent;-webkit-text-stroke:1.5px var(--line-2);}
+  .stage.done .stage-num{-webkit-text-stroke:0;background:var(--charge);-webkit-background-clip:text;background-clip:text}
+  .stage-meta{flex:1;min-width:0}
+  .stage-meta h3{font-family:var(--display);font-weight:700;font-size:clamp(18px,3vw,24px);letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .modchip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--teal);background:rgba(12,122,130,.1);border:1px solid rgba(12,122,130,.25);padding:2px 8px;border-radius:20px;text-transform:uppercase}
+  .stage-count{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+  .stage-count b{color:var(--magenta)}
+  .stage-bar{height:4px;background:var(--paper-3);border-radius:4px;overflow:hidden;margin-top:8px}
+  .stage-bar i{display:block;height:100%;width:0;background:var(--charge);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media (max-width:640px){.grid{grid-template-columns:1fr}}
+
+  .tile{
+    position:relative;text-align:left;cursor:pointer;border:none;
+    background:var(--paper-2);border:1px solid var(--line);border-radius:14px;
+    padding:18px 18px 18px 18px;display:flex;gap:14px;align-items:flex-start;overflow:hidden;
+    transition:transform .14s ease, box-shadow .18s ease, border-color .18s ease;
+    color:var(--ink);font-family:var(--body);
+  }
+  .tile:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--line-2)}
+  .tile:focus-visible{outline:2.5px solid var(--magenta);outline-offset:2px}
+  .tile .mark{
+    flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line-2);
+    display:flex;align-items:center;justify-content:center;margin-top:1px;background:#fff;
+    transition:transform .2s cubic-bezier(.2,.7,.2,1);
+  }
+  .tile .mark svg{width:13px;height:13px;opacity:0;transform:scale(.4);transition:opacity .2s,transform .25s cubic-bezier(.2,.7,.2,1)}
+  .tile .body{min-width:0}
+  .tile .ttag{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:flex;gap:8px;align-items:center}
+  .tile .ttag .xp{color:var(--teal)}
+  .tile .tname{font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:-.01em;line-height:1.15}
+  .tile .tproof{font-size:13px;color:var(--ink-soft);margin-top:5px;line-height:1.4}
+
+  /* charged state */
+  .tile.on{background:var(--charge);border-color:transparent;color:#fff;box-shadow:var(--shadow-charge)}
+  .tile.on .ttag,.tile.on .tproof{color:rgba(255,255,255,.82)}
+  .tile.on .ttag .xp{color:#fff}
+  .tile.on .tname{color:#fff}
+  .tile.on .mark{background:#fff;border-color:#fff;transform:scale(1.05)}
+  .tile.on .mark svg{opacity:1;transform:scale(1);stroke:var(--magenta)}
+  .tile.pop{animation:pop .42s cubic-bezier(.2,.8,.2,1)}
+  @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+  .spark{position:absolute;width:7px;height:7px;border-radius:50%;pointer-events:none;z-index:3}
+
+  /* ---------- certification ---------- */
+  .cert{
+    margin-top:40px;border-radius:18px;padding:clamp(26px,4vw,40px);text-align:center;position:relative;overflow:hidden;
+    background:var(--paper-2);border:1.5px dashed var(--line-2);transition:.4s;
+  }
+  .cert.locked .cert-on{display:none}
+  .cert .cert-lock{color:var(--muted)}
+  .cert .cert-lock .label{margin-bottom:10px}
+  .cert .cert-lock h3{font-family:var(--display);font-weight:700;font-size:clamp(20px,3.5vw,28px);color:var(--ink)}
+  .cert .cert-lock p{color:var(--ink-soft);font-size:14px;margin-top:8px;max-width:46ch;margin-left:auto;margin-right:auto}
+  .cert.unlocked{border:none;background:var(--ink);color:#fff;box-shadow:var(--shadow)}
+  .cert.unlocked .cert-lock{display:none}
+  .cert.unlocked .cert-on{display:block}
+  .cert .cert-on::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(ellipse 60% 80% at 0% 0%,rgba(12,122,130,.4),transparent 55%),
+    radial-gradient(ellipse 60% 80% at 100% 100%,rgba(255,93,162,.35),transparent 55%);pointer-events:none}
+  .cert-on .seal{position:relative;z-index:1;font-family:var(--mono);font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--pink)}
+  .cert-on h3{position:relative;z-index:1;font-family:var(--display);font-weight:800;font-size:clamp(26px,5vw,44px);line-height:1;margin:14px 0;
+    background:linear-gradient(135deg,#fff,#FF5DA2);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cert-on p{position:relative;z-index:1;color:rgba(255,255,255,.8);max-width:48ch;margin:0 auto;font-size:14.5px;line-height:1.6}
+  .cert-on .stamp{position:relative;z-index:1;margin-top:18px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:rgba(255,255,255,.6);text-transform:uppercase}
+  .cert-on .cbtn{margin-top:22px}
+
+  /* ---------- buttons / controls ---------- */
+  .btn{appearance:none;border:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;
+    text-transform:uppercase;font-weight:700;border-radius:30px;padding:13px 24px;
+    display:inline-flex;align-items:center;gap:9px;transition:transform .16s,box-shadow .18s,background .18s}
+  .btn.charge{background:var(--charge);color:#fff}
+  .btn.charge:hover{transform:translateY(-2px);box-shadow:var(--shadow-charge)}
+  .btn.lite{background:#fff;color:var(--ink);border:1px solid var(--line-2)}
+  .btn.lite:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .btn:focus-visible{outline:2.5px solid var(--pink);outline-offset:2px}
+
+  .controls{display:flex;justify-content:flex-end;margin-top:20px}
+  .reset{appearance:none;background:none;border:none;cursor:pointer;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);transition:color .16s}
+  .reset:hover{color:var(--magenta)}
+
+  /* ---------- toast ---------- */
+  .toasts{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:max-content;max-width:90vw}
+  .toast{background:var(--ink);color:#fff;border-radius:30px;padding:12px 22px;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+    box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;animation:toastin .4s cubic-bezier(.2,.8,.2,1) both}
+  .toast b{background:var(--charge);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
+  .toast.out{animation:toastout .4s ease forwards}
+  @keyframes toastin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes toastout{to{opacity:0;transform:translateY(10px)}}
+
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:40}
+
+  /* ---------- footer ---------- */
+  .sitefoot{margin-top:clamp(46px,7vh,68px);padding-top:24px;border-top:1px solid var(--line);text-align:center}
+  .sitefoot .cred{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink);text-transform:uppercase}
+  .sitefoot .rights{font-size:12px;color:var(--muted);margin:9px auto 0;line-height:1.6;max-width:48ch}
+  .sitefoot .links{margin-top:14px;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+  .sitefoot .links a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .16s,border-color .16s;padding-bottom:1px}
+  .sitefoot .links a:hover{color:var(--magenta);border-color:var(--magenta)}
+  .sitefoot .dot{color:var(--faint)}
+
+  @media (max-width:560px){
+    .hud{grid-template-columns:1fr;justify-items:center;text-align:center}
+    .hud-info{text-align:center}
+    .rank-row,.stat-row{justify-content:center}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Archetype Twin™ · Operator System</div>
+    <h1>Readiness <span class="glow">Map</span></h1>
+    <p class="sub">Your command deck for the whole method. Charge a tile when you can really do the thing, not when you've just watched it. Watch the operator come online.</p>
+  </header>
+
+  <div class="vaultbar">
+    <div>
+      <div class="ve">◆ Part of the Archetype Twin™ Vault</div>
+      <div class="vm">This tool is one piece of the full system. If you landed here without the Vault, that's where the method, the modules, and the rest of the operator tools live.</div>
+    </div>
+    <a class="btn charge" href="https://personalbrandstudio.eu/archetype-twin-vault/" target="_blank" rel="noopener">Get the Vault →</a>
+  </div>
+
+  <!-- HUD -->
+  <div class="hud">
+    <div class="ring">
+      <svg width="128" height="128" viewBox="0 0 128 128">
+        <circle cx="64" cy="64" r="56" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="10"/>
+        <circle id="ringfill" cx="64" cy="64" r="56" fill="none" stroke="url(#cg)" stroke-width="10" stroke-linecap="round"
+          stroke-dasharray="351.86" stroke-dashoffset="351.86"/>
+        <defs><linearGradient id="cg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#0C7A82"/><stop offset="0.58" stop-color="#D6207E"/><stop offset="1" stop-color="#FF5DA2"/>
+        </linearGradient></defs>
+      </svg>
+      <div class="pct"><b id="pctnum">0</b><span>Charged</span></div>
+    </div>
+    <div class="hud-info">
+      <div class="rank-row">
+        <span class="rank-label">Operator rank</span>
+        <span class="rank" id="rank">Initiate</span>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="k">Tiles</div><div class="v"><span id="tilesdone">0</span><small> / 20</small></div></div>
+        <div class="stat"><div class="k">XP charged</div><div class="v" id="xp">0<small> / 1250</small></div></div>
+        <div class="stat"><div class="k">Stages</div><div class="v"><span id="stagesdone">0</span><small> / 4</small></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="hud-hint"><span class="dotpulse"></span><span>Tap a tile to charge it. <b>Your progress saves on this browser.</b></span></div>
+
+  <!-- STAGES render here -->
+  <div id="stages"></div>
+
+  <!-- CERTIFICATION -->
+  <div class="cert locked" id="cert">
+    <div class="cert-lock">
+      <div class="label">Final charge · locked</div>
+      <h3>Certified Archetype Twin Operator</h3>
+      <p>Charge all twenty tiles to come online. You'll be able to run the method end to end, from extraction to a sellable deliverable.</p>
+    </div>
+    <div class="cert-on">
+      <div class="seal">◆ Certified ◆</div>
+      <h3>Archetype Twin Operator</h3>
+      <p>You've charged the full map. Extraction, direction, real and AI production, motion, ecosystem, and the offer. You can run the whole method now.</p>
+      <div class="stamp" id="certstamp">Certified</div>
+      <button class="btn charge cbtn" id="badgecopy">Copy my badge</button>
+    </div>
+  </div>
+
+  <div class="controls"><button class="reset" id="reset">Reset progress</button></div>
+
+  <!-- FOOTER -->
+  <footer class="sitefoot">
+    <div class="cred">Created by Ing. Tereza Skranka Prochazkova, BBA</div>
+    <div class="rights">All rights reserved. This tool may not be resold, copied, or recreated without permission.</div>
+    <div class="links">
+      <a href="https://personalbrandstudio.eu" target="_blank" rel="noopener">personalbrandstudio.eu</a>
+      <span class="dot">·</span>
+      <a href="https://humandesignredefined.com" target="_blank" rel="noopener">humandesignredefined.com</a>
+    </div>
+  </footer>
+
+</div>
+
+<div class="toasts" id="toasts"></div>
+<canvas id="fx"></canvas>
+
+<script>
+/* ---------------- data ---------------- */
+const STAGES = [
+  { id:"s1", name:"Foundations", mods:"Modules 00–01", tiles:[
+    {id:"pillars", mod:"M00", xp:50, name:"The 3 Pillars", proof:"I understand the three pillars the method stands on."},
+    {id:"twelve",  mod:"M01", xp:50, name:"The 12 Archetypes", proof:"I know what all twelve brand archetypes are."},
+    {id:"recognize",mod:"M01", xp:50, name:"Recognize on Sight", proof:"I can spot an archetype from its visuals alone."},
+    {id:"blend",   mod:"M01", xp:100,name:"My Blend", proof:"I've extracted my own archetype blend.", act:true},
+    {id:"translate",mod:"M01", xp:50, name:"Visual Translation", proof:"I can turn an archetype into colour, type, light, and wardrobe."},
+  ]},
+  { id:"s2", name:"Production · Stills", mods:"Modules 02–03", tiles:[
+    {id:"fork",    mod:"M02", xp:50, name:"Real vs AI Character", proof:"I know whether I'm the face or building a character."},
+    {id:"realtool",mod:"M02", xp:50, name:"Real-Person Image Tool", proof:"I know which tool to use for a real-person image."},
+    {id:"aitool",  mod:"M02", xp:50, name:"AI-Character Image Tool", proof:"I know which tool to use for an AI character."},
+    {id:"consist", mod:"M02", xp:50, name:"Character Consistency", proof:"I can keep a character consistent across images."},
+    {id:"shoot",   mod:"M02", xp:100,name:"First Shoot", proof:"I've produced my first archetype-directed photoshoot.", act:true},
+    {id:"product", mod:"M03", xp:100,name:"Product Visuals", proof:"I've created archetype-governed product or commercial visuals.", act:true},
+  ]},
+  { id:"s3", name:"Production · Motion", mods:"Module 04", tiles:[
+    {id:"motionbase",mod:"M04", xp:50, name:"Motion Basics", proof:"I understand shot types and pacing for branded motion."},
+    {id:"talkhead", mod:"M04", xp:50, name:"Talking-Head Tool", proof:"I know which tool to use for a talking-head video."},
+    {id:"cinematic",mod:"M04", xp:50, name:"Cinematic Motion Tool", proof:"I know which tool to use for cinematic motion and B-roll."},
+    {id:"hybrid",   mod:"M04", xp:50, name:"Hybrid Motion", proof:"I can combine talking-head and cinematic shots in one piece."},
+    {id:"video",    mod:"M04", xp:100,name:"First Video", proof:"I've produced my first archetype-driven video.", act:true},
+  ]},
+  { id:"s4", name:"Ecosystem & Sell", mods:"Modules 05–06", tiles:[
+    {id:"matrix",  mod:"M05", xp:50, name:"Platform Matrix", proof:"I've mapped platform → content type → image style."},
+    {id:"system",  mod:"M05", xp:50, name:"Consistency System", proof:"I can hold one identity across every platform."},
+    {id:"offer",   mod:"M06", xp:50, name:"The Offer", proof:"I know how to package and position this as a service."},
+    {id:"deliver", mod:"M06", xp:100,name:"First Deliverable", proof:"I've built or sold a full client deliverable.", act:true},
+  ]},
+];
+const ALL = STAGES.flatMap(s=>s.tiles);
+const TOTAL = ALL.length;
+const MAXXP = ALL.reduce((a,t)=>a+t.xp,0);
+const KEY = "atwin_readiness_v1";
+const C = {teal:"#0C7A82",magenta:"#D6207E",pink:"#FF5DA2",ink:"#141019"};
+
+/* ---------------- state ---------------- */
+let done = load();
+function load(){ try{const r=localStorage.getItem(KEY);return r?new Set(JSON.parse(r)):new Set();}catch(e){return new Set();} }
+function save(){ try{localStorage.setItem(KEY, JSON.stringify([...done]));}catch(e){} }
+
+function rankFor(p){
+  if(p>=100)return"Certified Operator";
+  if(p>=76)return"Master Operator";
+  if(p>=51)return"Operator";
+  if(p>=26)return"Conjurer";
+  if(p>=1)return"Apprentice";
+  return"Initiate";
+}
+
+/* ---------------- render ---------------- */
+const $=s=>document.querySelector(s);
+const stagesEl=$("#stages");
+let lastRank = rankFor(Math.round(done.size/TOTAL*100));
+let prevStageDone = new Set(STAGES.filter(s=>s.tiles.every(t=>done.has(t.id))).map(s=>s.id));
+
+function buildStages(){
+  stagesEl.innerHTML="";
+  STAGES.forEach((s,si)=>{
+    const sec=document.createElement("section");
+    sec.className="stage"; sec.dataset.sid=s.id;
+    sec.innerHTML=`
+      <div class="stage-head">
+        <div class="stage-num">0${si+1}</div>
+        <div class="stage-meta">
+          <h3>${s.name} <span class="modchip">${s.mods}</span></h3>
+          <div class="stage-bar"><i></i></div>
+        </div>
+        <div class="stage-count"><b class="sc-done">0</b> / ${s.tiles.length}</div>
+      </div>
+      <div class="grid"></div>`;
+    const grid=sec.querySelector(".grid");
+    s.tiles.forEach(t=>{
+      const b=document.createElement("button");
+      b.className="tile"+(done.has(t.id)?" on":"");
+      b.dataset.id=t.id;
+      b.setAttribute("aria-pressed", done.has(t.id)?"true":"false");
+      b.innerHTML=`
+        <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span class="body">
+          <span class="ttag">${t.mod} · <span class="xp">${t.xp} XP</span>${t.act?' · BUILD':''}</span>
+          <span class="tname">${t.name}</span>
+          <span class="tproof">${t.proof}</span>
+        </span>`;
+      b.addEventListener("click",e=>toggle(t,b,e));
+      grid.appendChild(b);
+    });
+    stagesEl.appendChild(sec);
+  });
+  refresh(true);
+}
+
+function toggle(t,b,e){
+  const turningOn=!done.has(t.id);
+  if(turningOn){ done.add(t.id); b.classList.add("on","pop"); if(e) sparkBurst(b);}
+  else { done.delete(t.id); b.classList.remove("on"); }
+  b.setAttribute("aria-pressed", turningOn?"true":"false");
+  setTimeout(()=>b.classList.remove("pop"),440);
+  save();
+  refresh(false);
+}
+
+function refresh(initial){
+  const n=done.size;
+  const pct=Math.round(n/TOTAL*100);
+  const xp=ALL.filter(t=>done.has(t.id)).reduce((a,t)=>a+t.xp,0);
+  const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ring
+  const circ=351.86;
+  $("#ringfill").style.transition=reduce?"none":"stroke-dashoffset .6s cubic-bezier(.2,.7,.2,1)";
+  $("#ringfill").style.strokeDashoffset = circ*(1-pct/100);
+  animateNum($("#pctnum"), pct, initial||reduce);
+  $("#rank").textContent=rankFor(pct);
+  animateNum($("#tilesdone"), n, initial||reduce);
+  animateNum($("#xp"), xp, initial||reduce, " / 1250");
+  // stages
+  let stagesDone=0; const nowStageDone=new Set();
+  STAGES.forEach(s=>{
+    const sec=stagesEl.querySelector(`[data-sid="${s.id}"]`);
+    const c=s.tiles.filter(t=>done.has(t.id)).length;
+    sec.querySelector(".sc-done").textContent=c;
+    sec.querySelector(".stage-bar i").style.width=(c/s.tiles.length*100)+"%";
+    const full=c===s.tiles.length;
+    sec.classList.toggle("done",full);
+    if(full){stagesDone++;nowStageDone.add(s.id);}
+  });
+  $("#stagesdone").textContent=stagesDone;
+
+  // cert
+  const cert=$("#cert");
+  const complete=n===TOTAL;
+  cert.classList.toggle("locked",!complete);
+  cert.classList.toggle("unlocked",complete);
+
+  if(!initial){
+    // rank-up toast
+    const r=rankFor(pct);
+    if(r!==lastRank && pct>0){ toast("New rank", r); }
+    lastRank=r;
+    // newly charged stage(s)
+    const newlyDone=[...nowStageDone].filter(id=>!prevStageDone.has(id));
+    if(newlyDone.length && !complete){
+      const s=STAGES.find(x=>x.id===newlyDone[0]);
+      toast("Stage charged", s.name);
+      if(!reduce) confetti(0.5,0.4);
+    }
+    prevStageDone=nowStageDone;
+    // full completion
+    if(complete && cert.dataset.fired!=="1"){
+      cert.dataset.fired="1";
+      const d=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+      try{localStorage.setItem(KEY+"_date", d);}catch(e){}
+      $("#certstamp").textContent="Certified "+d;
+      toast("◆ Online", "Certified Operator");
+      if(!reduce){ confetti(0.5,0.3); setTimeout(()=>confetti(0.22,0.42),240); setTimeout(()=>confetti(0.78,0.42),460); }
+      cert.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"});
+    }
+    if(!complete) cert.dataset.fired="";
+  } else {
+    if(complete){ const d=(()=>{try{return localStorage.getItem(KEY+"_date");}catch(e){return null;}})(); $("#certstamp").textContent="Certified "+(d||""); cert.dataset.fired="1"; }
+  }
+}
+
+function animateNum(el,to,instant,suffix){
+  suffix=suffix||"";
+  if(instant){el.textContent=to+suffix;return;}
+  const from=parseInt(el.textContent)||0;
+  if(from===to){el.textContent=to+suffix;return;}
+  const steps=12, dur=380; let i=0;
+  const t=setInterval(()=>{i++;const v=Math.round(from+(to-from)*(i/steps));el.textContent=v+suffix;if(i>=steps){el.textContent=to+suffix;clearInterval(t);}},dur/steps);
+}
+
+/* ---------------- toast ---------------- */
+function toast(kicker,main){
+  const wrap=$("#toasts");
+  const el=document.createElement("div");
+  el.className="toast";
+  el.innerHTML=`${kicker} · <b>${main}</b>`;
+  wrap.appendChild(el);
+  setTimeout(()=>el.classList.add("out"),2400);
+  setTimeout(()=>el.remove(),2850);
+}
+
+/* ---------------- spark + confetti ---------------- */
+function sparkBurst(tileEl){
+  const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce)return;
+  const r=tileEl.getBoundingClientRect();
+  const cx=r.left+r.width/2, cy=r.top+r.height/2;
+  const cols=[C.teal,C.magenta,C.pink,"#fff"];
+  for(let k=0;k<12;k++){
+    const s=document.createElement("div");
+    s.className="spark";
+    s.style.background=cols[k%cols.length];
+    s.style.left=cx+"px"; s.style.top=cy+"px";
+    document.body.appendChild(s);
+    const ang=Math.random()*Math.PI*2, dist=30+Math.random()*46;
+    const dx=Math.cos(ang)*dist, dy=Math.sin(ang)*dist;
+    s.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},
+               {transform:`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) scale(0)`,opacity:0}],
+              {duration:520+Math.random()*260,easing:'cubic-bezier(.2,.7,.2,1)'}).onfinish=()=>s.remove();
+  }
+}
+
+const cv=$("#fx"), ctx=cv.getContext("2d");
+function fit(){cv.width=innerWidth;cv.height=innerHeight;}
+fit(); addEventListener("resize",fit);
+let parts=[],raf=null;
+function confetti(ox,oy){
+  const cols=[C.teal,C.magenta,C.pink,C.ink,"#fff"];
+  for(let i=0;i<70;i++){
+    parts.push({x:cv.width*ox,y:cv.height*oy,
+      vx:(Math.random()-.5)*11,vy:Math.random()*-9-3,
+      g:.32+Math.random()*.12,s:5+Math.random()*6,
+      col:cols[i%cols.length],rot:Math.random()*6.28,vr:(Math.random()-.5)*.4,life:0,max:90+Math.random()*40});
+  }
+  if(!raf)raf=requestAnimationFrame(tick);
+}
+function tick(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  parts=parts.filter(p=>p.life<p.max);
+  parts.forEach(p=>{
+    p.life++;p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.vx*=.99;
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+    ctx.globalAlpha=Math.max(0,1-p.life/p.max);
+    ctx.fillStyle=p.col;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);ctx.restore();
+  });
+  if(parts.length)raf=requestAnimationFrame(tick); else {raf=null;ctx.clearRect(0,0,cv.width,cv.height);}
+}
+
+/* ---------------- controls ---------------- */
+$("#reset").addEventListener("click",()=>{
+  if(!confirm("Reset all progress on this browser? This can't be undone."))return;
+  done=new Set(); save(); try{localStorage.removeItem(KEY+"_date");}catch(e){}
+  lastRank="Initiate"; prevStageDone=new Set(); $("#cert").dataset.fired="";
+  buildStages();
+});
+
+$("#badgecopy").addEventListener("click",()=>{
+  const d=(()=>{try{return localStorage.getItem(KEY+"_date");}catch(e){return"";}})();
+  const txt=`◆ CERTIFIED ARCHETYPE TWIN OPERATOR ◆\nIng. Tereza Skranka Prochazkova, BBA · Archetype Twin™ method\nCertified ${d}\nI can run the full method end to end: extraction, direction, real and AI production, motion, ecosystem, and the offer.`;
+  navigator.clipboard?.writeText(txt);
+  toast("Copied","Badge");
+});
+
+buildStages();
+</script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tool Router — Archetype Twin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Archivo:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3F0EA;--paper-2:#FBFAF7;--paper-3:#ECE7DD;
+    --ink:#141019;--ink-soft:#4A4356;--muted:#8A8294;--faint:#B9B2A6;
+    --teal:#0C7A82;--teal-deep:#06484E;--pink:#FF5DA2;--magenta:#D6207E;
+    --charge:linear-gradient(135deg,var(--teal) 0%,var(--magenta) 58%,var(--pink) 100%);
+    --line:rgba(20,16,25,.12);--line-2:rgba(20,16,25,.20);
+    --display:'Syne',system-ui,sans-serif;--body:'Archivo',system-ui,sans-serif;--mono:'Space Mono',ui-monospace,monospace;
+    --shadow:0 18px 40px -22px rgba(20,16,25,.45);--shadow-charge:0 16px 34px -16px rgba(214,32,126,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5}
+  body{min-height:100vh;padding:clamp(18px,4vw,52px) clamp(14px,4vw,40px);display:flex;justify-content:center;
+    background-image:radial-gradient(ellipse 70% 45% at 12% 0%,rgba(12,122,130,.10),transparent 60%),radial-gradient(ellipse 60% 45% at 92% 4%,rgba(214,32,126,.10),transparent 60%);}
+  .wrap{width:100%;max-width:760px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--magenta);font-weight:700}
+  .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+
+  header{margin-bottom:8px}
+  header .eyebrow{margin-bottom:16px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(40px,8vw,72px);line-height:.9;letter-spacing:-.02em}
+  h1 .glow{background:var(--charge);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin-top:16px;color:var(--ink-soft);font-size:clamp(15px,2vw,17px);max-width:50ch;line-height:1.6}
+
+  /* vault banner */
+  .vaultbar{margin:26px 0 4px;background:var(--ink);color:#fff;border-radius:14px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;position:relative;overflow:hidden}
+  .vaultbar::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 90% at 100% 0%,rgba(255,93,162,.25),transparent 55%),radial-gradient(ellipse 50% 90% at 0% 100%,rgba(12,122,130,.28),transparent 55%);pointer-events:none}
+  .vaultbar .ve{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--pink);position:relative;z-index:1}
+  .vaultbar .vm{margin-top:7px;color:rgba(255,255,255,.82);font-size:14px;line-height:1.55;max-width:62ch;position:relative;z-index:1}
+  .vaultbar a.btn{position:relative;z-index:1;flex:0 0 auto}
+
+  /* breadcrumb */
+  .crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:30px 0 22px;min-height:22px}
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink);background:var(--paper-2);border:1px solid var(--line);padding:5px 11px;border-radius:20px}
+  .crumb.now{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .crumbs .sep{color:var(--faint)}
+
+  /* question */
+  .step{animation:rise .42s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .qprompt{font-family:var(--display);font-weight:700;font-size:clamp(24px,4.4vw,36px);line-height:1.12;letter-spacing:-.015em;text-wrap:balance}
+  .qhelp{color:var(--ink-soft);font-size:14.5px;margin-top:12px;max-width:48ch;line-height:1.55}
+  .opts{display:grid;gap:12px;margin-top:26px}
+  .opt{position:relative;text-align:left;cursor:pointer;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;display:flex;align-items:center;gap:16px;color:var(--ink);font-family:var(--body);overflow:hidden;
+    transition:transform .14s ease,box-shadow .18s ease,border-color .16s ease}
+  .opt:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:transparent}
+  .opt:hover::before{opacity:1}
+  .opt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--charge);opacity:.5;transition:opacity .16s}
+  .opt:focus-visible{outline:2.5px solid var(--magenta);outline-offset:2px}
+  .opt .oi{font-family:var(--mono);font-size:12px;color:var(--magenta);font-weight:700;flex:0 0 auto}
+  .opt .ol{font-family:var(--display);font-weight:600;font-size:clamp(15px,2.1vw,17px);letter-spacing:-.01em}
+  .opt .arr{margin-left:auto;color:var(--faint);font-size:18px;transition:transform .18s,color .18s}
+  .opt:hover .arr{transform:translateX(4px);color:var(--magenta)}
+
+  /* result */
+  .result{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+  .rcard{position:relative;background:var(--ink);color:#fff;border-radius:18px;padding:clamp(24px,4vw,38px);overflow:hidden;box-shadow:var(--shadow)}
+  .rcard::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 0% 0%,rgba(12,122,130,.4),transparent 55%),radial-gradient(ellipse 60% 80% at 100% 100%,rgba(255,93,162,.32),transparent 55%);pointer-events:none}
+  .rcard>*{position:relative;z-index:1}
+  .rstep{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--pink);margin-bottom:14px}
+  .rfor{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:rgba(255,255,255,.55);margin-bottom:6px}
+  .rtool{font-family:var(--display);font-weight:800;font-size:clamp(34px,7vw,58px);line-height:.95;letter-spacing:-.02em;
+    background:linear-gradient(135deg,#fff 30%,#FF5DA2);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ralt{margin-top:12px;font-size:14px;color:rgba(255,255,255,.82)}
+  .ralt b{color:#fff;font-weight:600}
+  .rwhy{margin-top:18px;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,.92);max-width:54ch}
+  .rnotes{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.14);border-radius:12px;overflow:hidden;margin-top:24px}
+  .rnotes .nc{background:#16121d;padding:16px 18px}
+  .rnotes .nc.full{grid-column:1/-1}
+  .rnotes h4{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:8px;font-weight:700}
+  .rnotes .nc.avoid h4{color:var(--pink)}
+  .rnotes p{font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.9)}
+  .rnext{margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.14);font-size:13.5px;color:rgba(255,255,255,.7);font-family:var(--mono);letter-spacing:.02em}
+  .rnext b{color:var(--pink);font-weight:700}
+  @media (max-width:560px){.rnotes{grid-template-columns:1fr}}
+
+  .controls{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;align-items:center}
+  .btn{appearance:none;border:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;border-radius:30px;padding:13px 24px;display:inline-flex;align-items:center;gap:9px;transition:transform .16s,box-shadow .18s,background .18s}
+  .btn.charge{background:var(--charge);color:#fff}
+  .btn.charge:hover{transform:translateY(-2px);box-shadow:var(--shadow-charge)}
+  .btn.lite{background:#fff;color:var(--ink);border:1px solid var(--line-2)}
+  .btn.lite:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .btn:focus-visible{outline:2.5px solid var(--pink);outline-offset:2px}
+  .back{appearance:none;background:none;border:none;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);transition:color .16s}
+  .back:hover{color:var(--ink)}
+
+  /* full pipeline */
+  .pipe{margin-top:40px;border-top:1px solid var(--line);padding-top:22px}
+  .pipe summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+  .pipe summary::-webkit-details-marker{display:none}
+  .pipe summary .chev{transition:transform .2s;color:var(--magenta)}
+  .pipe[open] summary .chev{transform:rotate(90deg)}
+  .pipe-list{margin-top:18px;display:grid;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .pstep{background:var(--paper-2);padding:13px 16px;display:flex;gap:14px;align-items:baseline}
+  .pstep .pn{font-family:var(--mono);font-size:12px;color:var(--magenta);font-weight:700;flex:0 0 auto}
+  .pstep .pt{font-family:var(--display);font-weight:600;font-size:14.5px;flex:0 0 auto;min-width:142px}
+  .pstep .pd{color:var(--ink-soft);font-size:13px}
+  @media (max-width:560px){.pstep{flex-wrap:wrap}.pstep .pt{min-width:0}}
+
+  .sitefoot{margin-top:clamp(46px,7vh,68px);padding-top:24px;border-top:1px solid var(--line);text-align:center}
+  .sitefoot .cred{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink);text-transform:uppercase}
+  .sitefoot .rights{font-size:12px;color:var(--muted);margin:9px auto 0;line-height:1.6;max-width:48ch}
+  .sitefoot .links{margin-top:14px;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+  .sitefoot .links a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .16s,border-color .16s;padding-bottom:1px}
+  .sitefoot .links a:hover{color:var(--magenta);border-color:var(--magenta)}
+  .sitefoot .dot{color:var(--faint)}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Archetype Twin™ · Operator System</div>
+    <h1>Tool <span class="glow">Router</span></h1>
+    <p class="sub">Tell me what you're making. I'll point you at the exact tool, how to use it, and how to do it without burning credits. No more guessing which button to press.</p>
+  </header>
+
+  <div class="vaultbar">
+    <div>
+      <div class="ve">◆ Part of the Archetype Twin™ Vault</div>
+      <div class="vm">This tool is one piece of the full system. If you landed here without the Vault, that's where the method, the modules, and the rest of the operator tools live.</div>
+    </div>
+    <a class="btn charge" href="https://personalbrandstudio.eu/archetype-twin-vault/" target="_blank" rel="noopener">Get the Vault →</a>
+  </div>
+
+  <div class="crumbs" id="crumbs"></div>
+  <div id="screen"></div>
+
+  <!-- full pipeline reference -->
+  <details class="pipe">
+    <summary><span class="chev">▸</span> The full pipeline, in order</summary>
+    <div class="pipe-list" id="pipelist"></div>
+  </details>
+
+  <p style="margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted)">Want the full pros and cons for every tool? <a href="platform-cheat-sheet.html" style="color:var(--magenta);text-decoration:none;border-bottom:1px solid var(--magenta);padding-bottom:1px">Open the Platform Cheat Sheet →</a></p>
+
+  <footer class="sitefoot">
+    <div class="cred">Created by Ing. Tereza Skranka Prochazkova, BBA</div>
+    <div class="rights">All rights reserved. This tool may not be resold, copied, or recreated without permission.</div>
+    <div class="links">
+      <a href="https://personalbrandstudio.eu" target="_blank" rel="noopener">personalbrandstudio.eu</a>
+      <span class="dot">·</span>
+      <a href="https://humandesignredefined.com" target="_blank" rel="noopener">humandesignredefined.com</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ---------- decision graph ---------- */
+const NODES = {
+  start:{ q:"What are you making right now?", opts:[
+    ["An image","q_haveavatar"],
+    ["A video","q_videotype"],
+    ["Music or audio","r_suno"],
+    ["Packaging or publishing","r_canva"],
+  ]},
+  q_haveavatar:{ q:"Is your base character locked yet?", help:"The face and energy anchor that every other asset is built from.", opts:[
+    ["Not yet, I need to create it","q_realorai"],
+    ["It's locked, I need something around it","q_imageneed"],
+  ]},
+  q_realorai:{ q:"Real person, or an AI character?", help:"For a real person, the number of reference images you have decides the route.", opts:[
+    ["A real person (me or my client)","q_refcount"],
+    ["An AI character (not a real person)","r_krea_ai"],
+  ]},
+  q_refcount:{ q:"How many reference images of this person do you have?", help:"Enough to train a full avatar, or just a handful to reference?", opts:[
+    ["20 or more","r_krea_real"],
+    ["Just one, or a few","q_magnific_imgs"],
+  ]},
+  q_magnific_imgs:{ q:"In Magnific, working from one image or several?", help:"Magnific lets you reference a single image, or feed several as a character reference.", opts:[
+    ["One image","r_magnific_nano"],
+    ["Several images (character reference)","r_magnific_seedream"],
+  ]},
+  q_imageneed:{ q:"What do you need for the locked character?", opts:[
+    ["A new scene or environment","r_seedream_env"],
+    ["Polish on a strong image","r_flux"],
+    ["Background swap or variations","r_nanobanana"],
+    ["A product or commercial shot","r_seedream_product"],
+  ]},
+  q_videotype:{ q:"What kind of video?", help:"Motion is only as good as the still it starts from. Animate your best, never your tests.", opts:[
+    ["Someone speaking to camera","r_higgsfield"],
+    ["Cinematic motion or B-roll","r_seedance"],
+  ]},
+
+  r_krea_real:{ tool:"KREA", step:"04", phase:"Base Avatar", forl:"Real person · 20+ reference images",
+    why:"With twenty or more clean reference images, train a full avatar in KREA. This becomes the consistent, generatable face that every downstream asset is built from.",
+    how:"Use a solid, varied set of clean photos and lock the face before you generate anything else. Perfect the prompt first.",
+    credit:"Generations are limited. Don't spin endless variations chasing the face. Lock it, then move on.",
+    avoid:"Treating it like an unlimited tool. Training on a thin or messy image set. Generating scenes before the face is locked.",
+    next:"Build scenes in <b>Magnific (Seedream)</b>, or take your best still to motion." },
+  r_magnific_nano:{ tool:"Magnific · NanoBanana", step:"04", phase:"Base / Reference", forl:"Real person · one reference image",
+    why:"With a single reference image, run NanoBanana inside Magnific. It holds the likeness from one image and lets you build scenes around it without training a full avatar.",
+    how:"Feed your one strong image as the reference and prompt the scene around it. Use Magnific, not Freepik.",
+    credit:"Batch your variations in one focused session rather than one generation at a time.",
+    avoid:"Forcing a full-avatar workflow when you only have one image. NanoBanana is the one-image route.",
+    next:"Refine in <b>KREA Flux</b>, then animate or package." },
+  r_magnific_seedream:{ tool:"Magnific · Seedream", step:"04", phase:"Base / Reference", forl:"Real person · several reference images",
+    why:"Feed several images as a character reference and let Seedream hold the identity across generations. It's especially strong when the background gets more complicated.",
+    how:"Use your handful of images as the character reference inside Magnific and push the prompt for specificity. Seedream rewards precision.",
+    credit:"Generate in focused batches. Strong on range when you prompt with detail.",
+    avoid:"Vague prompts, and using Freepik for this. Magnific is where the multi-image character reference lives.",
+    next:"Refine in <b>KREA Flux</b>, then animate or package." },
+  r_krea_ai:{ tool:"KREA 2", alt:"Nano Banana 2/Pro, or Seedream (in Magnific or anywhere)", altLead:"Alternatives", step:"04", phase:"Base / Character", forl:"AI character · build it anywhere",
+    why:"An AI character can be built on any platform you like, but KREA 2 looks the most realistic of the current options, so I'd start there. Define it, perfect the prompt, and lock one consistent face. Everything downstream inherits it.",
+    how:"Get the identity right in one strong generation instead of fixing weak ones later. Already living in Higgsfield? You can build the character right there too, no need to switch platforms for it.",
+    credit:"Prompt deliberately and lock the face before you generate scenes around it.",
+    avoid:"Locking a face you only half-like. The whole pipeline inherits it.",
+    next:"Build scenes in <b>Magnific (Seedream)</b>, or take your best still to motion." },
+  r_seedream_env:{ tool:"Magnific · Seedream", step:"05", phase:"Environment", forl:"Scene around a locked character",
+    why:"Drop your locked avatar in as a reference and let Seedream build cinematic environments around it. It's especially strong when the background gets more complicated.",
+    how:"Work in Magnific, not Freepik. Push the prompt for specificity. Seedream rewards precision and punishes vagueness.",
+    credit:"Use it for bulk environment generation in focused sessions.",
+    avoid:"Generic prompts. Swapping scenes onto a weak base. Fix the avatar first.",
+    next:"Refine in <b>KREA Flux</b>, then animate or package." },
+  r_flux:{ tool:"KREA Flux", step:"06", phase:"Refinement", forl:"Polishing a strong image",
+    why:"Polish, not rescue. Use it when the base is already strong and just needs realism and detail.",
+    how:"The philosophy is to generate better images, not manually fix bad ones. Flux is the exception for genuine polish.",
+    credit:"Reserve it for refinement. If you're using it on every image, the base prompt needs work.",
+    avoid:"Using it to save a broken image. It enhances, it doesn't fix foundations.",
+    next:"Animate your strongest frames, or move to packaging." },
+  r_nanobanana:{ tool:"Magnific · NanoBanana", step:"06", phase:"Refinement", forl:"Backgrounds & variations",
+    why:"Swap backgrounds and spin up scene variations around a locked character using a single reference image in NanoBanana.",
+    how:"Run it inside Magnific. Strong for experimenting with environments around a face that's already locked.",
+    credit:"Batch your variations in one session. Don't drip-feed single generations.",
+    avoid:"Swapping backgrounds on a weak base image. Lock the avatar first.",
+    next:"Refine in <b>KREA Flux</b>, then animate or package." },
+  r_seedream_product:{ tool:"Magnific · Seedream", step:"05", phase:"Commercial", forl:"Product or commercial shot",
+    why:"Cinematic product and commercial visuals. The product has no archetype, but the brand behind it does, so the direction still comes from the blend.",
+    how:"Work in Magnific. Bring in any reference and push the prompt for cinematic specificity. Seedream handles more complicated backgrounds well.",
+    credit:"Use for bulk, varied output. Strong on range when you prompt with precision.",
+    avoid:"Generic prompts. Letting the product lead instead of the brand's archetype.",
+    next:"Refine, then motion or package for distribution." },
+  r_higgsfield:{ tool:"Higgsfield", step:"07", phase:"Motion · Lip Sync", forl:"A person speaking to camera",
+    why:"When the face needs to speak, this is the tool. Sync Lip Sync 2 Pro gives the cleanest lip fidelity. Feed it your best locked image, not an experiment.",
+    how:"Use it for client-facing video where the face has to move with precision.",
+    credit:"Reserve lip sync for content that actually needs a talking face.",
+    avoid:"Lip sync for the sake of it. Motion with purpose, not motion for motion's sake.",
+    next:"Assemble in <b>CapCut</b>, publish via <b>Canva</b>." },
+  r_seedance:{ tool:"Seedance 2.0", alt:"Kling 3.0", altLead:"Also magnificent", step:"07", phase:"Motion", forl:"Cinematic motion or B-roll",
+    why:"The best AI video right now for cinematic motion and B-roll. Kling 3.0 is also magnificent if you want an alternative. Motion amplifies what's already there, so animate your strongest stills only.",
+    how:"Feed it your best outputs, never your test frames. The clip inherits the quality of the still.",
+    credit:"Don't generate motion on test images. Lock the visual identity first, then animate.",
+    avoid:"Animating weak images hoping motion will save them. It won't.",
+    next:"Assemble in <b>CapCut</b>, publish via <b>Canva</b>." },
+  r_suno:{ tool:"Suno", step:"Sound layer", phase:"Audio", forl:"Music or sonic signature",
+    why:"Your sonic signature. A sound layer is what separates a premium brand from commodity content.",
+    how:"Brand music is an underused identity layer. Treat audio as part of the brand, not an afterthought.",
+    credit:"Generate several variations in one session and keep the strongest.",
+    avoid:"Slapping background music on at the end. Audio is part of the experience.",
+    next:"Lay it under your video in <b>CapCut</b>." },
+  r_canva:{ tool:"Canva", step:"09", phase:"Distribution", forl:"Packaging & publishing",
+    why:"Final stage only. The brand is already built by now, Canva just packages and pushes it public.",
+    how:"Use it to package and distribute, not to design identity.",
+    credit:"Use Bulk Create for volume. Designing one by one means you're using it wrong.",
+    avoid:"Building brand identity in Canva. That's not what it's for.",
+    next:"This is the final step. The brand goes public." },
+};
+
+const PIPELINE = [
+  ["01","Your brain","Identity decoding. Who the client truly is. The only step that can't be automated."],
+  ["02","Framework","Brand archetype positioning. Primary plus secondary, and the direction they set."],
+  ["03","Reference table","Visual direction brief. Environment, clothing, lighting, poses, framing."],
+  ["04","KREA / Magnific","Base avatar. 20+ images, train in KREA. One or a few images, reference in Magnific (NanoBanana or Seedream)."],
+  ["05","Magnific (Seedream)","Environment creation. Cinematic scenes around the locked avatar. Strong on complex backgrounds."],
+  ["06","Flux / Magnific (NanoBanana)","Refinement. Enhance what's already strong. Refinement is not rescue."],
+  ["07","Seedance / Kling / Higgsfield","Motion. Animate your best stills. Higgsfield for lip sync."],
+  ["08","CapCut","Editing. Assemble with templates and presets for speed."],
+  ["09","Canva","Distribution. Final packaging and publishing. The brand goes public."],
+];
+
+/* ---------- engine ---------- */
+const $=s=>document.querySelector(s);
+const screen=$("#screen"), crumbsEl=$("#crumbs");
+let path=[{node:"start",label:null}]; // breadcrumb stack
+
+function current(){ return path[path.length-1].node; }
+
+function renderCrumbs(){
+  crumbsEl.innerHTML="";
+  const chosen=path.filter(p=>p.label);
+  chosen.forEach((p,i)=>{
+    const c=document.createElement("span"); c.className="crumb"; c.textContent=p.label; crumbsEl.appendChild(c);
+    const sep=document.createElement("span"); sep.className="sep"; sep.textContent="→"; crumbsEl.appendChild(sep);
+  });
+  const n=NODES[current()];
+  const tag=document.createElement("span"); tag.className="crumb now";
+  tag.textContent = n.tool ? n.tool : "Choose";
+  crumbsEl.appendChild(tag);
+}
+
+function render(){
+  const n=NODES[current()];
+  renderCrumbs();
+  if(n.opts){ renderQuestion(n); } else { renderResult(n); }
+}
+
+function renderQuestion(n){
+  const opts=n.opts.map((o,i)=>`
+    <button class="opt" data-target="${o[1]}">
+      <span class="oi">0${i+1}</span>
+      <span class="ol">${o[0]}</span>
+      <span class="arr">→</span>
+    </button>`).join("");
+  screen.innerHTML=`
+    <div class="step">
+      <div class="qprompt">${n.q}</div>
+      ${n.help?`<div class="qhelp">${n.help}</div>`:""}
+      <div class="opts">${opts}</div>
+      ${path.length>1?`<div class="controls"><button class="back" id="back">← Back</button></div>`:""}
+    </div>`;
+  screen.querySelectorAll(".opt").forEach(btn=>btn.addEventListener("click",()=>{
+    const target=btn.dataset.target;
+    path.push({node:target,label:btn.querySelector(".ol").textContent});
+    render(); scrollTopSoft();
+  }));
+  const b=$("#back"); if(b) b.addEventListener("click",goBack);
+}
+
+function renderResult(n){
+  const alt = n.alt ? `<div class="ralt">${n.altLead||"Also strong"}: <b>${n.alt}</b>.</div>` : "";
+  screen.innerHTML=`
+    <div class="result">
+      <div class="rcard">
+        <div class="rstep">◆ Step ${n.step} · ${n.phase}</div>
+        <div class="rfor">For: ${n.forl}</div>
+        <div class="rtool">${n.tool}</div>
+        ${alt}
+        <div class="rwhy">${n.why}</div>
+        <div class="rnotes">
+          <div class="nc"><h4>How to use it</h4><p>${n.how}</p></div>
+          <div class="nc"><h4>Credit strategy</h4><p>${n.credit}</p></div>
+          <div class="nc avoid full"><h4>Avoid</h4><p>${n.avoid}</p></div>
+        </div>
+        <div class="rnext">Next → ${n.next}</div>
+      </div>
+      <div class="controls">
+        <button class="btn charge" id="restart">Route again</button>
+        <button class="back" id="back">← Back</button>
+      </div>
+    </div>`;
+  $("#restart").addEventListener("click",()=>{ path=[{node:"start",label:null}]; render(); scrollTopSoft(); });
+  $("#back").addEventListener("click",goBack);
+}
+
+function goBack(){ if(path.length>1){ path.pop(); render(); scrollTopSoft(); } }
+function scrollTopSoft(){ const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches; window.scrollTo({top:0,behavior:reduce?"auto":"smooth"}); }
+
+/* pipeline reference */
+$("#pipelist").innerHTML = PIPELINE.map(p=>`
+  <div class="pstep"><span class="pn">${p[0]}</span><span class="pt">${p[1]}</span><span class="pd">${p[2]}</span></div>`).join("");
+
+render();
+</script>
+</body>
+</html>
