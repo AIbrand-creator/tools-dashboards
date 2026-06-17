@@ -135,6 +135,18 @@
   @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
   .spark{position:absolute;width:7px;height:7px;border-radius:50%;pointer-events:none;z-index:3}
 
+  /* launch link on tool tiles */
+  .tile.haslink{padding-top:42px}
+  .tile .launch{position:absolute;top:13px;right:13px;z-index:4;display:inline-flex;align-items:center;gap:5px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;font-weight:700;
+    color:var(--magenta);background:rgba(214,32,126,.08);border:1px solid rgba(214,32,126,.28);
+    padding:5px 10px;border-radius:20px;transition:transform .14s,background .16s,color .16s,border-color .16s}
+  .tile .launch span{font-size:12px;line-height:1}
+  .tile .launch:hover{transform:translateY(-1px);background:var(--magenta);color:#fff;border-color:var(--magenta)}
+  .tile .launch:focus-visible{outline:2.5px solid var(--magenta);outline-offset:2px}
+  .tile.on .launch{color:#fff;background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35)}
+  .tile.on .launch:hover{background:#fff;color:var(--magenta);border-color:#fff}
+
   /* ---------- certification ---------- */
   .cert{
     margin-top:40px;border-radius:18px;padding:clamp(26px,4vw,40px);text-align:center;position:relative;overflow:hidden;
@@ -244,7 +256,7 @@
       </div>
     </div>
   </div>
-  <div class="hud-hint"><span class="dotpulse"></span><span>Tap a tile to charge it. <b>Your progress saves on this browser.</b></span></div>
+  <div class="hud-hint"><span class="dotpulse"></span><span>Tap a tile to charge it. Tiles with <b>↗</b> open their tool. Progress saves on this browser.</span></div>
 
   <!-- STAGES render here -->
   <div id="stages"></div>
@@ -320,6 +332,16 @@ const TOTAL = ALL.length;
 const MAXXP = ALL.reduce((a,t)=>a+t.xp,0);
 const KEY = "atwin_readiness_v1";
 const C = {teal:"#0C7A82",magenta:"#D6207E",pink:"#FF5DA2",ink:"#141019"};
+const BASE = "https://aibrand-creator.github.io/tools-dashboards/";
+const LINKS = {
+  blend:     BASE+"archetype-twin-extraction.html",
+  recognize: BASE+"name-that-archetype.html",
+  fork:      BASE+"tool-router.html",
+  realtool:  BASE+"tool-router.html",
+  aitool:    BASE+"tool-router.html",
+  talkhead:  BASE+"tool-router.html",
+  cinematic: BASE+"tool-router.html",
+};
 
 /* ---------------- state ---------------- */
 let done = load();
@@ -358,9 +380,11 @@ function buildStages(){
       <div class="grid"></div>`;
     const grid=sec.querySelector(".grid");
     s.tiles.forEach(t=>{
-      const b=document.createElement("button");
-      b.className="tile"+(done.has(t.id)?" on":"");
+      const b=document.createElement("div");
+      b.className="tile"+(done.has(t.id)?" on":"")+(LINKS[t.id]?" haslink":"");
       b.dataset.id=t.id;
+      b.tabIndex=0;
+      b.setAttribute("role","button");
       b.setAttribute("aria-pressed", done.has(t.id)?"true":"false");
       b.innerHTML=`
         <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>
@@ -369,7 +393,17 @@ function buildStages(){
           <span class="tname">${t.name}</span>
           <span class="tproof">${t.proof}</span>
         </span>`;
+      if(LINKS[t.id]){
+        const a=document.createElement("a");
+        a.className="launch"; a.href=LINKS[t.id]; a.target="_blank"; a.rel="noopener";
+        a.innerHTML='open <span>↗</span>';
+        a.setAttribute("aria-label","Open this tool in a new tab");
+        a.addEventListener("click",e=>e.stopPropagation());
+        a.addEventListener("keydown",e=>e.stopPropagation());
+        b.appendChild(a);
+      }
       b.addEventListener("click",e=>toggle(t,b,e));
+      b.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(t,b,e); } });
       grid.appendChild(b);
     });
     stagesEl.appendChild(sec);
