@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Name That Archetype — Archetype Twin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Archivo:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3F0EA;--paper-2:#FBFAF7;--paper-3:#ECE7DD;
+    --ink:#141019;--ink-soft:#4A4356;--muted:#8A8294;--faint:#B9B2A6;
+    --teal:#0C7A82;--teal-deep:#06484E;--pink:#FF5DA2;--magenta:#D6207E;
+    --green:#1B9E6B;
+    --charge:linear-gradient(135deg,var(--teal) 0%,var(--magenta) 58%,var(--pink) 100%);
+    --line:rgba(20,16,25,.12);--line-2:rgba(20,16,25,.20);
+    --display:'Syne',system-ui,sans-serif;--body:'Archivo',system-ui,sans-serif;--mono:'Space Mono',ui-monospace,monospace;
+    --shadow:0 18px 40px -22px rgba(20,16,25,.45);--shadow-charge:0 16px 34px -16px rgba(214,32,126,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5}
+  body{min-height:100vh;padding:clamp(18px,4vw,52px) clamp(14px,4vw,40px);display:flex;justify-content:center;
+    background-image:radial-gradient(ellipse 70% 40% at 12% 0%,rgba(12,122,130,.10),transparent 60%),radial-gradient(ellipse 60% 40% at 92% 3%,rgba(214,32,126,.10),transparent 60%);}
+  .wrap{width:100%;max-width:720px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--magenta);font-weight:700}
+  .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+
+  header{margin-bottom:8px}
+  header .eyebrow{margin-bottom:16px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(38px,7.5vw,68px);line-height:.9;letter-spacing:-.02em}
+  h1 .glow{background:var(--charge);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin-top:16px;color:var(--ink-soft);font-size:clamp(15px,2vw,17px);max-width:52ch;line-height:1.6}
+
+  /* vault banner */
+  .vaultbar{margin:26px 0 4px;background:var(--ink);color:#fff;border-radius:14px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;position:relative;overflow:hidden}
+  .vaultbar::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 90% at 100% 0%,rgba(255,93,162,.25),transparent 55%),radial-gradient(ellipse 50% 90% at 0% 100%,rgba(12,122,130,.28),transparent 55%);pointer-events:none}
+  .vaultbar .ve{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--pink);position:relative;z-index:1}
+  .vaultbar .vm{margin-top:7px;color:rgba(255,255,255,.82);font-size:14px;line-height:1.55;max-width:62ch;position:relative;z-index:1}
+  .vaultbar a.btn{position:relative;z-index:1;flex:0 0 auto}
+
+  .btn{appearance:none;border:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;border-radius:30px;padding:14px 26px;text-decoration:none;display:inline-flex;align-items:center;gap:9px;transition:transform .16s,box-shadow .18s,background .18s,opacity .18s}
+  .btn.charge{background:var(--charge);color:#fff}
+  .btn.charge:hover{transform:translateY(-2px);box-shadow:var(--shadow-charge)}
+  .btn.lite{background:#fff;color:var(--ink);border:1px solid var(--line-2)}
+  .btn.lite:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .btn:focus-visible{outline:2.5px solid var(--pink);outline-offset:2px}
+  .btn[disabled]{opacity:.4;cursor:default;transform:none;box-shadow:none}
+
+  /* intro */
+  .intro{margin-top:24px;animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .diff{margin:6px 0 24px}
+  .diff .label{margin-bottom:10px}
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line);border-radius:30px;padding:4px;gap:4px}
+  .seg button{appearance:none;border:none;cursor:pointer;background:transparent;color:var(--ink-soft);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:9px 18px;border-radius:24px;transition:.16s}
+  .seg button.on{background:var(--ink);color:#fff}
+  .stats-mini{display:flex;gap:24px;margin:6px 0 26px;flex-wrap:wrap}
+  .stats-mini .s .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .stats-mini .s .v{font-family:var(--display);font-weight:700;font-size:24px;margin-top:3px}
+
+  /* game */
+  .game{display:none}
+  .game.on{display:block;animation:rise .4s cubic-bezier(.2,.7,.2,1) both}
+  .ghud{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}
+  .ghud .qn{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--muted)}
+  .ghud .qn b{color:var(--ink)}
+  .ghud .live{display:flex;gap:18px}
+  .ghud .live .x{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .ghud .live .x b{font-family:var(--display);font-size:17px;color:var(--ink)}
+  .ghud .streak b{color:var(--magenta)}
+  .gbar{height:3px;background:var(--paper-3);border-radius:3px;overflow:hidden;margin-bottom:18px}
+  .gbar i{display:block;height:100%;width:0;background:var(--charge);transition:width .4s cubic-bezier(.2,.7,.2,1)}
+
+  .imgcard{position:relative;width:100%;aspect-ratio:4/5;max-height:62vh;border-radius:16px;overflow:hidden;background:var(--paper-3);box-shadow:var(--shadow);border:1px solid var(--line)}
+  .imgcard img{width:100%;height:100%;object-fit:cover;display:block}
+  .imgcard.noimg::after{content:"◆ image loading";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#fff;
+    background:linear-gradient(135deg,var(--teal-deep),var(--ink) 60%,var(--magenta))}
+  .imgcard .grade{position:absolute;left:14px;top:14px;z-index:2;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    padding:6px 12px;border-radius:20px;background:rgba(20,16,25,.7);color:#fff;backdrop-filter:blur(4px);opacity:0;transform:translateY(-6px);transition:.25s}
+  .imgcard .grade.show{opacity:1;transform:none}
+  .imgcard .grade.right{background:rgba(27,158,107,.92)}
+  .imgcard .grade.wrong{background:rgba(214,32,126,.92)}
+
+  .qtext{font-family:var(--display);font-weight:700;font-size:clamp(18px,3vw,24px);margin:20px 0 14px;letter-spacing:-.01em}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:520px){.opts{grid-template-columns:1fr}}
+  .opt{appearance:none;cursor:pointer;text-align:left;background:var(--paper-2);border:1px solid var(--line);border-radius:12px;
+    padding:15px 16px;font-family:var(--display);font-weight:600;font-size:15px;color:var(--ink);letter-spacing:-.01em;
+    display:flex;align-items:center;gap:10px;transition:transform .12s,border-color .16s,background .16s}
+  .opt:hover:not(:disabled){transform:translateY(-2px);border-color:var(--magenta)}
+  .opt:focus-visible{outline:2.5px solid var(--magenta);outline-offset:2px}
+  .opt .dot{width:9px;height:9px;border-radius:50%;background:var(--line-2);flex:0 0 auto;transition:.16s}
+  .opt:disabled{cursor:default}
+  .opt.correct{background:rgba(27,158,107,.12);border-color:var(--green);color:#0F5C40}
+  .opt.correct .dot{background:var(--green)}
+  .opt.wrong{background:rgba(214,32,126,.1);border-color:var(--magenta);color:#9B175A}
+  .opt.wrong .dot{background:var(--magenta)}
+  .opt.dim{opacity:.5}
+
+  .tell{margin-top:16px;border-left:3px solid var(--magenta);padding:4px 0 4px 16px;font-size:14.5px;line-height:1.55;color:var(--ink);display:none}
+  .tell.show{display:block;animation:rise .3s ease both}
+  .tell b{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--magenta);display:block;margin-bottom:5px}
+  .gnext{margin-top:22px;display:flex;justify-content:flex-end}
+
+  /* result */
+  .result{display:none}
+  .result.on{display:block;animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+  .rcard{position:relative;background:var(--ink);color:#fff;border-radius:18px;padding:clamp(26px,4vw,40px);overflow:hidden;box-shadow:var(--shadow);text-align:center}
+  .rcard::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 0% 0%,rgba(12,122,130,.4),transparent 55%),radial-gradient(ellipse 60% 80% at 100% 100%,rgba(255,93,162,.32),transparent 55%);pointer-events:none}
+  .rcard>*{position:relative;z-index:1}
+  .rcard .seal{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--pink)}
+  .rcard .acc{font-family:var(--display);font-weight:800;font-size:clamp(56px,15vw,104px);line-height:1;margin:6px 0;
+    background:linear-gradient(135deg,#fff 30%,#FF5DA2);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .rcard .rank{font-family:var(--display);font-weight:700;font-size:clamp(20px,4vw,28px)}
+  .rcard .rstats{display:flex;justify-content:center;gap:30px;margin-top:20px;flex-wrap:wrap}
+  .rcard .rstats .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+  .rcard .rstats .v{font-family:var(--display);font-weight:700;font-size:22px;margin-top:3px}
+  .misses{margin-top:24px;text-align:left}
+  .misses h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .miss{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:8px}
+  .miss .mn{font-family:var(--display);font-weight:700;font-size:16px}
+  .miss .mt{font-size:13px;color:var(--ink-soft);margin-top:4px;line-height:1.45}
+  .perfect{margin-top:20px;font-size:14.5px;color:var(--ink-soft)}
+  .ragain{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:40}
+  .sitefoot{margin-top:clamp(44px,7vh,64px);padding-top:24px;border-top:1px solid var(--line);text-align:center}
+  .sitefoot .cred{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink);text-transform:uppercase}
+  .sitefoot .rights{font-size:12px;color:var(--muted);margin:9px auto 0;line-height:1.6;max-width:48ch}
+  .sitefoot .links{margin-top:14px;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+  .sitefoot .links a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:.16s;padding-bottom:1px}
+  .sitefoot .links a:hover{color:var(--magenta);border-color:var(--magenta)}
+  .sitefoot .dot{color:var(--faint)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Archetype Twin™ · Operator System</div>
+    <h1>Name That <span class="glow">Archetype</span></h1>
+    <p class="sub">Train your eye. One image, one archetype. Read the lighting, the styling, the mood, and call it. The faster you can recognize an archetype on sight, the sharper your visual direction gets.</p>
+  </header>
+
+  <div class="vaultbar">
+    <div>
+      <div class="ve">◆ Part of the Archetype Twin™ Vault</div>
+      <div class="vm">This tool is one piece of the full system. If you landed here without the Vault, that's where the method, the modules, and the rest of the operator tools live.</div>
+    </div>
+    <a class="btn charge" href="https://personalbrandstudio.eu/archetype-twin-vault/" target="_blank" rel="noopener">Get the Vault →</a>
+  </div>
+
+  <!-- INTRO -->
+  <section class="intro" id="intro">
+    <div class="diff">
+      <div class="label">Difficulty</div>
+      <div class="seg" id="seg">
+        <button data-d="4" class="on">Easy · 4 choices</button>
+        <button data-d="6">Hard · 6 choices</button>
+      </div>
+    </div>
+    <div class="stats-mini" id="statsMini"></div>
+    <button class="btn charge" id="start">Start the round →</button>
+    <p class="label" style="margin-top:16px">10 images per round · single archetype each</p>
+  </section>
+
+  <!-- GAME -->
+  <section class="game" id="game">
+    <div class="ghud">
+      <div class="qn"><b id="qn">1</b> / 10</div>
+      <div class="live">
+        <span class="x">Score <b id="score">0</b></span>
+        <span class="x streak">Streak <b id="streak">0</b></span>
+      </div>
+    </div>
+    <div class="gbar"><i id="gbar"></i></div>
+    <div class="imgcard" id="imgcard">
+      <span class="grade" id="grade"></span>
+      <img id="img" alt="Archetype image to identify">
+    </div>
+    <div class="qtext">Which archetype is this expressing?</div>
+    <div class="opts" id="opts"></div>
+    <div class="tell" id="tell"></div>
+    <div class="gnext"><button class="btn charge" id="next" disabled>Next →</button></div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="result" id="result"></section>
+
+  <footer class="sitefoot">
+    <div class="cred">Created by Ing. Tereza Skranka Prochazkova, BBA</div>
+    <div class="rights">All rights reserved. This tool may not be resold, copied, or recreated without permission.</div>
+    <div class="links">
+      <a href="https://personalbrandstudio.eu" target="_blank" rel="noopener">personalbrandstudio.eu</a>
+      <span class="dot">·</span>
+      <a href="https://humandesignredefined.com" target="_blank" rel="noopener">humandesignredefined.com</a>
+    </div>
+  </footer>
+
+</div>
+
+<canvas id="fx"></canvas>
+
+<script>
+/* ---------- data: 12 archetypes, 3 image slots each ---------- */
+const ARCH = [
+  { slug:"innocent",  name:"Innocent",  tell:"Clean, bright, airy. Soft daylight, simple fresh styling, lots of space. It reads honest and uncomplicated." },
+  { slug:"sage",      name:"Sage",      tell:"Controlled, even light and considered neutrals, often with books or instruments in frame. It reads expert and calm." },
+  { slug:"explorer",  name:"Explorer",  tell:"Natural and raw. Golden hour or overcast, earthy tones, real locations, movement. It reads free and restless." },
+  { slug:"rebel",     name:"Rebel",     tell:"Hard contrast, deep shadow, black with one disruptive piece, tight off-center crop. It reads dangerous and defiant." },
+  { slug:"magician",  name:"Magician",  tell:"Dramatic directional light, glow and depth, jewel tones. It reads transformative and a little otherworldly." },
+  { slug:"hero",      name:"Hero",      tell:"Bold high-energy light, strong silhouette, low angle, crisp and punchy. It reads capable and driven." },
+  { slug:"lover",     name:"Lover",     tell:"Warm, soft, sensual. Glow, close framing, rich tactile texture. It reads intimate and gorgeous." },
+  { slug:"jester",    name:"Jester",    tell:"Bright, colorful, candid, with movement, real expression and playful styling. It reads fun and light." },
+  { slug:"everyman",  name:"Everyman",  tell:"Natural and candid, everyday settings, eye-level framing, approachable styling. It reads real and relatable." },
+  { slug:"caregiver", name:"Caregiver", tell:"Soft, warm, enveloping light, gentle tones, comforting textures. It reads safe and nurturing." },
+  { slug:"ruler",     name:"Ruler",     tell:"Polished, commanding, symmetrical. Sharp tailoring, rich neutrals, premium surfaces. It reads authority and status." },
+  { slug:"creator",   name:"Creator",   tell:"Bold, artful, composed. Strong concept, color and shape driven, statement styling. It reads original and made." },
+];
+const SLOTS = 3;              // images per archetype: images/{slug}-1.webp ... -3.webp
+const ROUND = 10;
+const KEY = "atwin_nta_v1";
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{bestAcc:0,bestStreak:0};}catch(e){return {bestAcc:0,bestStreak:0};}}
+function persist(o){try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
+
+let best=load();
+let diff=4, qi=0, score=0, streak=0, bestStreakRound=0, answers=[], lastArch=null, cur=null, locked=false;
+
+/* ---------- intro ---------- */
+function renderMini(){
+  $("#statsMini").innerHTML = (best.bestAcc||best.bestStreak)
+    ? `<div class="s"><div class="k">Best accuracy</div><div class="v">${best.bestAcc||0}%</div></div>
+       <div class="s"><div class="k">Best streak</div><div class="v">${best.bestStreak||0}</div></div>`
+    : `<div class="s"><div class="k">Best accuracy</div><div class="v">—</div></div>
+       <div class="s"><div class="k">Best streak</div><div class="v">—</div></div>`;
+}
+renderMini();
+$("#seg").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  diff=parseInt(b.dataset.d);
+  $("#seg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+});
+$("#start").addEventListener("click",()=>{
+  qi=0;score=0;streak=0;bestStreakRound=0;answers=[];lastArch=null;
+  $("#intro").style.display="none";
+  $("#result").classList.remove("on");
+  $("#game").classList.add("on");
+  nextQuestion();
+});
+
+/* ---------- game ---------- */
+function nextQuestion(){
+  locked=false;
+  // pick archetype (avoid immediate repeat)
+  let pool=ARCH.filter(a=>a.slug!==lastArch);
+  const target=rnd(pool); lastArch=target.slug;
+  const slot=1+Math.floor(Math.random()*SLOTS);
+  // options: target + distractors
+  const others=shuffle(ARCH.filter(a=>a.slug!==target.slug)).slice(0,diff-1);
+  const options=shuffle([target,...others]);
+  cur={target,slot,options};
+
+  $("#qn").textContent=qi+1;
+  $("#gbar").style.width=(qi/ROUND*100)+"%";
+  $("#score").textContent=score;
+  $("#streak").textContent=streak;
+
+  // image
+  const card=$("#imgcard"), img=$("#img"), grade=$("#grade");
+  card.classList.remove("noimg"); grade.className="grade";
+  img.style.display="block";
+  img.onerror=()=>{ img.style.display="none"; card.classList.add("noimg"); };
+  img.src=`images/${target.slug}-${slot}.webp`;
+  img.alt="Identify the archetype in this image";
+
+  // options
+  const wrap=$("#opts"); wrap.innerHTML="";
+  options.forEach(o=>{
+    const b=document.createElement("button");
+    b.className="opt"; b.innerHTML=`<span class="dot"></span><span>${o.name}</span>`;
+    b.addEventListener("click",()=>pick(o,b));
+    wrap.appendChild(b);
+  });
+  $("#tell").classList.remove("show");
+  $("#next").disabled=true;
+  $("#next").textContent = qi===ROUND-1 ? "See results →" : "Next →";
+}
+
+function pick(opt,btn){
+  if(locked)return; locked=true;
+  const correct = opt.slug===cur.target.slug;
+  answers.push({slug:cur.target.slug,name:cur.target.name,correct});
+  // mark options
+  $("#opts").querySelectorAll(".opt").forEach((el,i)=>{
+    el.disabled=true;
+    const name=el.textContent.trim();
+    if(name===cur.target.name) el.classList.add("correct");
+    else if(el===btn) el.classList.add("wrong");
+    else el.classList.add("dim");
+  });
+  // grade badge on image
+  const grade=$("#grade");
+  grade.textContent = correct ? "✓ "+cur.target.name : "✗ "+cur.target.name;
+  grade.classList.add("show", correct?"right":"wrong");
+  // score + streak
+  if(correct){ streak++; bestStreakRound=Math.max(bestStreakRound,streak); score += 10 + Math.min(streak-1,5)*2; if(!reduceMotion()) sparkAt(btn); }
+  else { streak=0; }
+  $("#score").textContent=score;
+  $("#streak").textContent=streak;
+  // tell (teach)
+  const t=$("#tell");
+  t.innerHTML=`<b>${cur.target.name} · the tell</b>${cur.target.tell}`;
+  t.classList.add("show");
+  $("#next").disabled=false;
+}
+
+$("#next").addEventListener("click",()=>{
+  qi++;
+  if(qi<ROUND) nextQuestion();
+  else finish();
+});
+
+/* ---------- result ---------- */
+function rankFor(p){
+  if(p>=95)return"Oracle eye";
+  if(p>=80)return"Trained eye";
+  if(p>=60)return"Sharp eye";
+  if(p>=40)return"Getting an eye";
+  return"Warming up";
+}
+function finish(){
+  $("#gbar").style.width="100%";
+  const correctCount=answers.filter(a=>a.correct).length;
+  const acc=Math.round(correctCount/ROUND*100);
+  const newBestAcc=acc>(best.bestAcc||0), newBestStreak=bestStreakRound>(best.bestStreak||0);
+  best={bestAcc:Math.max(best.bestAcc||0,acc),bestStreak:Math.max(best.bestStreak||0,bestStreakRound)};
+  persist(best); renderMini();
+
+  // unique missed archetypes
+  const missedSlugs=[...new Set(answers.filter(a=>!a.correct).map(a=>a.slug))];
+  const missHTML = missedSlugs.length
+    ? `<div class="misses"><h4>Sharpen these — you missed them this round</h4>${
+        missedSlugs.map(s=>{const a=ARCH.find(x=>x.slug===s);return `<div class="miss"><div class="mn">${a.name}</div><div class="mt">${a.tell}</div></div>`;}).join("")
+      }</div>`
+    : `<div class="perfect">Clean sweep. You read every archetype right.</div>`;
+
+  $("#result").innerHTML=`
+    <div class="rcard">
+      <div class="seal">◆ Round complete</div>
+      <div class="acc">${acc}%</div>
+      <div class="rank">${rankFor(acc)}</div>
+      <div class="rstats">
+        <div><div class="k">Correct</div><div class="v">${correctCount} / ${ROUND}</div></div>
+        <div><div class="k">Best streak</div><div class="v">${bestStreakRound}</div></div>
+        <div><div class="k">Score</div><div class="v">${score}</div></div>
+      </div>
+      ${(newBestAcc||newBestStreak)?`<div class="seal" style="margin-top:18px">★ New personal best</div>`:""}
+    </div>
+    ${missHTML}
+    <div class="ragain">
+      <button class="btn charge" id="again">Play again</button>
+      <button class="btn lite" id="home">Change difficulty</button>
+    </div>`;
+  $("#game").classList.remove("on");
+  $("#result").classList.add("on");
+  window.scrollTo({top:0,behavior:reduceMotion()?"auto":"smooth"});
+
+  if(acc>=80 && !reduceMotion()){ confetti(.5,.3); setTimeout(()=>confetti(.2,.42),220); setTimeout(()=>confetti(.8,.42),420); }
+
+  $("#again").addEventListener("click",()=>$("#start").click());
+  $("#home").addEventListener("click",()=>{
+    $("#result").classList.remove("on");
+    $("#intro").style.display="block";
+    window.scrollTo({top:0,behavior:reduceMotion()?"auto":"smooth"});
+  });
+}
+
+/* ---------- fx ---------- */
+function reduceMotion(){return window.matchMedia("(prefers-reduced-motion: reduce)").matches;}
+const C={teal:"#0C7A82",magenta:"#D6207E",pink:"#FF5DA2",ink:"#141019"};
+function sparkAt(el){
+  const r=el.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+  const cols=[C.teal,C.magenta,C.pink,"#fff"];
+  for(let k=0;k<10;k++){
+    const s=document.createElement("div");
+    s.style.cssText=`position:fixed;width:7px;height:7px;border-radius:50%;pointer-events:none;z-index:60;left:${cx}px;top:${cy}px;background:${cols[k%cols.length]}`;
+    document.body.appendChild(s);
+    const ang=Math.random()*6.28, d=26+Math.random()*40;
+    s.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(calc(-50% + ${Math.cos(ang)*d}px),calc(-50% + ${Math.sin(ang)*d}px)) scale(0)`,opacity:0}],{duration:500+Math.random()*240,easing:'cubic-bezier(.2,.7,.2,1)'}).onfinish=()=>s.remove();
+  }
+}
+const cv=$("#fx"),ctx=cv.getContext("2d");
+function fit(){cv.width=innerWidth;cv.height=innerHeight;} fit(); addEventListener("resize",fit);
+let parts=[],raf=null;
+function confetti(ox,oy){
+  const cols=[C.teal,C.magenta,C.pink,C.ink,"#fff"];
+  for(let i=0;i<64;i++)parts.push({x:cv.width*ox,y:cv.height*oy,vx:(Math.random()-.5)*11,vy:Math.random()*-9-3,g:.32+Math.random()*.12,s:5+Math.random()*6,col:cols[i%cols.length],rot:Math.random()*6.28,vr:(Math.random()-.5)*.4,life:0,max:90+Math.random()*40});
+  if(!raf)raf=requestAnimationFrame(tick);
+}
+function tick(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  parts=parts.filter(p=>p.life<p.max);
+  parts.forEach(p=>{p.life++;p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.vx*=.99;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=Math.max(0,1-p.life/p.max);ctx.fillStyle=p.col;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);ctx.restore();});
+  if(parts.length)raf=requestAnimationFrame(tick);else{raf=null;ctx.clearRect(0,0,cv.width,cv.height);}
+}
+</script>
+</body>
+</html>
