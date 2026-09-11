@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#070709">
+  <meta name="description" content="An interactive Human Design ReDefined guide to choosing where to begin.">
+  <title>What do you want to use Human Design for? — Human Design ReDefined</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=DM+Sans:wght@400;500;600&family=Gloock&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void:#060608;
+      --ink:#0a0a0d;
+      --bone:#f2ede8;
+      --soft:#c8c0bb;
+      --muted:#8d8581;
+      --red:#f01445;
+      --violet:#6d43f2;
+      --line:rgba(255,255,255,.12);
+      --glow-rgb:240,20,69;
+      --wash-a:rgba(240,20,69,.16);
+      --wash-b:rgba(109,67,242,.12);
+      --ease:cubic-bezier(.22,1,.36,1);
+    }
+
+    * { box-sizing:border-box; }
+    html { color-scheme:dark; scroll-behavior:smooth; }
+    body {
+      margin:0;
+      min-height:100vh;
+      overflow-x:hidden;
+      color:var(--bone);
+      background:
+        radial-gradient(60rem 38rem at 8% 10%,var(--wash-a),transparent 62%),
+        radial-gradient(55rem 35rem at 92% 90%,var(--wash-b),transparent 66%),
+        var(--void);
+      font-family:"DM Sans",system-ui,sans-serif;
+      transition:background 900ms var(--ease);
+    }
+
+    body::after {
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:99;
+      pointer-events:none;
+      opacity:.16;
+      mix-blend-mode:soft-light;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.36'/%3E%3C/svg%3E");
+    }
+
+    button { font:inherit; }
+    button:focus-visible { outline:2px solid #fff; outline-offset:4px; }
+
+    .shell {
+      width:min(100% - 48px,1480px);
+      margin:0 auto;
+      padding:28px 0 52px;
+    }
+
+    .topbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+      min-height:48px;
+      margin-bottom:clamp(40px,7vh,84px);
+    }
+
+    .logo {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-family:"Space Mono",monospace;
+      font-size:clamp(.76rem,1.2vw,1rem);
+      font-weight:700;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .logo span:last-child { color:var(--red); }
+
+    .micro {
+      color:var(--muted);
+      font-family:"Space Mono",monospace;
+      font-size:.68rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    .intro {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:end;
+      gap:clamp(26px,5vw,80px);
+      margin-bottom:34px;
+    }
+
+    .eyebrow {
+      margin:0 0 12px;
+      color:#bbb3ae;
+      font-family:"Space Mono",monospace;
+      font-size:.68rem;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+    }
+
+    h1 {
+      max-width:950px;
+      margin:0;
+      font-family:"Gloock",Georgia,serif;
+      font-size:clamp(3rem,6.2vw,7.25rem);
+      font-weight:400;
+      letter-spacing:-.045em;
+      line-height:.92;
+    }
+
+    .gradient-word {
+      color:transparent;
+      background:linear-gradient(110deg,#ff174b 0%,#c21c7d 47%,#6c42f0 100%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      filter:drop-shadow(0 0 24px rgba(var(--glow-rgb),.15));
+    }
+
+    .audience {
+      min-width:280px;
+      padding:6px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(255,255,255,.035);
+      backdrop-filter:blur(18px);
+      box-shadow:0 16px 50px rgba(0,0,0,.28);
+    }
+
+    .audience button {
+      min-height:46px;
+      padding:10px 18px;
+      border:0;
+      border-radius:999px;
+      cursor:pointer;
+      color:var(--soft);
+      background:transparent;
+      font-family:"Space Mono",monospace;
+      font-size:.7rem;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      transition:color .35s,background .35s,box-shadow .35s;
+    }
+
+    .audience button[aria-pressed="true"] {
+      color:#fff;
+      background:linear-gradient(110deg,rgba(240,20,69,.88),rgba(109,67,242,.72));
+      box-shadow:0 0 34px rgba(var(--glow-rgb),.28);
+    }
+
+    .guide-hint {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:0 0 16px;
+      color:var(--soft);
+      font-family:"Space Mono",monospace;
+      font-size:clamp(.88rem,1vw,1.02rem);
+      font-weight:700;
+      letter-spacing:.1em;
+      line-height:1.5;
+      text-transform:uppercase;
+    }
+
+    .guide-hint::before {
+      content:"01";
+      color:var(--red);
+      font-family:"Space Mono",monospace;
+      font-size:.66rem;
+      letter-spacing:.08em;
+    }
+
+    .cards-wrap { position:relative; }
+
+    .cards {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      min-height:clamp(390px,52vh,610px);
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:4px;
+      background:#0b0b0e;
+      isolation:isolate;
+      box-shadow:0 30px 90px rgba(0,0,0,.48);
+    }
+
+    .path-card {
+      --accent:#f01445;
+      position:relative;
+      min-width:0;
+      overflow:hidden;
+      padding:0;
+      border:0;
+      border-right:1px solid rgba(255,255,255,.12);
+      cursor:pointer;
+      color:#fff;
+      text-align:left;
+      background:#101014;
+      isolation:isolate;
+    }
+
+    .path-card:last-child { border-right:0; }
+
+    .path-card::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-3;
+      background-image:var(--image);
+      background-size:cover;
+      background-position:center;
+      filter:saturate(.82) brightness(.62);
+      transform:scale(1.015);
+      transition:transform 900ms var(--ease),filter 700ms var(--ease);
+    }
+
+    .path-card::after {
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-2;
+      background:
+        linear-gradient(180deg,rgba(4,4,7,.1) 0%,rgba(4,4,7,.22) 34%,rgba(4,4,7,.93) 100%),
+        radial-gradient(80% 52% at 50% 102%,color-mix(in srgb,var(--accent) 36%,transparent),transparent 72%);
+      transition:opacity .6s var(--ease);
+    }
+
+    .path-card:hover::before,
+    .path-card:focus-visible::before {
+      transform:scale(1.075);
+      filter:saturate(1.04) brightness(.82);
+    }
+
+    .path-card:hover::after,
+    .path-card:focus-visible::after { opacity:.82; }
+
+    .path-card:hover .card-no,
+    .path-card:focus-visible .card-no { color:var(--accent); }
+
+    .path-card:hover .arrow,
+    .path-card:focus-visible .arrow {
+      transform:translateX(7px);
+      color:var(--accent);
+    }
+
+    .card-inner {
+      position:absolute;
+      inset:auto 0 0;
+      z-index:2;
+      padding:clamp(24px,2.6vw,42px);
+    }
+
+    .card-no {
+      display:block;
+      margin-bottom:14px;
+      font-family:"Space Mono",monospace;
+      font-size:.64rem;
+      letter-spacing:.12em;
+      transition:color .4s;
+    }
+
+    .path-card h2 {
+      margin:0 0 12px;
+      font-family:"Gloock",Georgia,serif;
+      font-size:clamp(1.55rem,2.3vw,2.85rem);
+      font-weight:400;
+      line-height:.98;
+      letter-spacing:-.035em;
+      text-wrap:balance;
+    }
+
+    .path-card p {
+      min-height:3.4em;
+      margin:0;
+      color:rgba(255,255,255,.76);
+      font-size:clamp(.96rem,1.08vw,1.08rem);
+      line-height:1.55;
+    }
+
+    .coming-soon {
+      display:block;
+      width:max-content;
+      max-width:100%;
+      margin-top:13px;
+      padding:6px 8px;
+      border:1px solid color-mix(in srgb,var(--accent) 55%,rgba(255,255,255,.2));
+      color:rgba(255,255,255,.82);
+      background:rgba(0,0,0,.28);
+      font-family:"Space Mono",monospace;
+      font-size:.68rem;
+      font-weight:700;
+      letter-spacing:.08em;
+      line-height:1.35;
+      text-transform:uppercase;
+      box-shadow:0 0 22px color-mix(in srgb,var(--accent) 14%,transparent);
+    }
+
+    .coming-soon span { color:#fff; }
+
+    .explore {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:24px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.16);
+      font-family:"Space Mono",monospace;
+      font-size:.64rem;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+
+    .arrow { font-size:1.1rem; transition:transform .35s,color .35s; }
+
+    .shadow-traveller {
+      position:absolute;
+      z-index:5;
+      top:24%;
+      left:-1%;
+      width:29%;
+      height:20%;
+      pointer-events:none;
+      filter:blur(.2px);
+      animation:shadowTravel 13s ease-in-out infinite alternate;
+    }
+
+    .shadow-traveller::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:radial-gradient(ellipse at center,rgba(0,0,0,.85),rgba(0,0,0,.52) 48%,transparent 73%);
+      filter:blur(19px);
+      transform:skewX(-9deg) rotate(-2deg);
+    }
+
+    .shadow-tag {
+      position:absolute;
+      left:38%;
+      top:46%;
+      color:rgba(255,255,255,.82);
+      font-family:"Caveat",cursive;
+      font-size:clamp(1.05rem,1.55vw,1.7rem);
+      font-weight:600;
+      letter-spacing:.02em;
+      transform:rotate(-8deg);
+      text-shadow:0 2px 16px #000;
+      white-space:nowrap;
+    }
+
+    .shadow-tag::after {
+      content:"";
+      display:block;
+      width:105%;
+      height:1px;
+      margin-top:-2px;
+      background:linear-gradient(90deg,transparent,var(--red),#7a44ff,transparent);
+      opacity:.72;
+      transform:rotate(-2deg);
+    }
+
+    @keyframes shadowTravel {
+      0% { transform:translateX(0) translateY(-3%) scale(.96); opacity:.72; }
+      38% { transform:translateX(82%) translateY(5%) scale(1.06); opacity:.9; }
+      72% { transform:translateX(178%) translateY(-6%) scale(.98); opacity:.76; }
+      100% { transform:translateX(245%) translateY(6%) scale(1.08); opacity:.88; }
+    }
+
+    .principle {
+      display:flex;
+      justify-content:space-between;
+      gap:32px;
+      margin-top:18px;
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.6;
+    }
+
+    .principle strong { color:var(--soft); font-weight:500; }
+
+    dialog {
+      width:min(920px,calc(100% - 28px));
+      max-height:min(88vh,900px);
+      padding:0;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:5px;
+      color:var(--bone);
+      background:rgba(10,10,13,.96);
+      box-shadow:0 40px 120px rgba(0,0,0,.78),0 0 70px rgba(var(--glow-rgb),.16);
+      backdrop-filter:blur(26px);
+    }
+
+    dialog::backdrop {
+      background:rgba(0,0,0,.76);
+      backdrop-filter:blur(9px);
+    }
+
+    .modal-scroll {
+      max-height:min(88vh,900px);
+      overflow:auto;
+      scrollbar-color:rgba(255,255,255,.22) transparent;
+    }
+
+    .modal-visual {
+      position:relative;
+      min-height:220px;
+      padding:28px clamp(24px,5vw,56px);
+      display:flex;
+      align-items:flex-end;
+      overflow:hidden;
+      isolation:isolate;
+    }
+
+    .modal-visual::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-2;
+      background:var(--modal-image) center/cover;
+      filter:saturate(.86) brightness(.6);
+      transform:scale(1.02);
+    }
+
+    .modal-visual::after {
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-1;
+      background:
+        linear-gradient(180deg,rgba(5,5,8,.18),rgba(5,5,8,.96)),
+        radial-gradient(60% 90% at 12% 100%,rgba(var(--glow-rgb),.34),transparent 72%);
+    }
+
+    .close {
+      position:absolute;
+      z-index:4;
+      top:18px;
+      right:18px;
+      width:42px;
+      height:42px;
+      border:1px solid rgba(255,255,255,.2);
+      border-radius:50%;
+      cursor:pointer;
+      color:#fff;
+      background:rgba(0,0,0,.36);
+      font-size:1.3rem;
+      line-height:1;
+      transition:background .3s,border-color .3s,transform .3s;
+    }
+
+    .close:hover { background:rgba(var(--glow-rgb),.45); border-color:#fff; transform:rotate(5deg); }
+
+    .modal-label {
+      margin:0 0 9px;
+      color:var(--accent);
+      font-family:"Space Mono",monospace;
+      font-size:.68rem;
+      font-weight:700;
+      letter-spacing:.17em;
+      text-transform:uppercase;
+    }
+
+    .modal-visual h2 {
+      max-width:720px;
+      margin:0;
+      font-family:"Gloock",Georgia,serif;
+      font-size:clamp(2.15rem,5.1vw,4.8rem);
+      font-weight:400;
+      line-height:.95;
+      letter-spacing:-.045em;
+    }
+
+    .modal-body { padding:clamp(28px,5vw,56px); }
+
+    .promise {
+      max-width:760px;
+      margin:0 0 34px;
+      color:#f5f0ec;
+      font-family:"Gloock",Georgia,serif;
+      font-size:clamp(1.35rem,2.5vw,2.15rem);
+      line-height:1.25;
+      letter-spacing:-.02em;
+    }
+
+    .quick-grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:1px;
+      margin:0 0 34px;
+      border:1px solid var(--line);
+      background:var(--line);
+    }
+
+    .quick-step {
+      min-height:170px;
+      padding:23px;
+      background:rgba(12,12,16,.96);
+    }
+
+    .quick-step b {
+      display:block;
+      margin-bottom:11px;
+      color:var(--accent);
+      font-family:"Space Mono",monospace;
+      font-size:.62rem;
+      letter-spacing:.12em;
+    }
+
+    .quick-step h3 {
+      margin:0 0 10px;
+      font-family:"DM Sans",sans-serif;
+      font-size:1rem;
+      font-weight:600;
+    }
+
+    .quick-step p {
+      margin:0;
+      color:var(--soft);
+      font-size:1rem;
+      line-height:1.62;
+    }
+
+    .show-more {
+      width:100%;
+      min-height:58px;
+      padding:14px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border:1px solid rgba(255,255,255,.2);
+      cursor:pointer;
+      color:#fff;
+      background:linear-gradient(110deg,rgba(var(--glow-rgb),.18),rgba(109,67,242,.08));
+      font-family:"Space Mono",monospace;
+      font-size:.7rem;
+      font-weight:700;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      transition:background .35s,border-color .35s,box-shadow .35s;
+    }
+
+    .show-more:hover {
+      border-color:var(--accent);
+      background:linear-gradient(110deg,rgba(var(--glow-rgb),.34),rgba(109,67,242,.14));
+      box-shadow:0 0 36px rgba(var(--glow-rgb),.12);
+    }
+
+    .show-more .plus { font-size:1.3rem; transition:transform .4s var(--ease); }
+    .show-more[aria-expanded="true"] .plus { transform:rotate(45deg); }
+
+    .deep {
+      display:grid;
+      grid-template-rows:0fr;
+      transition:grid-template-rows .65s var(--ease);
+    }
+
+    .deep.open { grid-template-rows:1fr; }
+    .deep-inner { overflow:hidden; }
+
+    .deep-content {
+      padding-top:38px;
+      display:grid;
+      grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);
+      gap:clamp(28px,5vw,64px);
+    }
+
+    .deep-copy h3 {
+      margin:0 0 13px;
+      font-family:"Gloock",Georgia,serif;
+      font-size:clamp(1.45rem,2.3vw,2rem);
+      font-weight:400;
+    }
+
+    .deep-copy p {
+      margin:0 0 18px;
+      color:var(--soft);
+      font-size:1.05rem;
+      line-height:1.72;
+    }
+
+    .deep-list {
+      margin:0;
+      padding:0;
+      list-style:none;
+      border-top:1px solid var(--line);
+    }
+
+    .deep-list li {
+      position:relative;
+      padding:15px 0 15px 28px;
+      border-bottom:1px solid var(--line);
+      color:var(--soft);
+      font-size:1rem;
+      line-height:1.62;
+    }
+
+    .deep-list li::before {
+      content:"";
+      position:absolute;
+      left:2px;
+      top:23px;
+      width:8px;
+      height:8px;
+      border:1px solid var(--accent);
+      border-radius:50%;
+      box-shadow:0 0 12px rgba(var(--glow-rgb),.55);
+    }
+
+    .closing {
+      margin:36px 0 0;
+      padding:22px 24px;
+      border-left:2px solid var(--accent);
+      color:#efe9e5;
+      background:rgba(255,255,255,.035);
+      font-family:"Gloock",Georgia,serif;
+      font-size:1.08rem;
+      line-height:1.55;
+    }
+
+    @media (max-width:1050px) {
+      .intro { grid-template-columns:1fr; align-items:start; }
+      .audience { width:min(100%,430px); }
+      .cards { grid-template-columns:repeat(2,1fr); min-height:auto; }
+      .path-card { min-height:390px; }
+      .path-card:nth-child(2) { border-right:0; }
+      .path-card:nth-child(-n+2) { border-bottom:1px solid rgba(255,255,255,.12); }
+      .shadow-traveller { display:none; }
+      .cards-wrap::after {
+        content:"shadow work moves through every path";
+        position:absolute;
+        z-index:7;
+        top:30%;
+        left:50%;
+        padding:7px 18px 8px;
+        color:rgba(255,255,255,.86);
+        background:rgba(0,0,0,.72);
+        border:1px solid rgba(255,255,255,.13);
+        border-radius:999px;
+        font-family:"Caveat",cursive;
+        font-size:1.2rem;
+        transform:translate(-50%,-50%) rotate(-4deg);
+        box-shadow:0 0 34px rgba(0,0,0,.9),0 0 18px rgba(var(--glow-rgb),.16);
+        white-space:nowrap;
+      }
+    }
+
+    @media (max-width:720px) {
+      .shell { width:min(100% - 28px,1480px); padding-top:18px; }
+      .topbar { align-items:flex-start; margin-bottom:42px; }
+      .micro { display:none; }
+      .intro { gap:24px; }
+      h1 { font-size:clamp(2.8rem,14vw,4.7rem); }
+      .audience { min-width:0; width:100%; }
+      .audience button { min-height:50px; padding:8px 10px; font-size:.62rem; }
+      .cards { grid-template-columns:1fr; }
+      .path-card { min-height:330px; border-right:0; border-bottom:1px solid rgba(255,255,255,.12); }
+      .path-card:last-child { border-bottom:0; }
+      .cards-wrap::after { position:sticky; display:block; width:max-content; max-width:calc(100vw - 48px); top:12px; margin:-18px auto 16px; transform:rotate(-3deg); }
+      .principle { flex-direction:column; gap:8px; }
+      .quick-grid { grid-template-columns:1fr; }
+      .quick-step { min-height:0; }
+      .deep-content { grid-template-columns:1fr; }
+      .modal-visual { min-height:190px; }
+      .modal-body { padding-bottom:42px; }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; transition-duration:.01ms!important; }
+      .shadow-traveller { left:34%; animation:none; }
+    }
+  </style>
+</head>
+<body data-theme="self">
+  <main class="shell">
+    <header class="topbar">
+      <div class="logo" aria-label="Human Design ReDefined">
+        <span>Human Design</span><span>ReDefined</span>
+      </div>
+      <span class="micro">The chart is a map. You are the authority.</span>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Choose your way into the chart</p>
+        <h1 id="page-title">What do you want to use <span class="gradient-word">Human Design</span> for?</h1>
+      </div>
+
+      <div class="audience" role="group" aria-label="Who are you using Human Design for?">
+        <button type="button" data-audience="me" aria-pressed="true">For me</button>
+        <button type="button" data-audience="helper" aria-pressed="false">Helping someone else</button>
+      </div>
+    </section>
+
+    <p class="guide-hint" id="selection-hint">Choose the area you want to explore for yourself.</p>
+
+    <div class="cards-wrap">
+      <section class="cards" aria-label="Four core applications of Human Design">
+        <button class="path-card" type="button" data-path="self" style="--accent:#f01445;--image:url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1400&q=88')">
+          <span class="card-inner">
+            <span class="card-no">01 / RECOGNISE</span>
+            <h2>Self &amp;<br>Authenticity</h2>
+            <p>Meet your chart without letting it replace you.</p>
+            <span class="explore">Explore this path <span class="arrow">→</span></span>
+          </span>
+        </button>
+
+        <button class="path-card" type="button" data-path="body" style="--accent:#f1a94b;--image:url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1400&q=88')">
+          <span class="card-inner">
+            <span class="card-no">02 / NOTICE</span>
+            <h2>Body &amp;<br>Wellbeing</h2>
+            <p>Use the chart to find better questions—not diagnoses.</p>
+            <span class="explore">Explore this path <span class="arrow">→</span></span>
+          </span>
+        </button>
+
+        <button class="path-card" type="button" data-path="relationships" style="--accent:#d4499f;--image:url('https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1400&q=88')">
+          <span class="card-inner">
+            <span class="card-no">03 / RELATE</span>
+            <h2>Relationships</h2>
+            <p>Investigate the interaction. Never judge the relationship.</p>
+            <span class="coming-soon"><span>Parenting by Design</span> · Coming soon</span>
+            <span class="explore">Explore this path <span class="arrow">→</span></span>
+          </span>
+        </button>
+
+        <button class="path-card" type="button" data-path="business" style="--accent:#8c66ff;--image:url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=88')">
+          <span class="card-inner">
+            <span class="card-no">04 / CREATE</span>
+            <h2>Business</h2>
+            <p>Pull the chart clues that serve the actual problem.</p>
+            <span class="explore">Explore this path <span class="arrow">→</span></span>
+          </span>
+        </button>
+      </section>
+
+      <div class="shadow-traveller" aria-hidden="true">
+        <span class="shadow-tag">shadow work</span>
+      </div>
+    </div>
+
+    <footer class="principle">
+      <span><strong>Shadow work is not a fifth destination.</strong> It can appear inside every application.</span>
+      <span>Stop reading charts. Start reading people.</span>
+    </footer>
+  </main>
+
+  <dialog id="route-dialog" aria-labelledby="modal-title">
+    <div class="modal-scroll">
+      <section class="modal-visual" id="modal-visual">
+        <button class="close" type="button" aria-label="Close guide">×</button>
+        <div>
+          <p class="modal-label" id="modal-label"></p>
+          <h2 id="modal-title"></h2>
+        </div>
+      </section>
+
+      <section class="modal-body">
+        <p class="promise" id="modal-promise"></p>
+        <div class="quick-grid" id="quick-grid"></div>
+
+        <button class="show-more" type="button" aria-expanded="false" aria-controls="deep-content">
+          <span>Show me more</span><span class="plus" aria-hidden="true">+</span>
+        </button>
+
+        <div class="deep" id="deep-content">
+          <div class="deep-inner">
+            <div class="deep-content">
+              <div class="deep-copy">
+                <h3 id="deep-title"></h3>
+                <p id="deep-copy"></p>
+              </div>
+              <ul class="deep-list" id="deep-list"></ul>
+            </div>
+            <p class="closing" id="closing"></p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </dialog>
+
+  <script>
+    const images = {
+      self: "url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1800&q=90')",
+      body: "url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=90')",
+      relationships: "url('https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1800&q=90')",
+      business: "url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1800&q=90')"
+    };
+
+    const themes = {
+      self: { accent:"#f01445", rgb:"240,20,69", a:"rgba(240,20,69,.17)", b:"rgba(109,67,242,.12)" },
+      body: { accent:"#f1a94b", rgb:"241,169,75", a:"rgba(241,169,75,.14)", b:"rgba(190,62,86,.11)" },
+      relationships: { accent:"#d4499f", rgb:"212,73,159", a:"rgba(212,73,159,.16)", b:"rgba(92,61,171,.14)" },
+      business: { accent:"#8c66ff", rgb:"140,102,255", a:"rgba(140,102,255,.17)", b:"rgba(235,154,59,.10)" }
+    };
+
+    const routes = {
+      self: {
+        title:"Self & Authenticity",
+        me:{
+          label:"For me · recognise",
+          promise:"Meet your chart without letting it replace you. Notice what your body recognises, question what you learned to suppress, and live one small experiment.",
+          steps:[
+            ["MEET","Meet the chart","Begin with your four Incarnation Cross gates—especially the Sun gates for energy and Earth gates for grounding."],
+            ["NOTICE","Watch your response","Recognition, resistance, relief, tension and curiosity are information. An interpretation is not automatically true."],
+            ["LIVE","Try one experiment","Anchor one useful insight and test it in real life. Let experience—not the description—provide the evidence."]
+          ],
+          deepTitle:"Where to look first",
+          deepCopy:"You do not need to memorise the whole chart. Start with the highest-leverage clues, then go deeper only when the first layer does not explain what you are meeting.",
+          deep:[
+            "Explore the four Cross gates individually: where is the gift alive, suppressed, or moving through a lower expression?",
+            "Use Type and aura to notice how your energy meets the world—not as a behavioural rulebook.",
+            "Use Quarter and Angle for context; use Profile to explore recurring roles and projection fields.",
+            "Look at both defined energy that may have been suppressed and undefined centres that amplify the environment.",
+            "Experiment with digestion, environment, motivation and perspective. They are clues, never commandments.",
+            "Treat Authority as a reliable signal—not the only part of your body you are allowed to hear."
+          ],
+          closing:"Meet. Notice. Sit. Feel. Anchor. Live."
+        },
+        helper:{
+          label:"Helping someone else · recognise",
+          promise:"Help the person recognise themselves. The chart narrows the inquiry; their language, body and lived experience decide what the clues mean.",
+          steps:[
+            ["ASK","Start with the person","What do they want to understand? What do they already notice? Do not begin by announcing who the chart says they are."],
+            ["NARROW","Choose one useful layer","Begin with the Cross gates and the pattern they bring. Add centres, profile or variables only when they sharpen the inquiry."],
+            ["WITNESS","Listen for recognition","Notice their words, contradictions, bodily response and real examples. Conversation is part of the method."]
+          ],
+          deepTitle:"Read people—not charts",
+          deepCopy:"Your role is not to prove the system. It is to create enough curiosity and safety for the person to recognise their own signals.",
+          deep:[
+            "Present each placement as a possibility or question, never as a declaration.",
+            "Explore the individual Cross gates before relying on a fixed Incarnation Cross description.",
+            "Be especially careful with second- and fifth-line projection fields; your projection is not their identity.",
+            "Do not assume undefined centres are the problem. Defined gifts can be suppressed, distorted or expressed in shadow.",
+            "Use AI or a decoder to reduce digging—not to outsource discernment.",
+            "Finish with one embodied experiment the person actually wants to try."
+          ],
+          closing:"The chart gives clues. The person gives context. The body responds."
+        }
+      },
+
+      body: {
+        title:"Body & Wellbeing",
+        me:{
+          label:"For me · notice",
+          promise:"Your chart cannot diagnose you. It can help narrow an enormous field of possibilities, point you towards better questions and help you notice your individual patterns.",
+          steps:[
+            ["RECONNECT","Come back to the body","Use Body Compass practices and the Cross gates to rebuild recognition before trying to interpret every signal."],
+            ["CHOOSE","What support do you need?","Are you improving general wellbeing—or is there a specific symptom or recurring problem you want to investigate?"],
+            ["EXPERIMENT","Change one thing","Use variables and lived patterns as clues. Test one small change and observe the actual response over time."]
+          ],
+          deepTitle:"Two different wellbeing routes",
+          deepCopy:"General wellbeing does not require an automatic trauma investigation. A specific problem calls for a deeper, carefully bounded inquiry.",
+          deep:[
+            "GENERAL WELLBEING: consider digestion before generic nutrition advice and environment when thinking about movement, work and recovery.",
+            "GENERAL WELLBEING: account for physiology, hormones, cycles, age, disability, medication, illness and life phase.",
+            "SPECIFIC PROBLEM: ask what is happening, when it changes and what happened before it began—not what you did wrong.",
+            "SPECIFIC PROBLEM: use Cross gates, centres, variables and the Body Lab to narrow the field of inquiry, not to establish causation.",
+            "Symptoms are information worthy of attention—not proof that you failed or lived incorrectly.",
+            "Human Design never replaces medical evidence, diagnosis, qualified care or an appropriate referral."
+          ],
+          closing:"The chart suggests where to look. Your body confirms or rejects the suggestion."
+        },
+        helper:{
+          label:"Helping someone else · notice",
+          promise:"Personalise support without turning the chart into a diagnosis, a prescription or a reason to dig for hidden trauma where none was offered.",
+          steps:[
+            ["DISTINGUISH","Name the kind of support","General nutrition, fitness or wellbeing needs a different route from investigating a specific symptom or recurring pattern."],
+            ["PERSONALISE","Use variables carefully","Digestion and environment can make generic advice more individual—but every recommendation remains an experiment."],
+            ["STAY IN SCOPE","Know what the chart cannot do","Generate questions, observe responses and refer when the person's needs exceed your competence."]
+          ],
+          deepTitle:"Curiosity without overreach",
+          deepCopy:"The responsible practitioner keeps physiology, history, context and scope of practice in the room. Human Design adds possible clues; it does not overrule the person or the evidence.",
+          deep:[
+            "Do not initiate trauma inquiry simply because someone wants general wellbeing support.",
+            "When a symptom is present, ask concrete questions about timing, context and change before exploring chart themes.",
+            "Never claim illness was caused by absorbing emotions, weak boundaries or not living correctly.",
+            "Consider sex, menstrual or hormonal state, age, medication, disability, diagnosis, stress and environment.",
+            "Offer one small, observable experiment rather than a total lifestyle overhaul based on four arrows.",
+            "Document uncertainty and make an appropriate medical, therapeutic or specialist referral when needed."
+          ],
+          closing:"Personalisation is useful. Certainty you do not have is not."
+        }
+      },
+
+      relationships: {
+        title:"Relationships",
+        me:{
+          label:"For me · relate",
+          promise:"Use the chart to investigate an interaction—not to judge the relationship or turn another person's reaction into proof that something is wrong with you.",
+          steps:[
+            ["START","Begin with yourself","What happens in your body? What do you need? What do you override, amplify or lose around this person?"],
+            ["OBSERVE","Name what actually happens","Separate attraction, intensity and chart language from observable behaviour, boundaries, responsibility and repair."],
+            ["INQUIRE","Use the composite as questions","A connection chart may suggest where to look. It cannot declare you compatible, safe or meant to stay."]
+          ],
+          deepTitle:"Reality before mechanics",
+          deepCopy:"Relationship mechanics can offer language for an interaction. Behaviour reveals the relationship. If there is harm, coercion or fear, chart analysis is not the next step.",
+          deep:[
+            "Ask whether there is consent, respect for boundaries and space for both people to disagree.",
+            "Notice whether each person owns their impact and whether repair leads to changed behaviour.",
+            "Explore electromagnetic, companionship, dominance and compromise mechanics only as questions.",
+            "Do not treat attraction or bridging as proof of compatibility—or as an explanation for why you should tolerate harm.",
+            "Try one clean experiment: time apart, more decision time, a plainly expressed boundary or one conversation without chart language.",
+            "Track one body signal alongside one observable behaviour. Do not collapse the two."
+          ],
+          closing:"The body offers signals. Behaviour reveals the relationship. You remain the authority."
+        },
+        helper:{
+          label:"Helping someone else · relate",
+          promise:"Use the chart to create sharper questions about the interaction. Never use it to assign blame, excuse harm or issue a compatibility verdict.",
+          steps:[
+            ["CONSENT","Protect both people","Get consent before using another person's birth data. Begin with the client in front of you—not the composite."],
+            ["TRIANGULATE","Chart · person · life","Ask about a concrete interaction, compare the chart clue with their experience, then check it against observable reality."],
+            ["STOP","Safety comes first","Abuse, coercive control or fear must be assessed directly. Chart mechanics cannot identify or neutralise harm."]
+          ],
+          deepTitle:"Turn mechanics into questions",
+          deepCopy:"Traditional relationship language often slides from possible dynamic into deterministic verdict. ReDefined keeps the useful distinctions and removes the verdict.",
+          deep:[
+            "Explore the individual charts before the composite so the relationship does not erase either person.",
+            "Translate every mechanic into an inquiry: What becomes louder here? What feels familiar? Where is there pressure or relief?",
+            "Never claim electromagnetic connections prove chemistry or that greater definition means the other person must adapt.",
+            "Do not confuse chart 'dominance' with interpersonal power, authority, abuse or coercion.",
+            "Ask about consent, boundaries, accountability, repair, changed behaviour and felt safety in ordinary language.",
+            "If there is harm or coercive control, move out of chart analysis and toward appropriate safety support."
+          ],
+          closing:"Investigate the interaction. Do not judge the relationship."
+        }
+      },
+
+      business: {
+        title:"Business",
+        me:{
+          label:"For me · create",
+          promise:"Let your body have a vote, name the business problem you are actually solving, then pull only the chart clues that might help.",
+          steps:[
+            ["CHECK","Can you hear yourself?","Notice expansion, contraction, exhaustion, relief and resistance before using the chart to justify another strategy."],
+            ["NAME","Where are you stuck?","Direction, recognition, audience, offers, marketing, capacity, method or scale? Choose the real problem first."],
+            ["PULL","Use the relevant clues","Soul'd Out by Design becomes an intelligence engine—not a giant report you must obey from beginning to end."]
+          ],
+          deepTitle:"Choose the problem, then the placement",
+          deepCopy:"Human Design is strongest when it sharpens a business question. It should never become a more sophisticated way to override yourself.",
+          deep:[
+            "DIRECTION & GIFTS: Conscious Sun, Cross gates and Unconscious Mars.",
+            "RECOGNITION & POSITIONING: Unconscious Sun, Mercury, Jupiter and Profile.",
+            "AUDIENCE & OFFERS: Jupiter placements, resonance signals and the person's actual client evidence.",
+            "BRAND & MARKETING: message, profile, projection fields, archetypes and the voice that belongs to the real person.",
+            "CAPACITY & BUSINESS MODEL: Type, centres, environment, variables and actual lived capacity—not Type alone.",
+            "METHOD & SCALE: recurring talent, Uranus, Neptune, Pluto and the transformation already happening in the work.",
+            "MOTIVATION & PERSPECTIVE: check whether the business is being built from genuine motivation or transference."
+          ],
+          closing:"The chart gives clues. Your body responds. Real life provides the evidence."
+        },
+        helper:{
+          label:"Helping someone else · create",
+          promise:"Use the chart to generate sharper business questions. Then listen to the person's language, work, clients, evidence and bodily response.",
+          steps:[
+            ["DIAGNOSE","Name the business problem","Do not give someone a total brand reading when the actual issue is an offer, conversion, delivery or capacity problem."],
+            ["RECOGNISE","Find the living gift","The chart can point toward talent. Interaction reveals how the person actually thinks, speaks and creates change."],
+            ["TEST","Return to evidence","Translate one useful clue into a business decision, then test it with the body, the audience and real-world results."]
+          ],
+          deepTitle:"Soul'd Out intelligence, human context",
+          deepCopy:"The magic is not reciting placements. It is recognising the person through the conversation and using the chart only where it makes the work more precise.",
+          deep:[
+            "Ask for the current business problem before opening the chart.",
+            "Use the matching placements rather than delivering every possible insight.",
+            "Treat 'defined centres deliver; undefined centres sell' as a prompt, never a formula.",
+            "Recognition matters to everyone—not only Projectors. One-to-one forever is not a sustainable Projector strategy.",
+            "Use profile and projection fields carefully when shaping promises, positioning and visibility.",
+            "Pair Human Design with business evidence, client language, brand strategy and the person's actual capacity.",
+            "End with one decision or experiment small enough to observe."
+          ],
+          closing:"Read the chart. Read the person. Read the business in front of you."
+        }
+      }
+    };
+
+    let audience = "me";
+    let activePath = "self";
+
+    const root = document.documentElement;
+    const dialog = document.getElementById("route-dialog");
+    const audienceButtons = document.querySelectorAll("[data-audience]");
+    const pathButtons = document.querySelectorAll("[data-path]");
+    const hint = document.getElementById("selection-hint");
+    const moreButton = document.querySelector(".show-more");
+    const deep = document.getElementById("deep-content");
+
+    function applyTheme(path) {
+      const theme = themes[path];
+      root.style.setProperty("--glow-rgb",theme.rgb);
+      root.style.setProperty("--wash-a",theme.a);
+      root.style.setProperty("--wash-b",theme.b);
+      root.style.setProperty("--accent",theme.accent);
+      document.body.dataset.theme = path;
+    }
+
+    function render(path) {
+      activePath = path;
+      applyTheme(path);
+      const route = routes[path];
+      const data = route[audience];
+
+      document.getElementById("modal-visual").style.setProperty("--modal-image",images[path]);
+      document.getElementById("modal-label").textContent = data.label;
+      document.getElementById("modal-title").textContent = route.title;
+      document.getElementById("modal-promise").textContent = data.promise;
+
+      const quick = document.getElementById("quick-grid");
+      quick.innerHTML = "";
+      data.steps.forEach(function(step,index) {
+        const item = document.createElement("article");
+        item.className = "quick-step";
+        const no = document.createElement("b");
+        no.textContent = "0" + (index + 1) + " / " + step[0];
+        const title = document.createElement("h3");
+        title.textContent = step[1];
+        const copy = document.createElement("p");
+        copy.textContent = step[2];
+        item.append(no,title,copy);
+        quick.appendChild(item);
+      });
+
+      document.getElementById("deep-title").textContent = data.deepTitle;
+      document.getElementById("deep-copy").textContent = data.deepCopy;
+
+      const list = document.getElementById("deep-list");
+      list.innerHTML = "";
+      data.deep.forEach(function(line) {
+        const item = document.createElement("li");
+        item.textContent = line;
+        list.appendChild(item);
+      });
+
+      document.getElementById("closing").textContent = data.closing;
+      deep.classList.remove("open");
+      moreButton.setAttribute("aria-expanded","false");
+      moreButton.querySelector("span:first-child").textContent = "Show me more";
+    }
+
+    audienceButtons.forEach(function(button) {
+      button.addEventListener("click",function() {
+        audience = button.dataset.audience;
+        audienceButtons.forEach(function(item) {
+          item.setAttribute("aria-pressed",String(item === button));
+        });
+        hint.textContent = audience === "me"
+          ? "Choose the area you want to explore for yourself."
+          : "Choose the area where you want to help someone else.";
+        if (dialog.open) render(activePath);
+      });
+    });
+
+    pathButtons.forEach(function(button) {
+      button.addEventListener("mouseenter",function() { applyTheme(button.dataset.path); });
+      button.addEventListener("focus",function() { applyTheme(button.dataset.path); });
+      button.addEventListener("mouseleave",function() { if (!dialog.open) applyTheme(activePath); });
+      button.addEventListener("click",function() {
+        render(button.dataset.path);
+        dialog.showModal();
+        document.body.style.overflow = "hidden";
+      });
+    });
+
+    moreButton.addEventListener("click",function() {
+      const isOpen = moreButton.getAttribute("aria-expanded") === "true";
+      moreButton.setAttribute("aria-expanded",String(!isOpen));
+      moreButton.querySelector("span:first-child").textContent = isOpen ? "Show me more" : "Show me less";
+      deep.classList.toggle("open",!isOpen);
+      if (!isOpen) {
+        window.setTimeout(function() {
+          document.getElementById("deep-title").scrollIntoView({behavior:"smooth",block:"nearest"});
+        },240);
+      }
+    });
+
+    function closeDialog() {
+      dialog.close();
+      document.body.style.overflow = "";
+      applyTheme(activePath);
+    }
+
+    document.querySelector(".close").addEventListener("click",closeDialog);
+    dialog.addEventListener("click",function(event) {
+      const rect = dialog.getBoundingClientRect();
+      const outside = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+      if (outside) closeDialog();
+    });
+    dialog.addEventListener("close",function() { document.body.style.overflow = ""; });
+
+    applyTheme("self");
+  </script>
+</body>
+</html>
