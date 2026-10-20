@@ -1,0 +1,72 @@
+<svg id="bodygraph" xmlns="http://www.w3.org/2000/svg" viewBox="150 0 503 800" aria-label="Human Design bodygraph">
+          <style>
+            .hg-ch { fill:none; stroke:#f2ede8; stroke-width:5; stroke-linecap:round; opacity:.66; }
+            .hg-center { fill:#0a0a0d; fill-opacity:.7; stroke:#f2ede8; stroke-width:4; stroke-linejoin:round; }
+          </style>
+          <g id="hg-channels">
+            <!-- Head–Ajna -->
+            <path class="hg-ch" id="ch-64-47" d="M379 97V131"/>
+            <path class="hg-ch" id="ch-61-24" d="M401 97V131"/>
+            <path class="hg-ch" id="ch-63-4"  d="M423 97V131"/>
+            <!-- Ajna–Throat -->
+            <path class="hg-ch" id="ch-17-62" d="M379 175.6V247"/>
+            <path class="hg-ch" id="ch-43-23" d="M401 212V247"/>
+            <path class="hg-ch" id="ch-11-56" d="M423 175.6V247"/>
+            <!-- Throat–G -->
+            <path class="hg-ch" id="ch-31-7"  d="M379 344V390"/>
+            <path class="hg-ch" id="ch-8-1"   d="M401 344V368"/>
+            <path class="hg-ch" id="ch-33-13" d="M423 344V390"/>
+            <!-- G–Sacral -->
+            <path class="hg-ch" id="ch-15-5"  d="M379 472V557"/>
+            <path class="hg-ch" id="ch-2-14"  d="M401 494V557"/>
+            <path class="hg-ch" id="ch-46-29" d="M423 472V557"/>
+            <!-- Sacral–Root -->
+            <path class="hg-ch" id="ch-53-42" d="M379 654V690"/>
+            <path class="hg-ch" id="ch-60-3"  d="M401 654V690"/>
+            <path class="hg-ch" id="ch-52-9"  d="M423 654V690"/>
+            <!-- Spleen–Throat -->
+            <path class="hg-ch" id="ch-48-16" d="M 193.5 562.0 C 196.6 437.6 248.9 339.3 350.3 267.2"/>
+            <path class="hg-ch" id="ch-57-20" d="M 211.9 575.1 C 208.1 457.2 254.3 364.0 350.3 295.5"/>
+            <!-- Throat–Solar Plexus -->
+            <path class="hg-ch" id="ch-35-36" d="M 451.9 265.7 C 554.5 337.5 607.8 436.1 611.9 561.3"/>
+            <path class="hg-ch" id="ch-12-22" d="M 453.6 295.1 C 539.5 358.4 586.9 450.9 595.6 572.7"/>
+            <!-- Spleen–Root -->
+            <path class="hg-ch" id="ch-28-38" d="M 217.9 634.8 C 242.8 694.2 287.0 728.9 350.5 739.0"/>
+            <path class="hg-ch" id="ch-32-54" d="M 238.4 621.9 C 256.6 675.6 294.0 704.4 350.5 708.5"/>
+            <path class="hg-ch" id="ch-18-58" d="M 191.2 650.6 C 226.1 714.1 279.2 752.1 350.5 764.7"/>
+            <!-- Root–Solar Plexus -->
+            <path class="hg-ch" id="ch-19-49" d="M 451.7 707.5 C 508.2 703.9 545.7 675.4 564.2 621.9"/>
+            <path class="hg-ch" id="ch-39-55" d="M 452.1 739.0 C 516.2 728.6 561.0 693.6 586.6 633.9"/>
+            <path class="hg-ch" id="ch-41-30" d="M 446.8 765.1 C 519.6 752.1 574.2 713.5 610.9 649.4"/>
+            <!-- Sacral–G (left loop) -->
+            <path class="hg-ch" id="ch-34-10" d="M 350.3 593.0 C 179.8 510.8 175.3 456.3 336.8 429.6"/>
+            <!-- Spleen–Heart -->
+            <path class="hg-ch" id="ch-44-26" d="M 223.9 585.5 C 287.8 521.4 371.5 491.4 475.1 495.5"/>
+            <!-- Spleen–Sacral -->
+            <path class="hg-ch" id="ch-27-50" d="M 253.1 606.4 C 284.0 622.2 316.4 626.4 350.3 619.2"/>
+            <path class="hg-ch" id="ch-57-34" d="M 252 599 C 285 596 320 594 352 600"/>
+            <!-- Sacral–Solar Plexus -->
+            <path class="hg-ch" id="ch-59-6"  d="M 449.7 624.5 C 484.4 629.6 516.9 623.3 547.2 605.6"/>
+            <!-- Heart–Solar Plexus -->
+            <path class="hg-ch" id="ch-40-37" d="M 547.8 522.9 C 570.1 536.4 581.5 556.2 582.0 582.2"/>
+            <!-- Throat–Heart -->
+            <path class="hg-ch" id="ch-21-45" d="M 447.6 336.3 C 490.4 374.4 513.2 414.7 516.0 457.1"/>
+            <!-- G–Heart -->
+            <path class="hg-ch" id="ch-25-51" d="M 456.5 443.9 C 468.7 459.1 484.4 468.2 503.6 471.4"/>
+            <!-- Integration (schematic side-line positions) -->
+            <path class="hg-ch" id="ch-20-10" d="M 352 330 C 300 360 298 400 338 428"/>
+            <path class="hg-ch" id="ch-20-34" d="M 350 338 C 240 400 235 520 351 575"/>
+            <path class="hg-ch" id="ch-57-10" d="M 230 572 C 262 525 300 475 336 440"/>
+          </g>
+          <g id="hg-centers">
+            <polygon class="hg-center" id="ct-head"   points="401,16 450,97 352,97"/>
+            <polygon class="hg-center" id="ct-ajna"   points="352,131 450,131 401,212"/>
+            <rect    class="hg-center" id="ct-throat" x="352" y="247" width="98" height="97" rx="11"/>
+            <polygon class="hg-center" id="ct-g"      points="401,368 464,431 401,494 338,431"/>
+            <polygon class="hg-center" id="ct-heart"  points="519,453 547,523 470,505"/>
+            <rect    class="hg-center" id="ct-sacral" x="352" y="557" width="98" height="97" rx="11"/>
+            <rect    class="hg-center" id="ct-root"   x="352" y="690" width="98" height="97" rx="11"/>
+            <polygon class="hg-center" id="ct-spleen" points="172,559 255,605 172,651"/>
+            <polygon class="hg-center" id="ct-solar-plexus" points="632,559 549,605 632,651"/>
+          </g>
+        </svg>
