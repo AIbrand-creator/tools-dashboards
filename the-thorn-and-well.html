@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Thorn &amp; Well</title>
+<meta name="description" content="An anonymous case compass: the Cross of Tension, Variables, possible suppression and body-led experiments.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Saira+Extra+Condensed:wght@600;800&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --void: #050505;
+  --bg: #0a0709;
+  --card: rgba(255, 236, 246, .035);
+  --card-strong: rgba(255, 236, 246, .06);
+  --line: rgba(255, 179, 214, .14);
+  --line-strong: rgba(255, 179, 214, .32);
+  --bone: #F4EEE8;
+  --muted: rgba(244, 238, 232, .68);
+  --faint: rgba(244, 238, 232, .45);
+  --pink: #FF149D;
+  --blush: #FFB3D6;
+  --petal: #FFD9EA;
+  --magenta: #C000FF;
+  --teal: #04383f;
+  --sage: #9BD7C8;
+  --shadow: #FF6B9E;
+  --display: "Saira Extra Condensed", "Arial Narrow", sans-serif;
+  --sans: "DM Sans", system-ui, sans-serif;
+  --mono: "Space Mono", ui-monospace, monospace;
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --r: 18px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 700px at 85% -10%, rgba(255, 20, 157, .16), transparent 60%),
+    radial-gradient(900px 650px at -10% 110%, rgba(4, 56, 63, .55), transparent 60%),
+    radial-gradient(700px 500px at 50% 50%, rgba(192, 0, 255, .05), transparent 70%),
+    var(--void);
+  color: var(--bone);
+  font: 400 16px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+h1, h2, h3 { margin: 0; font-weight: 600; }
+p { margin: 0; }
+ul { margin: 0; padding-left: 1.1em; }
+li + li { margin-top: .35em; }
+
+/* ── Garden background ───────────────────────────── */
+.garden { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.garden svg { position: absolute; color: var(--blush); }
+.garden .f1 { width: 340px; top: -60px; right: -70px; opacity: .14; animation: sway 26s ease-in-out infinite; }
+.garden .f2 { width: 220px; bottom: 6%; left: -50px; opacity: .11; animation: sway 32s ease-in-out infinite reverse; }
+.garden .f3 { width: 120px; top: 38%; right: 4%; opacity: .09; animation: sway 22s ease-in-out infinite; }
+.garden .f4 { width: 90px; top: 14%; left: 8%; opacity: .08; color: var(--sage); animation: sway 28s ease-in-out infinite reverse; }
+.garden .f5 { width: 160px; bottom: -40px; right: 22%; opacity: .1; animation: sway 30s ease-in-out infinite; }
+.garden .spark { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--petal); opacity: .5; animation: twinkle 6s ease-in-out infinite; }
+@keyframes sway { 0%,100% { transform: rotate(-6deg) translateY(0); } 50% { transform: rotate(6deg) translateY(-14px); } }
+@keyframes twinkle { 0%,100% { opacity: .1; } 50% { opacity: .7; } }
+
+/* ── Shell ───────────────────────────────────────── */
+.shell { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 36px 28px 64px; }
+.top { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+.kicker { font: 400 12px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--blush); }
+h1.title { font: 800 clamp(48px, 8vw, 92px)/.9 var(--display); letter-spacing: .01em; margin-top: 10px; }
+h1.title em { font: 500 italic .62em/1 var(--serif); color: var(--blush); letter-spacing: 0; padding: 0 .08em; }
+.subtitle { color: var(--muted); max-width: 620px; margin-top: 14px; font-size: 17px; }
+.badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.badge { font: 400 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: 9px 12px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--petal); background: rgba(255, 20, 157, .06); }
+.badge.sage { border-color: rgba(155, 215, 200, .3); color: var(--sage); background: rgba(4, 56, 63, .35); }
+
+.symptoms { flex-basis: 100%; margin-top: 4px; }
+.symptoms .cells { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+.symptoms .cell { padding: 14px 16px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); backdrop-filter: blur(6px); }
+.symptoms .cell.hot { border-color: var(--line-strong); background: rgba(255, 20, 157, .07); }
+.symptoms .cell small { font: 400 10px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--blush); }
+.symptoms .cell strong { display: block; font: 600 21px/1.1 var(--display); letter-spacing: .02em; margin-top: 4px; }
+.symptoms .cell p { font-size: 14px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+.symptoms .aside { font: 500 italic 17px/1.4 var(--serif); color: var(--petal); margin-top: 10px; }
+@media (max-width: 920px) { .symptoms .cells { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .symptoms .cells { grid-template-columns: 1fr; } }
+
+nav.tabs { display: flex; gap: 6px; margin: 30px 0 22px; padding: 6px; border: 1px solid var(--line); border-radius: 999px; background: rgba(10, 7, 9, .7); backdrop-filter: blur(10px); position: sticky; top: 12px; z-index: 5; overflow-x: auto; scrollbar-width: none; }
+nav.tabs::-webkit-scrollbar { display: none; }
+nav.tabs button { flex: 1 0 auto; border: 0; background: transparent; padding: 11px 18px; border-radius: 999px; color: var(--muted); font-weight: 500; white-space: nowrap; transition: background .2s, color .2s; }
+nav.tabs button .n { font: 400 11px var(--mono); color: var(--faint); margin-right: 6px; }
+nav.tabs button:hover { color: var(--bone); }
+nav.tabs button[aria-selected="true"] { background: linear-gradient(120deg, rgba(255, 20, 157, .28), rgba(192, 0, 255, .16)); color: var(--bone); }
+nav.tabs button[aria-selected="true"] .n { color: var(--petal); }
+
+section.view { animation: rise .45s ease both; }
+section.view[hidden] { display: none; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.grid { display: grid; gap: 18px; }
+.g-2 { grid-template-columns: 1.05fr 1fr; }
+.g-3 { grid-template-columns: repeat(3, 1fr); }
+.g-even { grid-template-columns: 1fr 1fr; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 24px; backdrop-filter: blur(6px); }
+.card h2 { font: 600 30px/1.05 var(--display); letter-spacing: .01em; margin-top: 6px; }
+.card h3 { font: 600 20px/1.15 var(--display); letter-spacing: .02em; }
+.lead { color: var(--muted); margin-top: 10px; }
+.muted { color: var(--muted); }
+.spacer { height: 18px; }
+.whisper { font: 500 italic 21px/1.35 var(--serif); color: var(--petal); }
+.rule { height: 1px; background: var(--line); margin: 20px 0; border: 0; }
+
+/* ── Cross ───────────────────────────────────────── */
+.cross { position: relative; aspect-ratio: 1 / 1; max-width: 460px; margin: 18px auto 6px; }
+.cross svg.lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.cross .core { position: absolute; inset: 34%; border-radius: 50%; display: grid; place-items: center; text-align: center; background: radial-gradient(circle at 40% 35%, rgba(255, 20, 157, .22), rgba(10, 7, 9, .9) 70%); border: 1px solid var(--line-strong); }
+.cross .core b { display: block; font: 800 26px/1 var(--display); letter-spacing: .04em; }
+.cross .core span { font: 400 10px/1.4 var(--mono); letter-spacing: .12em; color: var(--blush); text-transform: uppercase; }
+.node { position: absolute; width: 27%; aspect-ratio: 1 / 1; transform: translate(-50%, -50%); border-radius: 50%; border: 1px solid var(--line-strong); background: radial-gradient(circle at 35% 30%, rgba(255, 217, 234, .14), rgba(10, 7, 9, .92) 72%); display: grid; place-items: center; text-align: center; padding: 6px; transition: transform .25s, box-shadow .25s, border-color .25s; }
+.node:hover { transform: translate(-50%, -50%) scale(1.05); }
+.node[aria-pressed="true"] { border-color: var(--pink); box-shadow: 0 0 0 6px rgba(255, 20, 157, .12), 0 0 48px rgba(255, 20, 157, .35); background: radial-gradient(circle at 35% 30%, rgba(255, 20, 157, .45), rgba(40, 6, 26, .95) 72%); }
+.node .num { font: 800 clamp(30px, 5vw, 44px)/.9 var(--display); }
+.node .pos { font: 400 9.5px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--blush); }
+.node.n21 { left: 50%; top: 13.5%; }
+.node.n48 { left: 50%; top: 86.5%; }
+.node.n38 { left: 13.5%; top: 50%; }
+.node.n39 { left: 86.5%; top: 50%; }
+.legend { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; font: 400 11px var(--mono); color: var(--faint); letter-spacing: .06em; }
+.legend i { display: inline-block; width: 18px; height: 2px; vertical-align: middle; margin-right: 6px; }
+
+.pressure { display: grid; gap: 8px; margin-top: 16px; }
+.pressure div { display: grid; grid-template-columns: 74px 1fr; gap: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, .025); font-size: 14px; }
+.pressure b { font: 400 12px var(--mono); color: var(--blush); }
+
+.gate-head { display: flex; gap: 16px; align-items: center; }
+.orb { width: 72px; height: 72px; border-radius: 50%; flex: 0 0 auto; display: grid; place-items: center; font: 800 36px/1 var(--display); background: radial-gradient(circle at 35% 30%, var(--petal), var(--pink) 55%, #5a0634); color: #1a0410; box-shadow: 0 0 40px rgba(255, 20, 157, .35); }
+.gate-title { font: 600 32px/1 var(--display); }
+.gate-sub { font: 500 italic 19px/1.2 var(--serif); color: var(--blush); margin-top: 4px; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.fact { font: 400 11px/1 var(--mono); padding: 8px 10px; border-radius: 999px; background: rgba(255, 255, 255, .045); color: var(--muted); letter-spacing: .03em; }
+.fact.hot { background: rgba(255, 20, 157, .13); color: var(--petal); }
+.freq { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; }
+.freq div { padding: 12px; border-radius: 14px; background: rgba(255, 255, 255, .03); border-top: 2px solid; }
+.freq .s { border-color: var(--shadow); }
+.freq .g { border-color: var(--sage); }
+.freq .h { border-color: var(--magenta); }
+.freq small { display: block; font: 400 10px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+.freq strong { font: 600 22px/1.1 var(--display); letter-spacing: .02em; }
+.freq p { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+.twin { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.twin > div { padding: 14px; border-radius: 14px; background: rgba(255, 255, 255, .025); font-size: 14px; }
+.twin h4 { margin: 0 0 8px; font: 400 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+.twin .lo h4 { color: var(--shadow); }
+.twin .hi h4 { color: var(--sage); }
+.twin li { color: var(--muted); }
+.bridge { margin-top: 14px; padding: 16px; border-radius: 14px; background: linear-gradient(120deg, rgba(255, 20, 157, .1), rgba(4, 56, 63, .35)); border: 1px solid var(--line); }
+.bridge h4 { margin: 0 0 6px; font: 400 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--petal); }
+.bridge p { font-size: 15px; }
+.ask { margin-top: 14px; padding: 4px 0 4px 16px; border-left: 2px solid var(--pink); }
+.affirm { margin-top: 12px; font: 400 12px var(--mono); color: var(--sage); letter-spacing: .03em; }
+
+/* ── Chart tab ───────────────────────────────────── */
+.vars { display: grid; gap: 10px; margin-top: 16px; }
+.var { display: grid; grid-template-columns: 70px 1fr 34px; gap: 14px; align-items: center; padding: 14px; border-radius: 14px; background: rgba(255, 255, 255, .025); border: 1px solid transparent; transition: border-color .2s; }
+.var:hover { border-color: var(--line-strong); }
+.var .code { font: 800 30px/1 var(--display); color: var(--petal); }
+.var .code small { display: block; font: 400 9px var(--mono); color: var(--faint); letter-spacing: .1em; margin-top: 4px; }
+.var h3 { font-size: 19px; }
+.var p { font-size: 14px; color: var(--muted); margin-top: 3px; }
+.var .arrow { font: 800 26px var(--display); color: var(--pink); text-align: center; }
+.centers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.center { padding: 12px 10px; border-radius: 12px; text-align: center; font-size: 13px; }
+.center.def { background: rgba(255, 20, 157, .14); color: var(--petal); }
+.center.open { border: 1px dashed var(--line-strong); color: var(--muted); }
+.center small { display: block; font: 400 9.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; opacity: .75; margin-top: 3px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.chip { padding: 8px 12px; border-radius: 999px; background: rgba(255, 255, 255, .045); font: 400 12px var(--mono); color: var(--muted); }
+.chip.hot { background: rgba(255, 20, 157, .14); color: var(--petal); }
+table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+th { text-align: left; font: 400 10.5px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--faint); padding: 8px 10px; border-bottom: 1px solid var(--line); }
+td { padding: 9px 10px; border-bottom: 1px solid rgba(255, 179, 214, .06); font-variant-numeric: tabular-nums; }
+td.num { font-family: var(--mono); font-size: 13px; }
+tr.key td { background: rgba(255, 20, 157, .08); }
+tr.key td.num { color: var(--petal); }
+.note { font: 400 11.5px/1.5 var(--mono); color: var(--faint); margin-top: 10px; }
+
+/* ── Body tab ────────────────────────────────────── */
+.tones { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 16px; }
+.tone { border-radius: 14px; padding: 12px 8px; text-align: center; background: rgba(255, 255, 255, .03); border: 1px solid transparent; position: relative; min-height: 118px; }
+.tone b { display: block; font: 800 26px/1 var(--display); color: var(--faint); }
+.tone span { display: block; font-size: 13px; margin-top: 4px; }
+.tone em { display: block; font: 400 9.5px/1.35 var(--mono); font-style: normal; color: var(--faint); margin-top: 8px; letter-spacing: .02em; }
+.tone.hers { border-color: var(--pink); background: rgba(255, 20, 157, .12); }
+.tone.hers b { color: var(--petal); }
+.tone.target { border: 1px dashed var(--sage); }
+.tone.target em { color: var(--sage); }
+.verdict { margin-top: 16px; padding: 18px; border-radius: 16px; background: rgba(255, 255, 255, .03); border-left: 3px solid var(--pink); }
+.reg-list li { color: var(--muted); }
+.reg-list li b { color: var(--bone); font-weight: 500; }
+
+/* ── Suppression tab ─────────────────────────────── */
+.areas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+.area { text-align: left; padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: rgba(255, 255, 255, .025); min-height: 128px; transition: border-color .2s, background .2s, transform .2s; }
+.area:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+.area[aria-pressed="true"] { border-color: var(--pink); background: rgba(255, 20, 157, .1); }
+.area small { font: 400 10px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--blush); }
+.area strong { display: block; font: 600 22px/1.05 var(--display); margin-top: 6px; letter-spacing: .02em; }
+.area span { display: block; font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+.area-detail ul li { color: var(--muted); }
+.echo { margin-top: 14px; display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: rgba(4, 56, 63, .4); font-size: 14px; color: #d4efe8; }
+.echo b { font: 800 20px/1 var(--display); color: var(--sage); }
+.conv { display: grid; gap: 8px; margin-top: 14px; }
+.conv div { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(255, 255, 255, .025); font-size: 14px; }
+.conv div.h { background: transparent; padding-top: 0; padding-bottom: 0; font: 400 10.5px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+.conv div > span:first-child { color: var(--petal); font-weight: 500; }
+.conv div > span { color: var(--muted); }
+.hypothesis { margin-top: 18px; padding: 24px; border-radius: 18px; background: linear-gradient(120deg, rgba(255, 20, 157, .16), rgba(192, 0, 255, .08) 50%, rgba(4, 56, 63, .4)); border: 1px solid var(--line-strong); }
+
+/* ── Practices tab ───────────────────────────────── */
+.progress { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+.bar { flex: 1; height: 6px; border-radius: 999px; background: rgba(255, 255, 255, .07); overflow: hidden; }
+.bar span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--magenta) 55%, var(--sage)); transition: width .35s ease; }
+.count { font: 400 12px var(--mono); color: var(--blush); }
+.practices { display: grid; gap: 10px; margin-top: 16px; }
+.practice { border: 1px solid var(--line); border-radius: 16px; background: rgba(255, 255, 255, .025); overflow: hidden; transition: border-color .2s; }
+.practice.done { border-color: rgba(155, 215, 200, .45); background: rgba(4, 56, 63, .25); }
+.practice .row { display: grid; grid-template-columns: 34px 1fr 28px; gap: 14px; align-items: center; padding: 14px 16px; }
+.practice .tick { width: 26px; height: 26px; border-radius: 9px; border: 1px solid var(--pink); background: transparent; display: grid; place-items: center; color: transparent; font-size: 14px; padding: 0; }
+.practice.done .tick { background: var(--sage); border-color: var(--sage); color: var(--void); }
+.practice .open { border: 0; background: transparent; text-align: left; padding: 0; }
+.practice .open strong { display: block; font-weight: 500; }
+.practice .open span { display: block; font-size: 13.5px; color: var(--muted); margin-top: 2px; }
+.practice .chev { border: 0; background: transparent; color: var(--blush); font-size: 18px; padding: 0; transition: transform .25s; }
+.practice[data-open="true"] .chev { transform: rotate(180deg); }
+.practice .body { display: none; padding: 0 16px 16px 64px; font-size: 14.5px; color: var(--muted); }
+.practice[data-open="true"] .body { display: block; }
+.practice .body li { color: var(--muted); }
+.practice code { display: block; font: 400 12px/1.6 var(--mono); color: var(--petal); background: rgba(255, 255, 255, .04); padding: 10px 12px; border-radius: 10px; margin-top: 8px; white-space: normal; }
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.cols3 div { padding: 10px; border-radius: 10px; background: rgba(255, 255, 255, .04); text-align: center; font: 400 11px var(--mono); color: var(--petal); letter-spacing: .04em; }
+.draw { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; min-height: 240px; }
+.draw .prompt { font: 500 italic clamp(24px, 3vw, 32px)/1.25 var(--serif); color: var(--petal); min-height: 3.2em; transition: opacity .3s; }
+.btn { border: 1px solid var(--pink); background: rgba(255, 20, 157, .12); color: var(--bone); padding: 11px 18px; border-radius: 999px; font: 400 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; align-self: flex-start; }
+.btn:hover { background: rgba(255, 20, 157, .24); }
+.bottom ol { margin: 12px 0 0; padding-left: 1.2em; }
+.bottom li { color: var(--muted); }
+.bottom li b { color: var(--bone); font-weight: 500; }
+
+footer { margin-top: 30px; text-align: center; font: 400 11px/1.6 var(--mono); color: var(--faint); letter-spacing: .05em; }
+footer kbd { font: inherit; padding: 2px 6px; border-radius: 5px; border: 1px solid var(--line-strong); color: var(--blush); }
+
+:focus-visible { outline: 2px solid var(--blush); outline-offset: 3px; }
+
+@media (max-width: 920px) {
+  .g-2, .g-even { grid-template-columns: 1fr; }
+  .areas, .g-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .shell { padding: 24px 16px 48px; }
+  .card { padding: 18px; }
+  .areas, .g-3, .twin, .freq, .cols3 { grid-template-columns: 1fr; }
+  .tones { grid-template-columns: repeat(3, 1fr); }
+  .conv div { grid-template-columns: 1fr; gap: 4px; }
+  .conv div.h { display: none; }
+  .var { grid-template-columns: 56px 1fr; }
+  .var .arrow { display: none; }
+  .practice .body { padding-left: 16px; }
+  .node .pos { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="garden" aria-hidden="true">
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <symbol id="bloom" viewBox="-50 -50 100 100">
+        <g fill="none" stroke="currentColor" stroke-width="1.1">
+          <path d="M0-4C-9-18-8-40 0-46C8-40 9-18 0-4Z"/>
+          <path d="M0-4C-9-18-8-40 0-46C8-40 9-18 0-4Z" transform="rotate(72)"/>
+          <path d="M0-4C-9-18-8-40 0-46C8-40 9-18 0-4Z" transform="rotate(144)"/>
+          <path d="M0-4C-9-18-8-40 0-46C8-40 9-18 0-4Z" transform="rotate(216)"/>
+          <path d="M0-4C-9-18-8-40 0-46C8-40 9-18 0-4Z" transform="rotate(288)"/>
+          <path d="M0-10C-4-20-3-30 0-33C3-30 4-20 0-10Z" transform="rotate(36)"/>
+          <path d="M0-10C-4-20-3-30 0-33C3-30 4-20 0-10Z" transform="rotate(108)"/>
+          <path d="M0-10C-4-20-3-30 0-33C3-30 4-20 0-10Z" transform="rotate(180)"/>
+          <path d="M0-10C-4-20-3-30 0-33C3-30 4-20 0-10Z" transform="rotate(252)"/>
+          <path d="M0-10C-4-20-3-30 0-33C3-30 4-20 0-10Z" transform="rotate(324)"/>
+          <circle r="5"/><circle r="2" fill="currentColor"/>
+        </g>
+      </symbol>
+      <symbol id="sprig" viewBox="0 0 60 120">
+        <g fill="none" stroke="currentColor" stroke-width="1.1">
+          <path d="M30 118C30 80 28 50 32 4"/>
+          <path d="M30 90C18 84 12 74 12 66C22 68 29 77 30 90Z"/>
+          <path d="M30 70C42 64 48 54 48 46C38 48 31 57 30 70Z"/>
+          <path d="M31 48C19 42 14 32 15 24C25 27 31 36 31 48Z"/>
+          <path d="M32 28C41 22 45 14 44 7C36 10 32 18 32 28Z"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+  <svg class="f1" viewBox="-50 -50 100 100"><use href="#bloom"/></svg>
+  <svg class="f2" viewBox="-50 -50 100 100"><use href="#bloom"/></svg>
+  <svg class="f3" viewBox="-50 -50 100 100"><use href="#bloom"/></svg>
+  <svg class="f4" viewBox="0 0 60 120"><use href="#sprig"/></svg>
+  <svg class="f5" viewBox="0 0 60 120"><use href="#sprig"/></svg>
+  <i class="spark" style="top:22%;left:30%"></i>
+  <i class="spark" style="top:64%;left:84%;animation-delay:2s"></i>
+  <i class="spark" style="top:80%;left:18%;animation-delay:4s"></i>
+  <i class="spark" style="top:10%;left:62%;animation-delay:1s"></i>
+  <i class="spark" style="top:46%;left:6%;animation-delay:3s"></i>
+</div>
+
+<div class="shell">
+  <header class="top">
+    <div>
+      <div class="kicker">Anonymous case compass · Human Design ReDefined</div>
+      <h1 class="title">The Thorn <em>&amp;</em> Well</h1>
+      <p class="subtitle">One chart, read through the Cross of Tension, the four Variables, possible suppression patterns and small body-led experiments. Nothing here is a diagnosis.</p>
+    </div>
+    <div class="badges">
+      <span class="badge">Identity protected</span>
+      <span class="badge sage">1/3 · Cross of Tension</span>
+    </div>
+    <div class="symptoms" aria-label="Symptom overview">
+      <div class="kicker">What is happening in her body · in plain words</div>
+      <div class="cells">
+        <div class="cell"><small>The condition</small><strong>Muscular dystrophy</strong><p>A long-term condition where the muscles slowly lose strength. Everyday movement can take more effort and tire the body faster.</p></div>
+        <div class="cell hot"><small>The recent flare</small><strong>Four days of severe pain</strong><p>Bad enough that she needed extra morphine, a strong pain medication.</p></div>
+        <div class="cell hot"><small>What makes it worse</small><strong>Cold</strong><p>In her own words: “cold = pain.” Cold weather reliably makes the pain stronger.</p></div>
+        <div class="cell"><small>Right now</small><strong>A better day</strong><p>The pain has eased today. The flare came, and it passed.</p></div>
+      </div>
+      <p class="aside">We are not trying to explain the condition. We are looking at what helps her body cope, and what may be quietly making it harder.</p>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Dashboard sections">
+    <button role="tab" data-view="cross" aria-selected="true"><span class="n">01</span>The Cross</button>
+    <button role="tab" data-view="chart" aria-selected="false"><span class="n">02</span>The Chart</button>
+    <button role="tab" data-view="body" aria-selected="false"><span class="n">03</span>Body Signals</button>
+    <button role="tab" data-view="map" aria-selected="false"><span class="n">04</span>Suppression Map</button>
+    <button role="tab" data-view="practice" aria-selected="false"><span class="n">05</span>Practices</button>
+  </nav>
+
+  <main>
+    <!-- ═════════ 01 THE CROSS ═════════ -->
+    <section class="view" data-panel="cross">
+      <div class="grid g-2">
+        <div class="card">
+          <div class="kicker">Right Angle Cross of Tension · Quarter of Initiation</div>
+          <h2>Four gates that press on each other</h2>
+          <p class="lead">Sun 21 and Earth 48 (Personality) with Sun 38 and Earth 39 (Design). Tap a gate to open it.</p>
+
+          <div class="cross" id="cross">
+            <svg class="lines" viewBox="0 0 100 100" aria-hidden="true">
+              <defs>
+                <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FF149D"/></marker>
+                <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9BD7C8"/></marker>
+              </defs>
+              <circle cx="50" cy="50" r="36.5" fill="none" stroke="rgba(255,179,214,.14)" stroke-dasharray="1 2.2"/>
+              <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,179,214,.07)"/>
+              <path d="M50 27 L50 73" stroke="#9BD7C8" stroke-width=".5" stroke-dasharray="1.6 1.4" marker-start="url(#ah2)" marker-end="url(#ah2)" fill="none"/>
+              <path d="M27 50 L73 50" stroke="#FF149D" stroke-width=".5" stroke-dasharray="1.6 1.4" marker-start="url(#ah)" marker-end="url(#ah)" fill="none"/>
+            </svg>
+            <div class="core"><div><b>TENSION</b><span>held, not resolved</span></div></div>
+            <button class="node n21" data-gate="21" aria-pressed="true"><div><div class="num">21</div><div class="pos">P · Sun</div></div></button>
+            <button class="node n48" data-gate="48" aria-pressed="false"><div><div class="num">48</div><div class="pos">P · Earth</div></div></button>
+            <button class="node n38" data-gate="38" aria-pressed="false"><div><div class="num">38</div><div class="pos">D · Sun</div></div></button>
+            <button class="node n39" data-gate="39" aria-pressed="false"><div><div class="num">39</div><div class="pos">D · Earth</div></div></button>
+          </div>
+          <div class="legend"><span><i style="background:#9BD7C8"></i>21 ↔ 48 · control and depth</span><span><i style="background:#FF149D"></i>38 ↔ 39 · fight and provocation</span></div>
+
+          <div class="pressure">
+            <div><b>39 → 38</b><span>The provocateur presses the fighter to fight.</span></div>
+            <div><b>38 → 39</b><span>The fighter's opposition presses the 39 to provoke further.</span></div>
+            <div><b>48 → 21</b><span>Depth demands that control is adequate to what the depth contains.</span></div>
+            <div><b>21 → 48</b><span>Control presses depth to show it is adequate.</span></div>
+          </div>
+        </div>
+
+        <aside class="card" aria-live="polite">
+          <div class="gate-head">
+            <div class="orb" id="g-num">21</div>
+            <div>
+              <div class="kicker" id="g-pos">Personality Sun · line 1</div>
+              <div class="gate-title" id="g-name">The Resource Manager</div>
+              <div class="gate-sub" id="g-title">Gate of the Hunter / Huntress</div>
+            </div>
+          </div>
+          <div class="facts" id="g-facts"></div>
+          <p class="lead" id="g-desc"></p>
+          <div class="freq">
+            <div class="s"><small>Shadow</small><strong id="g-shadow"></strong><p id="g-shadow-t"></p></div>
+            <div class="g"><small>Gift</small><strong id="g-gift"></strong><p id="g-gift-t"></p></div>
+            <div class="h"><small>Highest</small><strong id="g-high"></strong><p id="g-high-t"></p></div>
+          </div>
+          <div class="twin">
+            <div class="lo"><h4>When stuck</h4><ul id="g-low"></ul></div>
+            <div class="hi"><h4>When flowing</h4><ul id="g-flow"></ul></div>
+          </div>
+          <div class="bridge"><h4>In this chart</h4><p id="g-bridge"></p></div>
+          <div class="ask whisper" id="g-ask"></div>
+          <div class="affirm" id="g-affirm"></div>
+        </aside>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="grid g-even">
+        <div class="card">
+          <div class="kicker">What the cross is for</div>
+          <h3 style="margin-top:6px">Tension is the mechanism, not the problem</h3>
+          <p class="lead">The 21 makes things move: it tells the 45 “we need more” and the 28 “take the risk”. Without that pressure, nothing gets done. On the not-self side, tension spreads in every direction and the pressure consumes rather than provokes. When the cross works, it holds the creative friction that makes real engagement possible and provokes spirit into activation in others.</p>
+        </div>
+        <div class="card">
+          <div class="kicker">1/3 on this cross · Quarter of Initiation</div>
+          <h3 style="margin-top:6px">Purpose fulfilled through mind</h3>
+          <p class="lead">The 1/3 starts by asking what is worth fighting for, and investigates the roots of resistance. The 48 makes sure the answer has depth, the 21 makes sure it is applied inside a structure, and the 39 makes sure it is tested rather than only asserted. The personal arc is learning to hold and direct tension without becoming the tyrant: pressure that motivates without crushing what it is trying to move.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════ 02 THE CHART ═════════ -->
+    <section class="view" data-panel="chart" hidden>
+      <div class="grid g-2">
+        <div class="card">
+          <div class="kicker">The four Variables</div>
+          <h2>Variables before channel mythology</h2>
+          <p class="lead">This reading starts from what she actually described and checks it against the Variables. Strategy and Authority are left out on purpose, and defined channels are never used as a cause or location of a symptom.</p>
+          <div class="vars">
+            <div class="var"><div class="code">3/2<small>DETERMINATION</small></div><div><h3>Thirst · Taste</h3><p>Hot / active Thirst. Temperature and hydration regulation. Taste cognition knows through palate, language and fine discrimination.</p></div><div class="arrow">←</div></div>
+            <div class="var"><div class="code">6/1<small>ENVIRONMENT</small></div><div><h3>Natural Shores · Smell</h3><p>Thresholds, crossover, light, water, rhythm and boundaries, plus an instinctive read of whether a place or person feels safe.</p></div><div class="arrow">←</div></div>
+            <div class="var"><div class="code">2/3<small>MOTIVATION</small></div><div><h3>Hope · Action</h3><p>Trusts what is not hers to control and understands through sequence and steps. In transference, Hope becomes Guilt.</p></div><div class="arrow">←</div></div>
+            <div class="var"><div class="code">5/4<small>PERSPECTIVE</small></div><div><h3>Probability · Meditation</h3><p>Sees what works and what can be improved, after a quiet phase of absorption. Peripheral view.</p></div><div class="arrow">→</div></div>
+          </div>
+          <p class="note">Transcribed from the chart image. The tones assume the birth time is precise.</p>
+        </div>
+
+        <div class="card">
+          <div class="kicker">Structure · inventory only</div>
+          <h2>Centers, channels, profile</h2>
+          <div class="centers">
+            <div class="center open">Head<small>undefined</small></div>
+            <div class="center open">Ajna<small>undefined</small></div>
+            <div class="center def">Throat<small>defined</small></div>
+            <div class="center open">G / Identity<small>undefined</small></div>
+            <div class="center def">Heart / Ego<small>defined</small></div>
+            <div class="center def">Solar Plexus<small>defined</small></div>
+            <div class="center def">Spleen<small>defined</small></div>
+            <div class="center def">Sacral<small>defined</small></div>
+            <div class="center def">Root<small>defined</small></div>
+          </div>
+          <p class="lead" style="font-size:14px">Split definition: Throat with Heart/Ego, and Root with Solar Plexus, Spleen and Sacral.</p>
+          <hr class="rule">
+          <div class="kicker">Complete channels</div>
+          <div class="chips">
+            <span class="chip hot">21–45</span><span class="chip">34–57</span><span class="chip">32–54</span><span class="chip hot">28–38</span><span class="chip">19–49</span>
+          </div>
+          <p class="note">None of these channels is used to explain pain, muscular dystrophy or cold sensitivity.</p>
+          <hr class="rule">
+          <div class="kicker">Profile</div>
+          <p style="margin-top:6px"><span style="font:800 30px/1 var(--display);color:var(--petal)">1/3</span> <span class="muted">· Personality Sun 21.1, Design Sun 38.3. She learns by investigating and through direct experience. This is not a map of pathology.</span></p>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="card">
+        <div class="kicker">Planetary activations · the four cross gates highlighted</div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Planet</th><th>Design</th><th>Personality</th></tr></thead>
+            <tbody>
+              <tr class="key"><td>Sun</td><td class="num">38.3</td><td class="num">21.1</td></tr>
+              <tr class="key"><td>Earth</td><td class="num">39.3</td><td class="num">48.1</td></tr>
+              <tr><td>North Node</td><td class="num">62.2</td><td class="num">53.4</td></tr>
+              <tr><td>South Node</td><td class="num">61.2</td><td class="num">54.4</td></tr>
+              <tr><td>Moon</td><td class="num">25.5</td><td class="num">45.4</td></tr>
+              <tr><td>Mercury</td><td class="num">61.5</td><td class="num">36.6</td></tr>
+              <tr><td>Venus</td><td class="num">19.2</td><td class="num">49.5</td></tr>
+              <tr><td>Mars</td><td class="num">18.5</td><td class="num">48.2</td></tr>
+              <tr><td>Jupiter</td><td class="num">28.5</td><td class="num">44.1</td></tr>
+              <tr><td>Saturn</td><td class="num">32.1</td><td class="num">57.5</td></tr>
+              <tr><td>Uranus</td><td class="num">34.3</td><td class="num">34.5</td></tr>
+              <tr><td>Neptune</td><td class="num">11.3</td><td class="num">11.5</td></tr>
+              <tr><td>Pluto</td><td class="num">50.1</td><td class="num">32.6</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">Listed for completeness. No gate or planet is turned into a medical or psychosomatic diagnosis.</p>
+      </div>
+    </section>
+
+    <!-- ═════════ 03 BODY SIGNALS ═════════ -->
+    <section class="view" data-panel="body" hidden>
+      <div class="card">
+        <div class="kicker">What she actually described</div>
+        <div class="chips">
+          <span class="chip hot">four days of severe pain</span>
+          <span class="chip">extra morphine</span>
+          <span class="chip">muscular dystrophy</span>
+          <span class="chip hot">cold = pain</span>
+          <span class="chip">a better day today</span>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="grid g-2">
+        <div class="card">
+          <div class="kicker">The disconfirmation that matters</div>
+          <h2>Muscle pain is not a Taste-cognition match</h2>
+          <div class="tones">
+            <div class="tone"><b>1</b><span>Smell</span></div>
+            <div class="tone hers"><b>2</b><span>Taste</span><em>HER COGNITION · mouth &amp; digestion</em></div>
+            <div class="tone"><b>3</b><span>Outer Vision</span></div>
+            <div class="tone"><b>4</b><span>Inner Vision</span></div>
+            <div class="tone target"><b>5</b><span>Feeling</span><em>aches &amp; pains</em></div>
+            <div class="tone target"><b>6</b><span>Touch</span><em>aches · joints &amp; muscles</em></div>
+          </div>
+          <div class="verdict">
+            <p>Aches, pains and soreness sit with <b>Tone 5 Feeling</b> or <b>Tone 6 Touch</b>, and joints and muscles sit specifically with Touch. Her cognition is <b>Tone 2 Taste</b>. So the chart gives no direct cognition match for her muscular pain.</p>
+            <p class="muted" style="margin-top:10px">That is more useful than forcing a match. If she also notices jaw, mouth, digestive, allergy, freshness or mould issues, those are the observations that fit Taste.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="kicker">Where the chart does meet her words</div>
+          <h2>Hot Thirst and the cold</h2>
+          <p class="lead">Thirst can go out of balance when hydration is off. It shows up as overheating, getting chilled, sweating or big swings in temperature. The question is simple: is the body hot or cold right now, and what would bring it back?</p>
+          <div class="verdict" style="border-color:var(--sage)">
+            <p><b>Hot Thirst does not mean making everything hot.</b> <span class="muted">The experiment covers hydration, body temperature, the temperature of the room or weather, the temperature of food and drink, and how dense the food is.</span></p>
+          </div>
+          <p class="whisper" style="margin-top:18px">Does cold exposure coincide with a broader loss of temperature and hydration regulation, and what reliably helps her return to baseline?</p>
+          <p class="note">“Cold = pain” is worth tracking alongside Thirst. The chart does not show that Thirst caused the pain.</p>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="card">
+        <div class="kicker">The regulation layer · Natural Shores, Tone 1 Smell</div>
+        <div class="grid g-even" style="margin-top:8px">
+          <div>
+            <h2>Shores is regulated by thresholds</h2>
+            <p class="lead">Inside and outside, land and water, one room and another, one perspective and another. Natural Shores does not mean living by the sea. Tone 1 adds an instinctive trust or distrust signal: “something stinks here”, or “this place feels safe”.</p>
+            <p class="note">The working model: long displacement from a supportive environment → dysregulation → survival mode. Treat this as a body experiment. It does not prove the environment caused the condition.</p>
+          </div>
+          <ul class="reg-list">
+            <li><b>The body comes alive</b> in the right environment.</li>
+            <li><b>Light, a view or a threshold</b> makes a difference.</li>
+            <li><b>Water or a change of density</b> can restore her.</li>
+            <li><b>Crossing over</b>, changing rooms or seeing from another side can move stuck energy.</li>
+            <li><b>Boundaries matter</b>, because Shores is sensitive to the boundary line.</li>
+            <li><b>One fixed role or reality</b> can feel dense and draining.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════ 04 SUPPRESSION MAP ═════════ -->
+    <section class="view" data-panel="map" hidden>
+      <div class="grid g-2">
+        <div class="card">
+          <div class="kicker">Hypotheses to test, not causes</div>
+          <h2>Where suppression may be hiding</h2>
+          <p class="lead">Check each one against her history. A “no” is useful data too.</p>
+          <div class="areas" id="areas"></div>
+        </div>
+        <aside class="card area-detail" aria-live="polite">
+          <div class="kicker" id="a-kicker"></div>
+          <h2 id="a-title"></h2>
+          <p class="lead" id="a-intro"></p>
+          <ul id="a-list" style="margin-top:14px"></ul>
+          <div id="a-extra"></div>
+          <div class="echo"><b id="a-gate"></b><span id="a-echo"></span></div>
+          <p class="whisper" id="a-ask" style="margin-top:16px"></p>
+        </aside>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="grid g-even">
+        <div class="card">
+          <div class="kicker">Mind–body lens · secondary, symptom-specific</div>
+          <h3 style="margin-top:6px">Themes worth asking about</h3>
+          <p class="lead" style="font-size:14px">These are possible mind–body associations to explore. They are not medical causes, and none of them explains a genetic or neuromuscular condition.</p>
+          <ul style="margin-top:12px" class="reg-list">
+            <li>Not feeling listened to or believed</li>
+            <li>Exhausting herself to be noticed or acknowledged</li>
+            <li>A strict environment with little room for error</li>
+            <li>Confusion about what influential people expect</li>
+            <li>Living a role that does not resonate, to please authority</li>
+            <li>Stuck serving others under threat of rejection or abandonment</li>
+            <li>A suppressed right to make her own decisions</li>
+            <li>Feeling unable to leave an unhealthy situation</li>
+            <li>Weak boundaries driven by fear of losing love</li>
+            <li>Resentment, abandoned goals, loss of hope</li>
+            <li>Emotional exhaustion, rigidity, guilt, fear of action, old shock</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="kicker">Where both maps meet</div>
+          <h3 style="margin-top:6px">Convergence</h3>
+          <div class="conv">
+            <div class="h"><span>Theme</span><span>Chart</span><span>Mind–body inquiry</span></div>
+            <div><span>Boundaries &amp; inability to leave</span><span>Natural Shores · undefined G</span><span>Stuck, unable to escape, fear of rejection after a no</span></div>
+            <div><span>Voice &amp; being believed</span><span>Taste as language and discrimination</span><span>Exhausting herself to be heard</span></div>
+            <div><span>Excess responsibility</span><span>Hope → Guilt · Gate 21</span><span>Serving others to keep approval</span></div>
+            <div><span>Wrong role or direction</span><span>Undefined G · Shores crossover · Gate 38</span><span>Roles chosen to please authority</span></div>
+            <div><span>Rigidity vs crossover</span><span>Shores needs another side · Gate 39</span><span>Rigidity as protection, fear of change</span></div>
+            <div><span>Quiet assessment overridden</span><span>Probability / Meditation · Gate 48</span><span>Others' expectations replacing her own</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hypothesis">
+        <div class="kicker">The strongest combined hypothesis</div>
+        <p class="whisper" style="font-size:clamp(22px,2.6vw,30px);margin-top:10px">Her needs, limits, temperature signals, preferred environment, language and direction may have been repeatedly overridden while she carried responsibility for other people's expectations or comfort.</p>
+        <p class="note" style="margin-top:12px">This is not “a channel created pain.” It still has to be checked with her, and if it doesn't match her life, discard it.</p>
+      </div>
+    </section>
+
+    <!-- ═════════ 05 PRACTICES ═════════ -->
+    <section class="view" data-panel="practice" hidden>
+      <div class="grid g-2">
+        <div class="card">
+          <div class="kicker">Experiment menu</div>
+          <h2>Choose what to test</h2>
+          <div class="progress"><div class="bar"><span id="bar"></span></div><div class="count" id="count">0 / 8</div></div>
+          <div class="practices" id="practices"></div>
+        </div>
+        <div style="display:grid;gap:18px;align-content:start">
+          <div class="card draw">
+            <div>
+              <div class="kicker">Inquiry · use one prompt, not all of them</div>
+              <p class="prompt" id="prompt" style="margin-top:14px">Where am I exhausting myself to be believed?</p>
+            </div>
+            <div>
+              <button class="btn" id="drawBtn" type="button">Draw another ✿</button>
+              <p class="note">Pick the prompt that creates a body response. If one produces nothing, leave it. Don't invent a trauma story to make the framework fit.</p>
+            </div>
+          </div>
+          <div class="card bottom">
+            <div class="kicker">Bottom line</div>
+            <h3 style="margin-top:6px">The meaningful Variable contacts</h3>
+            <ol>
+              <li><b>Thirst</b>: temperature and hydration regulation, because she reports cold-triggered pain.</li>
+              <li><b>Natural Shores</b>: boundaries, thresholds, light, water, rhythm, crossover.</li>
+              <li><b>Hope → Guilt</b>: too much responsibility and the urge to fix.</li>
+              <li><b>Probability / Meditation</b>: judging what works after a quiet phase.</li>
+              <li><b>Undefined Head, Ajna, G</b>: borrowed questions, forced certainty, the wrong room or role.</li>
+            </ol>
+            <p class="lead" style="font-size:14px">None of these is a diagnosis. The practices let her test them without claiming the chart caused the condition.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>The body gets the final vote. · <kbd>←</kbd> <kbd>→</kbd> or <kbd>1</kbd>–<kbd>5</kbd> to move between sections</footer>
+</div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('tw:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('tw:' + k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  /* ── Gates ─────────────────────────────── */
+  const gates = {
+    21: {
+      pos: 'Personality Sun · line 1 · foundation', name: 'The Resource Manager', title: 'Gate of the Hunter / Huntress',
+      facts: [['Heart / Will center'], ['Channel 21–45 · defined', true], ['Conscious · what she can see in herself']],
+      desc: 'Rightful control: the integrity of managing resources, both material and energetic. It balances power, value and authority, and uses strength to protect rather than dominate.',
+      shadow: 'Control', shadowT: 'Gripping outcomes, people and resources out of fear that everything collapses if the grip loosens.',
+      gift: 'Authority', giftT: 'Grounded certainty from truly knowing the domain, not from coercion.',
+      high: 'Valour', highT: 'Courage that meets danger without the contractions of fear.',
+      low: ['Controls from fear', 'Fears her own power and collapses into submission', 'People-pleases to avoid conflict', 'Swings between rebellious and domineering'],
+      flow: ['Respects and values every resource', 'Manages energy with balance and integrity', 'Leads with authority that lifts others', 'Uses power to empower'],
+      bridge: 'With Hope → Guilt motivation, the control shadow can look like taking the reins of everyone else\'s problems. Here, stewardship includes her own warmth, energy, limits and rest. Those are resources too, and they deserve the same careful management she gives other people.',
+      ask: 'Where has control replaced the boundary or support she actually needs?',
+      affirm: 'I respect and value resources · I trust my power and authority'
+    },
+    48: {
+      pos: 'Personality Earth · line 1 · foundation', name: 'The Wisdom Well', title: 'Gate of Depth',
+      facts: [['Spleen center'], ['Hanging gate · 16 open'], ['Conscious · her grounding']],
+      desc: 'A well of depth that fears inadequacy but holds great resourcefulness. Wisdom comes from lived, embodied experience and curiosity, not from books alone.',
+      shadow: 'Inadequacy', shadowT: 'The conviction that she hasn\'t learned enough yet to act.',
+      gift: 'Resourcefulness', giftT: 'Working brilliantly with exactly what is available now.',
+      high: 'Wisdom', highT: 'A knowing that stays open and lives inside the question.',
+      low: ['Over-prepares and over-learns out of fear of not being enough', 'Buffers emotions with endless study', 'Doubts her readiness and holds back', 'Uses knowledge to feel superior'],
+      flow: ['Explores with curiosity and humility', 'Knows wisdom lives in the body, not only the mind', 'Uses depth to serve others', 'Accepts that not knowing is also wisdom'],
+      bridge: 'Line 1 wants a solid foundation before acting. With an undefined Ajna, the fear of inadequacy can turn research into a hiding place. Her Taste cognition already knows a lot: “this is right”, “this is off”. In this chart, the well is her body\'s own record of what has helped before.',
+      ask: 'What does her body already know enough about to act on today?',
+      affirm: 'I trust the knowing and wisdom of my body · What I know is that I don\'t know'
+    },
+    38: {
+      pos: 'Design Sun · line 3 · trial & discovery', name: 'The Purposeful Fighter', title: 'Gate of the Fighter',
+      facts: [['Root center'], ['Channel 28–38 · defined', true], ['Design · what the body lives']],
+      desc: 'Root pressure to find meaning through struggle. It separates the battles that bring purpose from the empty ones.',
+      shadow: 'Struggle', shadowT: 'Treating difficulty as personal failure, as if every obstacle proves she isn\'t enough.',
+      gift: 'Perseverance', giftT: 'Staying power for what truly matters, felt at a cellular level.',
+      high: 'Honour', highT: 'Choosing what is most real in herself over the easier path.',
+      low: ['Fights for the sake of fighting', 'Creates suffering through meaningless battles', 'Proves her worth through struggle', 'Believes life is only hardship'],
+      flow: ['Perseveres through struggles that matter', 'Turns pressure into motivation', 'Channels conflict into purpose', 'Tells healthy challenges from needless battles'],
+      bridge: 'This is the Design Sun, so it is lived through the body. In a season of pain, the gift is not to fight harder. It is to discern which fight is truly hers. Line 3 learns by trial: what is worth the cost, and which battles (proving the pain is real, fixing other people) can end now.',
+      ask: 'Which battle deserves her life force, and which one can end now?',
+      affirm: 'I fight for what truly matters · Struggle itself is neutral'
+    },
+    39: {
+      pos: 'Design Earth · line 3 · trial & discovery', name: 'The Sacred Provocateur', title: 'Gate of Provocation',
+      facts: [['Root center'], ['Hanging gate · 55 open'], ['Design · her bodily grounding']],
+      desc: 'Root pressure to provoke spirit. It presses on what has gone stagnant so that emotional truth, passion and freedom can move again.',
+      shadow: 'Provocation', shadowT: 'Pressing every button without telling liberating pressure from destabilising pressure.',
+      gift: 'Dynamism', giftT: 'Sensing exactly where spirit is blocked and applying just the right pressure.',
+      high: 'Liberation', highT: 'Inner freedom that no external limit can define.',
+      low: ['Pushes buttons for drama', 'Projects emotions outward', 'People-pleases to avoid discomfort', 'Provokes destructively'],
+      flow: ['Provokes to spark awareness', 'Owns her emotions and lets others own theirs', 'Turns pressure into passion and spirit', 'Challenges stagnation'],
+      bridge: 'The people-pleasing shadow overlaps with boundaries that never got said. The gift is precise pressure where something is stuck, which can be as small as one clean boundary sentence. Paired with Natural Shores, it is also about crossing over: changing the room, the view or the role when life has gone stagnant.',
+      ask: 'What truth is trying to move beneath the irritation?',
+      affirm: 'I own my emotions fully · I provoke transformation with love and clarity'
+    }
+  };
+
+  const li = arr => arr.map(t => `<li>${t}</li>`).join('');
+  const showGate = id => {
+    const g = gates[id];
+    $$('[data-gate]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.gate === String(id))));
+    $('#g-num').textContent = id;
+    $('#g-pos').textContent = g.pos;
+    $('#g-name').textContent = g.name;
+    $('#g-title').textContent = g.title;
+    $('#g-facts').innerHTML = g.facts.map(([t, hot]) => `<span class="fact${hot ? ' hot' : ''}">${t}</span>`).join('');
+    $('#g-desc').textContent = g.desc;
+    $('#g-shadow').textContent = g.shadow; $('#g-shadow-t').textContent = g.shadowT;
+    $('#g-gift').textContent = g.gift; $('#g-gift-t').textContent = g.giftT;
+    $('#g-high').textContent = g.high; $('#g-high-t').textContent = g.highT;
+    $('#g-low').innerHTML = li(g.low);
+    $('#g-flow').innerHTML = li(g.flow);
+    $('#g-bridge').textContent = g.bridge;
+    $('#g-ask').textContent = g.ask;
+    $('#g-affirm').textContent = '✿ ' + g.affirm;
+    store.set('gate', id);
+  };
+  $$('[data-gate]').forEach(b => b.addEventListener('click', () => showGate(b.dataset.gate)));
+
+  /* ── Suppression areas ─────────────────── */
+  const areas = [
+    { key: 'taste', tag: 'Determination · Taste', title: 'Suppressed selectivity', short: 'Swallowing what tastes wrong: food, words, company.',
+      intro: 'Taste knows through palate, language, style and fine discrimination. Suppression could look like:',
+      list: ['Repeatedly consuming food, information, language or company that tastes wrong', 'Being shamed for being selective, picky or precise', 'Swallowing words after already knowing the wording or tone is wrong', 'Losing contact with freshness, flavour, mouth sensation or her own way of saying things', 'Adapting her language so much that her own voice disappears'],
+      extra: 'Ask about this first if mouth, jaw, digestive, allergy, mould or freshness issues come with the pain. On its own, it does not explain muscle pain.',
+      gate: '48', echo: 'Gate 48: depth that doubts it knows enough. Her palate already knows.',
+      ask: 'What has she kept swallowing after knowing it was wrong?' },
+    { key: 'thirst', tag: 'Determination · Hot Thirst', title: 'Temperature & hydration', short: 'Tolerating cold, waiting until chilled or depleted.',
+      intro: 'Her own sentence, “cold = pain”, is already clear body information. Suppression could look like:',
+      list: ['Tolerating cold because other people are comfortable', 'Waiting until she is depleted, chilled or parched before responding', 'Dismissing sweating, chills or temperature shifts as irrelevant', 'Taking in material that is too dense when her system needs something easier to process', 'Ignoring the need to “mix it up” until the system overloads'],
+      extra: 'The experiment is not to argue with the signal or make it metaphysical. It is to build her environment around what her body has repeatedly shown.',
+      gate: '21', echo: 'Gate 21: stewardship of resources, and warmth is one of them.',
+      ask: 'What would it mean to prepare before the weather changes?' },
+    { key: 'shores', tag: 'Environment · Natural Shores', title: 'Movement across boundaries', short: 'Staying in one room, role or reality after the body has flattened.',
+      intro: 'This need not mean exercise. With muscular dystrophy, crossing over can be tiny, assisted or purely about the environment. Suppression could look like:',
+      list: ['Staying in one room, role, relationship or worldview long after the body has flattened', 'No access to windows, light, water, outside air or a change of view', 'Being stopped from rocking, pacing or repositioning to self-regulate', 'Having boundaries crossed, then staying silent about what she needs', 'Being kept in an old identity because others prefer the familiar version', 'Having her experience dismissed instead of being allowed to show the other side'],
+      gate: '39', echo: 'Gate 39: provoking what has gone stagnant, including her own surroundings.',
+      ask: 'Which places return her body to itself?' },
+    { key: 'hope', tag: 'Motivation · Hope / Action', title: 'Hope turning into Guilt', short: '“I see the steps, so I must fix this.”',
+      intro: 'Hope can trust what is not hers to control. In transference it becomes “I have to fix this” or “this is my responsibility.” Tone 3 Action sees the steps, and that gift can become oppressive. Suppression could look like:',
+      list: ['Losing hope because she has made herself responsible for the outcome', 'Turning a natural ability to see steps into constant obligation', 'Guilt about resting, receiving care or not fixing other people\'s distress', 'Suppressing “this is not mine to solve”'],
+      gate: '21', echo: 'Gate 21: control that grips because letting go feels unsafe.',
+      ask: 'Whose work has she been carrying?' },
+    { key: 'prob', tag: 'Perspective · Probability / Meditation', title: 'Conclusions without quiet', short: 'Answering before the quiet phase has finished.',
+      intro: 'Probability sees what works, what can be improved and what is worth sharing. Tone 4 needs a quiet phase of absorption first. Suppression could look like:',
+      list: ['Forcing conclusions before the quiet phase is complete', 'Being flooded by endless possibilities instead of assessing what demonstrably works', 'Having her assessment dismissed when she can already see something doesn\'t work', 'Being made to explain continuously when the mind needs to watch and go quiet', 'Sharing before it\'s ready because others demand an answer'],
+      gate: '48', echo: 'Gate 48: over-studying out of fear. Quiet is where depth becomes wisdom.',
+      ask: 'What is working, and what is not ready to be shared yet?' },
+    { key: 'open', tag: 'Undefined Head · Ajna · G', title: 'Borrowed questions, borrowed rooms', short: 'Other people\'s questions, forced certainty, the wrong role.',
+      intro: 'These are the only center-conditioning patterns that apply to this chart. None of them has a sourced link to muscular dystrophy or cold-related pain.',
+      list: ['<b>Head:</b> taking in other people\'s questions as obligations, staying mentally busy, carrying problems that were never hers. Linked with mental pressure and headaches, not muscle pain.', '<b>Ajna:</b> picking a position to end the discomfort of uncertainty, borrowing someone else\'s framework as conviction.', '<b>G:</b> gripping one identity, staying in a relationship, town or role that fits everyone else, reading the flattening effect of a place as personal failure. There is no sourced link to a specific condition.'],
+      extra: 'Ajna question: where would “I don\'t know yet” release more pressure than another explanation?',
+      gate: '38', echo: 'Gate 38: which fight, which direction, which room is actually worthy now?',
+      ask: 'Which places and people return her to herself, and which flatten her within ten minutes?' }
+  ];
+  $('#areas').innerHTML = areas.map(a => `<button class="area" type="button" data-area="${a.key}" aria-pressed="false"><small>${a.tag}</small><strong>${a.title}</strong><span>${a.short}</span></button>`).join('');
+  const showArea = key => {
+    const a = areas.find(x => x.key === key);
+    $$('[data-area]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.area === key)));
+    $('#a-kicker').textContent = a.tag;
+    $('#a-title').textContent = a.title;
+    $('#a-intro').textContent = a.intro;
+    $('#a-list').innerHTML = li(a.list);
+    $('#a-extra').innerHTML = a.extra ? `<p class="note" style="margin-top:14px">${a.extra}</p>` : '';
+    $('#a-gate').textContent = a.gate;
+    $('#a-echo').textContent = a.echo;
+    $('#a-ask').textContent = a.ask;
+    store.set('area', key);
+  };
+  $$('[data-area]').forEach(b => b.addEventListener('click', () => showArea(b.dataset.area)));
+
+  /* ── Practices ─────────────────────────── */
+  const practices = [
+    { key: 'map', title: '10-day temperature–hydration–pain map', short: 'One line per meaningful change, not a complicated journal.',
+      body: `<code>time | outside/room temperature | body hot/cold/neutral | drinks + food temperature/density | hydration | pain 0–10 | room/person | what helped</code><p style="margin-top:10px">Find out whether flares follow cold alone or a combination: cold, dehydration, dense intake, a particular room, exhaustion or stress in a relationship. Don't change five things at once. Patterns need contrast.</p>` },
+    { key: 'shores', title: 'A Shores regulation menu', short: 'The smallest accessible crossing, never exertion.',
+      body: `<ul><li>Change rooms, or move from inside to a doorway, window or patio</li><li>Sit with daylight and a view</li><li>Bathing, a foot bath, warm water, or just the sound or sight of water</li><li>Gentle rocking, or assisted rhythmic movement</li><li>Turn the chair or bed to change the view</li><li>A brief crossing (hall, balcony, garden, car ride) if the body permits</li><li>Write or speak the problem from “this side”, then name what can be seen from “the other side”</li></ul><p style="margin-top:10px">During an acute episode this is about reducing load and changing context, not exercise.</p>` },
+    { key: 'cold', title: 'Honour the obvious cold signal', short: 'Prepare the environment before the weather changes.',
+      body: `<p>Accessible layers, warm drinks if she wants them, a warmed room, heat supports she already knows suit her, and fewer unnecessary trips into the cold. Hot Thirst is used here as a regulation experiment, not a rule that everything must be hot.</p>` },
+    { key: 'taste', title: 'Taste reclamation', short: 'One clean preference a day, without defending it.',
+      body: `<ul><li>“This tastes right / wrong.”</li><li>“That wording is not mine.”</li><li>“I want it said this way.”</li><li>“This feels stale / fresh.”</li><li>“My mouth, jaw or stomach changes when…”</li></ul><p style="margin-top:10px">Also note mould, freshness of food, jaw tension, mouth sensitivity, digestion and gag response. These are the symptoms her actual cognition material asks us to watch.</p>` },
+    { key: 'sort', title: 'Mine / theirs / not controllable today', short: 'Sort the load when the pressure rises.',
+      body: `<div class="cols3"><div>Mine to do</div><div>Theirs to do</div><div>Not controllable today</div></div><p class="whisper" style="margin-top:12px;font-size:19px">“Seeing the steps does not make every step my responsibility.”</p><p style="margin-top:8px">This tests the Hope-to-Guilt transfer directly.</p>` },
+    { key: 'boundary', title: 'One boundary sentence before explanation', short: 'A sentence that doesn\'t need to make a case.',
+      body: `<ul><li>“No, I cannot do that.”</li><li>“I need warmth and rest now.”</li><li>“I can listen, but I cannot fix this.”</li><li>“That role does not fit me.”</li><li>“I need you to believe what I am telling you about my body.”</li></ul><p style="margin-top:10px">Then notice what happens right away in the jaw, throat, shoulders, breath, temperature and pain. The point is observation, not proving that expression cures symptoms.</p>` },
+    { key: 'room', title: 'The right-room test', short: 'Seven days: where does the body open, where does it flatten?',
+      body: `<p>Use the first ten minutes, before the mind explains the room. At the end of the week, go back to one “open” place on purpose, or recreate its elements: light, scent, view, person, water, warmth or position.</p>` },
+    { key: 'quiet', title: 'Probability after quiet', short: 'Four questions, only after a quiet period.',
+      body: `<ol style="padding-left:1.2em;margin:0"><li>What is working?</li><li>What can be tweaked?</li><li>What would genuinely improve this?</li><li>What is ready to be shared, and what is not ready yet?</li></ol><p style="margin-top:10px">This fits her better than generating endless new possibilities.</p>` }
+  ];
+  let done = store.get('done', []);
+  if (!Array.isArray(done)) done = [];
+  const box = $('#practices');
+  box.innerHTML = practices.map(p => `
+    <div class="practice" data-p="${p.key}" data-open="false">
+      <div class="row">
+        <button class="tick" type="button" aria-label="Mark “${p.title}” as chosen" aria-pressed="false">✓</button>
+        <button class="open" type="button" aria-expanded="false"><strong>${p.title}</strong><span>${p.short}</span></button>
+        <button class="chev" type="button" aria-hidden="true" tabindex="-1">⌄</button>
+      </div>
+      <div class="body">${p.body}</div>
+    </div>`).join('');
+  const paint = () => {
+    $$('.practice').forEach(el => {
+      const on = done.includes(el.dataset.p);
+      el.classList.toggle('done', on);
+      $('.tick', el).setAttribute('aria-pressed', String(on));
+    });
+    $('#count').textContent = `${done.length} / ${practices.length}`;
+    $('#bar').style.width = `${done.length / practices.length * 100}%`;
+    store.set('done', done);
+  };
+  $$('.practice').forEach(el => {
+    $('.tick', el).addEventListener('click', () => {
+      const k = el.dataset.p;
+      done = done.includes(k) ? done.filter(x => x !== k) : [...done, k];
+      paint();
+    });
+    const toggle = () => {
+      const open = el.dataset.open !== 'true';
+      el.dataset.open = String(open);
+      $('.open', el).setAttribute('aria-expanded', String(open));
+    };
+    $('.open', el).addEventListener('click', toggle);
+    $('.chev', el).addEventListener('click', toggle);
+  });
+  paint();
+
+  const prompts = [
+    'Where am I exhausting myself to be believed?',
+    'Whose expectations am I still trying to meet?',
+    'Where did I learn that saying no risks love or safety?',
+    'What role am I performing that no longer resonates?',
+    'What responsibility am I carrying so I will not be blamed?',
+    'What do I believe I cannot escape?',
+    'What passion or direction did I abandon?',
+    'What would change if I no longer had to prove that my pain is real?'
+  ];
+  let pi = 0;
+  $('#drawBtn').addEventListener('click', () => {
+    const el = $('#prompt');
+    el.style.opacity = 0;
+    setTimeout(() => {
+      let next; do { next = Math.floor(Math.random() * prompts.length); } while (next === pi);
+      pi = next; el.textContent = prompts[pi]; el.style.opacity = 1;
+    }, 250);
+  });
+
+  /* ── Tabs ──────────────────────────────── */
+  const views = $$('[data-view]').map(b => b.dataset.view);
+  let current = 'cross';
+  const showView = name => {
+    current = name;
+    $$('[data-view]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === name)));
+    $$('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== name; });
+    store.set('view', name);
+  };
+  $$('[data-view]').forEach(b => b.addEventListener('click', () => { showView(b.dataset.view); window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  document.addEventListener('keydown', e => {
+    if (e.target.closest('input, textarea')) return;
+    const cur = views.indexOf(current);
+    if (e.key === 'ArrowRight') showView(views[Math.min(views.length - 1, cur + 1)]);
+    else if (e.key === 'ArrowLeft') showView(views[Math.max(0, cur - 1)]);
+    else if (/^[1-5]$/.test(e.key)) showView(views[+e.key - 1]);
+  });
+
+  const startGate = store.get('gate', '21');
+  showGate(gates[startGate] ? startGate : '21');
+  const startArea = store.get('area', 'thirst');
+  showArea(areas.some(a => a.key === startArea) ? startArea : 'thirst');
+  const startView = store.get('view', 'cross');
+  showView(views.includes(startView) ? startView : 'cross');
+})();
+</script>
+</body>
+</html>
