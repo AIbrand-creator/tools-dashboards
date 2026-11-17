@@ -1,0 +1,1639 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070709">
+<title>So you have your chart. Now what? Human Design ReDefined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:ital,wght@0,400;0,500;1,400;1,500&family=Syne:wght@600;700&family=Saira+Extra+Condensed:wght@600;700&family=Space+Mono:wght@400;700&family=Archivo:wght@400;500&family=Noto+Sans+Symbols&family=Noto+Sans+Math&display=swap" rel="stylesheet">
+<style>
+/* Chart Walkthrough - brand tokens copied from
+   /home/terezka/Stažené/What-Do-you-want-to-use-HD-for.html
+   Fonts corrected per Tereza 2026-09-29: Noto Serif Display / Syne /
+   Saira Extra Condensed / Space Mono / Archivo. No Gloock, no DM Sans,
+   no Caveat, no teal, no blue overlays.
+   Split-stage layout 2026-09-29 (v2): text panel left 45%, chart panel
+   right 55%, so the two never physically overlap - no backdrop needed. */
+
+:root {
+  --void: #070709;
+  --void-2: #0b0b0e;
+  --bone: #f2ede8;
+  --soft: #c8c0bb;
+  --muted: #8d8581;
+  --red: #f01445;
+  --mid: #d4499f;
+  --violet: #8c66ff;
+  --line: rgba(255, 255, 255, .12);
+  --glow-rgb: 240, 20, 69;
+  --wash-a: rgba(240, 20, 69, .16);
+  --wash-b: rgba(140, 102, 255, .12);
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --ink: #0b0a0d;
+}
+
+* { box-sizing: border-box; }
+html { color-scheme: dark; }
+
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--bone);
+  background: var(--void);
+  font-family: "Archivo", system-ui, sans-serif;
+}
+
+.stage-wrap {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  overflow: hidden;
+  display: flex;
+  background:
+    radial-gradient(60rem 46rem at 10% 6%, var(--wash-a), transparent 62%),
+    radial-gradient(50rem 38rem at 94% 92%, var(--wash-b), transparent 66%),
+    linear-gradient(180deg, var(--void) 0%, var(--void-2) 100%);
+}
+@supports (aspect-ratio: 16/9) {
+  .stage-wrap { max-height: 100vh; max-width: 177.78vh; }
+}
+
+/* ---------- LEFT: text panel ---------- */
+.text-panel {
+  position: relative;
+  width: 45%;
+  height: 100%;
+  flex: 0 0 45%;
+  padding: 52px 40px 52px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+.wordmark {
+  position: absolute;
+  top: 40px;
+  left: 56px;
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--bone);
+  opacity: .8;
+}
+.wordmark .re { color: var(--red); }
+
+.step-mini {
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--red);
+  opacity: .9;
+}
+
+.headline {
+  font-family: "Noto Serif Display", "Noto Sans Symbols", "Noto Sans Math", serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(64px, 6vw, 100px);
+  line-height: 1.02;
+  margin: 0;
+  letter-spacing: -.015em;
+  max-width: 100%;
+}
+.headline .grad {
+  background: linear-gradient(100deg, var(--red) 0%, var(--mid) 50%, var(--violet) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 26px rgba(var(--glow-rgb), .22));
+  font-style: italic;
+}
+
+.bullets {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 92%;
+}
+.bullets li {
+  font-family: "Archivo", sans-serif;
+  font-weight: 400;
+  font-size: clamp(20px, 1.7vw, 30px);
+  line-height: 1.32;
+  color: var(--bone);
+  opacity: .82;
+  padding-left: 26px;
+  position: relative;
+}
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .55em;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(100deg, var(--red), var(--violet));
+}
+
+.side-callout {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 22px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(242, 237, 232, .14);
+  width: fit-content;
+}
+.side-callout .glyph { font-family: "Noto Sans Symbols", "Noto Sans Math", sans-serif; font-size: 32px; background: linear-gradient(100deg,var(--red),var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.side-callout .num { font-family: "Saira Extra Condensed", sans-serif; font-weight: 700; font-size: 32px; color: var(--bone); }
+.side-callout .lbl { font-family: "Syne", sans-serif; font-weight: 600; font-size: 16px; color: var(--soft); letter-spacing: .02em; }
+
+.side-big-num {
+  font-family: "Saira Extra Condensed", sans-serif;
+  font-weight: 700;
+  font-size: 150px;
+  line-height: 1;
+  background: linear-gradient(100deg, var(--red) 0%, var(--mid) 50%, var(--violet) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 30px rgba(var(--glow-rgb), .22));
+  margin-top: 6px;
+}
+
+/* ---------- RIGHT: chart panel ---------- */
+.chart-panel {
+  position: relative;
+  width: 55%;
+  height: 100%;
+  flex: 0 0 55%;
+}
+#stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: transparent;
+}
+
+/* ---------- camera / dim / focus ---------- */
+#camera { transition: none; }
+.cam-anim #camera { transition: transform 900ms var(--ease); }
+@media (prefers-reduced-motion: reduce) {
+  .cam-anim #camera { transition: none; }
+}
+
+.dimmable { opacity: 1; transition: opacity 500ms var(--ease); }
+.dimmable.dim { opacity: .22; }
+.dimmable.focus { opacity: 1; }
+
+@keyframes pulseGlow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(var(--glow-rgb), .55)); }
+  50% { filter: drop-shadow(0 0 22px rgba(var(--glow-rgb), .9)); }
+}
+.pulse { animation: pulseGlow 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .pulse { animation: none; filter: drop-shadow(0 0 14px rgba(var(--glow-rgb), .6)); }
+}
+
+body.ui-hidden .text-panel,
+body.ui-hidden .controls,
+body.ui-hidden .step-label { opacity: 0 !important; pointer-events: none; }
+
+body.captions-off .text-panel { opacity: 0; pointer-events: none; }
+
+body.idle .controls, body.idle .step-label { opacity: 0; }
+.controls, .step-label { transition: opacity 600ms var(--ease); }
+
+/* ---------- controls (bottom-right of the chart panel) ---------- */
+.controls {
+  position: absolute;
+  right: 5%;
+  bottom: 5%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 10;
+}
+.nav-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: linear-gradient(110deg, rgba(var(--glow-rgb), .22), rgba(140, 102, 255, .14));
+  color: var(--bone);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+  transition: transform 220ms var(--ease), box-shadow 220ms var(--ease);
+}
+.nav-btn:hover { transform: translateY(-2px); box-shadow: 0 0 26px rgba(var(--glow-rgb), .35); }
+.nav-btn svg { width: 22px; height: 22px; }
+.nav-btn:disabled { opacity: .3; cursor: default; transform: none; box-shadow: none; }
+
+.step-label {
+  position: absolute;
+  left: 5%;
+  bottom: 5%;
+  font-family: "Space Mono", monospace;
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  z-index: 10;
+}
+.step-label .n { color: var(--bone); font-family: "Saira Extra Condensed", sans-serif; font-weight: 700; font-size: 15px; }
+
+/* ---------- step list modal ---------- */
+.step-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 6, 8, .86);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+.step-modal.open { display: flex; }
+.step-panel {
+  width: min(78%, 1100px);
+  max-height: 78%;
+  overflow-y: auto;
+  background: linear-gradient(180deg, rgba(16, 15, 19, .96), rgba(9, 9, 11, .98));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 28px 12px 28px 28px;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, .7);
+}
+.step-panel h2 {
+  font-family: "Syne", sans-serif;
+  font-size: 18px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+  color: var(--soft);
+  padding-right: 16px;
+}
+.step-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 22px; padding-right: 16px; }
+.step-item {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 7px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Archivo", sans-serif;
+  font-size: 13.5px;
+  color: var(--soft);
+}
+.step-item:hover { background: rgba(240, 20, 69, .1); color: var(--bone); }
+.step-item.current { background: rgba(140, 102, 255, .14); color: var(--bone); }
+.step-item .idx { font-family: "Saira Extra Condensed", sans-serif; font-weight: 700; color: var(--red); min-width: 22px; }
+
+/* ---------- SVG-scoped brand rules (override embedded bodygraph teal),
+   sizes scaled up ~2x for gate numbers, ~2.5x for active channel lines,
+   per the v2 "readable at 1080p" pass. ---------- */
+#bodygraph .center.defined { fill: url(#grad-defined); stroke: url(#grad-defined); filter: url(#glow-brand); }
+#bodygraph .center.undefined-fill { fill: rgba(242, 237, 232, .85); stroke: rgba(242, 237, 232, .5); }
+#bodygraph .channel-track { stroke-width: 6 !important; }
+#bodygraph .channel-track.defined-personality { stroke: var(--bone); stroke-width: 11 !important; filter: url(#glow-brand-soft); }
+#bodygraph .channel-track.defined-design { stroke: var(--red); stroke-width: 11 !important; filter: url(#glow-brand-soft); }
+#bodygraph .channel-track.defined-both { stroke: url(#stripe-both); stroke-width: 12 !important; filter: url(#glow-brand-soft); }
+#bodygraph .gate-segment { stroke-width: 11 !important; }
+#bodygraph .gate-segment.personality.on { stroke: var(--bone); }
+#bodygraph .gate-segment.design.on { stroke: var(--red); }
+#bodygraph .gate-segment.both.on { stroke: url(#stripe-both); }
+#bodygraph .gate-label.active.personality { fill: var(--bone); }
+#bodygraph .gate-label.active.design { fill: var(--red); }
+#bodygraph .gate-label.active.both { fill: var(--violet); }
+/* contrast override: a gate number sitting inside a FILLED center (defined
+   gradient or undefined ivory wash) always needs dark ink, regardless of
+   its personality/design colour-coding - must win over .active.* above. */
+#bodygraph .gate-label.on-defined { fill: var(--ink) !important; }
+#bodygraph .gate-label { font-family: "Saira Extra Condensed", "Space Mono", monospace; font-size: 30px; }
+#bodygraph .gate-dot { pointer-events: none; }
+
+#bodygraph.bg-glow {
+  filter:
+    drop-shadow(0 0 9px rgba(240, 20, 69, .65))
+    drop-shadow(0 0 20px rgba(212, 73, 159, .55))
+    drop-shadow(0 0 34px rgba(140, 102, 255, .45));
+}
+
+.row { transition: opacity 500ms var(--ease); opacity: 1; }
+.row.row-dim { opacity: .22; }
+.row.row-focus { opacity: 1; }
+.row.row-focus .row-num { filter: drop-shadow(0 0 10px rgba(var(--glow-rgb), .7)); }
+
+.profile-line { transition: fill 300ms var(--ease); }
+.profile-line.spotlight {
+  fill: url(#grad-defined);
+  filter: drop-shadow(0 0 8px rgba(140, 102, 255, .8));
+}
+
+.planet-col { font-family: "Saira Extra Condensed", sans-serif; }
+.planet-col .col-header {
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.planet-col .row-glyph { font-family: "Noto Sans Symbols", "Noto Sans Math", sans-serif; }
+.planet-col .row-num { font-family: "Saira Extra Condensed", sans-serif; font-weight: 600; }
+
+.mandala-label {
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  paint-order: stroke;
+  stroke: rgba(7, 7, 9, .9);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+.mandala-gate-num {
+  font-family: "Saira Extra Condensed", sans-serif;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: rgba(7, 7, 9, .85);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+/* ---------- variables: small flag/pill arrows, deliberately unlike the
+   round nav buttons so they never read as UI chrome ---------- */
+.var-arrow .var-pill {
+  fill: rgba(11, 10, 13, .55);
+  stroke: rgba(242, 237, 232, .18);
+  stroke-width: 1;
+}
+.var-arrow.var-digestion .var-pill, .var-arrow.var-environment .var-pill { stroke: rgba(240, 20, 69, .3); }
+.var-arrow.var-motivation .var-pill, .var-arrow.var-perspective .var-pill { stroke: rgba(242, 237, 232, .3); }
+.var-arrow .var-head { stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.var-label { font-family: "Syne", sans-serif; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+
+</style>
+</head>
+<body>
+<div class="stage-wrap">
+
+  <!-- LEFT: text panel, 45% width, full height. The camera never touches
+       this panel - it is plain HTML, independent of the SVG chart. -->
+  <div class="text-panel">
+    <div class="wordmark">HUMAN DESIGN <span class="re">REDEFINED</span></div>
+    <div class="step-mini" id="step-mini"></div>
+    <h1 class="headline" id="headline"></h1>
+    <ul class="bullets" id="bullets"></ul>
+    <div class="side-callout" id="side-callout" style="display:none"></div>
+    <div class="side-big-num" id="side-big-num" style="display:none"></div>
+  </div>
+
+  <!-- RIGHT: the chart, 55% width, full height. -->
+  <div class="chart-panel">
+    <svg id="stage" viewBox="0 0 1056 1080" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad-defined" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f01445"/>
+          <stop offset="50%" stop-color="#d4499f"/>
+          <stop offset="100%" stop-color="#8c66ff"/>
+        </linearGradient>
+        <pattern id="stripe-both" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="10" height="10" fill="#f01445"/>
+          <rect width="5" height="10" fill="#f2ede8"/>
+        </pattern>
+        <filter id="glow-brand" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="5" result="b"/>
+          <feFlood flood-color="#d4499f" flood-opacity="0.65" result="c"/>
+          <feComposite in="c" in2="b" operator="in" result="g"/>
+          <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow-brand-soft" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="3.2" result="b"/>
+          <feFlood flood-color="#f01445" flood-opacity="0.5" result="c"/>
+          <feComposite in="c" in2="b" operator="in" result="g"/>
+          <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <g id="camera">
+        <g id="viewport">
+          <!-- variables arrows above the head (built by JS) -->
+          <g id="variables-group" class="dimmable"></g>
+
+          <!-- planet columns (built by JS) -->
+          <g id="design-col" class="dimmable planet-col"></g>
+          <g id="personality-col" class="dimmable planet-col"></g>
+
+          <!-- the bodygraph itself, verbatim geometry, embedded as a nested
+               svg. Layout budget kept in sync with js/app.js BODY_* consts.
+               Beat 2's highlight is a CSS drop-shadow filter on this
+               element, not a separate outline shape. -->
+          <svg id="bodygraph" class="dimmable" x="255" y="110" width="547" height="870" viewBox="0 0 966 1536">
+            <style>
+  .bg { fill: none; }
+  .channel-track { fill: none; stroke: rgba(242,237,232,.10); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .gate-segment { fill: none; stroke: transparent; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  .center { fill: transparent; stroke: rgba(242,237,232,.28); stroke-width: 3.5; stroke-linejoin: round; }
+  .gate-label { font-size: 15px; font-weight: 700; fill: #6f6a76; text-anchor: middle; dominant-baseline: middle; pointer-events: none; user-select: none; }
+  </style>
+<defs><mask id="outside-centres"><rect x="0" y="0" width="966" height="1536" fill="#fff"/><polygon id="center-head" data-center="head" points="483.0,31.0 388.0,185.0 578.0,185.0" fill="#000"/><polygon id="center-ajna" data-center="ajna" points="388.0,252.0 578.0,252.0 483.0,407.0" fill="#000"/><rect id="center-throat" data-center="throat" x="386" y="474" width="190" height="190" rx="22" fill="#000"/><polygon id="center-g" data-center="g" points="483.0,708.0 360.0,829.0 483.0,951.0 605.0,829.0" fill="#000"/><polygon id="center-heart" data-center="heart" points="711.0,838.0 614.0,971.0 766.0,1005.0" fill="#000"/><polygon id="center-spleen" data-center="spleen" points="40.0,1045.0 222.0,1160.0 40.0,1275.0" fill="#000"/><polygon id="center-solar" data-center="solar" points="926.0,1045.0 744.0,1160.0 926.0,1275.0" fill="#000"/><rect id="center-sacral" data-center="sacral" x="386" y="1074" width="190" height="190" rx="22" fill="#000"/><rect id="center-root" data-center="root" x="386" y="1326" width="190" height="190" rx="22" fill="#000"/></mask></defs><g mask="url(#outside-centres)" id="channels-track" aria-label="Undefined channel tracks">
+  <path id="channel-64-47" class="channel-track" data-channel="64-47" d="M 445 174 L 445 262"/>
+  <path id="channel-61-24" class="channel-track" data-channel="61-24" d="M 483 174 L 483 262"/>
+  <path id="channel-63-4" class="channel-track" data-channel="63-4" d="M 522 174 L 522 262"/>
+  <path id="channel-17-62" class="channel-track" data-channel="17-62" d="M 430 318 C 428 370 433 430 435 490"/>
+  <path id="channel-43-23" class="channel-track" data-channel="43-23" d="M 483 383 L 483 490"/>
+  <path id="channel-11-56" class="channel-track" data-channel="11-56" d="M 535 318 C 538 370 532 430 531 490"/>
+  <path id="channel-31-7" class="channel-track" data-channel="31-7" d="M 420 640 L 445 775"/>
+  <path id="channel-8-1" class="channel-track" data-channel="8-1" d="M 483 640 L 483 732"/>
+  <path id="channel-33-13" class="channel-track" data-channel="33-13" d="M 520 640 L 522 775"/>
+  <path id="channel-16-48" class="channel-track" data-channel="16-48" d="M 405 525 C 250 620 128 835 88 1098"/>
+  <path id="channel-20-57" class="channel-track" data-channel="20-57" d="M 405 570 C 270 690 194 900 125 1118"/>
+  <path id="channel-20-34" class="channel-track" data-channel="20-34" d="M 405 570 C 345 760 355 1000 407 1140"/>
+  <path id="channel-20-10" class="channel-track" data-channel="20-10" d="M 405 570 C 410 650 390 750 402 834"/>
+  <path id="channel-45-21" class="channel-track" data-channel="45-21" d="M 555 610 C 645 680 695 790 712 878"/>
+  <path id="channel-12-22" class="channel-track" data-channel="12-22" d="M 560 570 C 700 710 805 910 842 1123"/>
+  <path id="channel-35-36" class="channel-track" data-channel="35-36" d="M 560 525 C 725 650 845 835 880 1098"/>
+  <path id="channel-15-5" class="channel-track" data-channel="15-5" d="M 445 890 L 430 1098"/>
+  <path id="channel-2-14" class="channel-track" data-channel="2-14" d="M 483 928 L 483 1098"/>
+  <path id="channel-46-29" class="channel-track" data-channel="46-29" d="M 522 890 L 535 1098"/>
+  <path id="channel-25-51" class="channel-track" data-channel="25-51" d="M 564 834 L 674 913"/>
+  <path id="channel-10-57" class="channel-track" data-channel="10-57" d="M 402 834 C 300 910 215 1005 125 1118"/>
+  <path id="channel-10-34" class="channel-track" data-channel="10-34" d="M 402 834 C 360 930 378 1055 407 1140"/>
+  <path id="channel-57-34" class="channel-track" data-channel="57-34" d="M 125 1118 C 215 1005 350 1085 407 1140"/>
+  <path id="channel-44-26" class="channel-track" data-channel="44-26" d="M 124 1146 C 330 1005 500 930 652 964"/>
+  <path id="channel-37-40" class="channel-track" data-channel="37-40" d="M 817 1145 C 785 1080 745 1020 725 972"/>
+  <path id="channel-27-50" class="channel-track" data-channel="27-50" d="M 430 1212 C 340 1185 245 1170 128 1168"/>
+  <path id="channel-59-6" class="channel-track" data-channel="59-6" d="M 560 1165 C 650 1160 720 1160 797 1162"/>
+  <path id="channel-18-58" class="channel-track" data-channel="18-58" d="M 66 1234 C 135 1335 270 1450 420 1475"/>
+  <path id="channel-28-38" class="channel-track" data-channel="28-38" d="M 88 1216 C 160 1330 280 1405 420 1435"/>
+  <path id="channel-32-54" class="channel-track" data-channel="32-54" d="M 112 1194 C 205 1315 315 1380 420 1395"/>
+  <path id="channel-42-53" class="channel-track" data-channel="42-53" d="M 455 1244 L 430 1348"/>
+  <path id="channel-3-60" class="channel-track" data-channel="3-60" d="M 499 1244 L 483 1348"/>
+  <path id="channel-9-52" class="channel-track" data-channel="9-52" d="M 540 1244 L 535 1348"/>
+  <path id="channel-19-49" class="channel-track" data-channel="19-49" d="M 545 1395 C 650 1385 755 1320 822 1192"/>
+  <path id="channel-39-55" class="channel-track" data-channel="39-55" d="M 545 1435 C 650 1420 760 1350 858 1216"/>
+  <path id="channel-41-30" class="channel-track" data-channel="41-30" d="M 545 1475 C 670 1460 790 1380 898 1234"/>
+</g>
+<g id="gate-segments" aria-label="Gate activation segments">
+  <path id="gate-64-to-47-segment" class="gate-segment" data-gate="64" data-channel="64-47" d="M 445 174 L 445 218"/>
+  <path id="gate-47-to-64-segment" class="gate-segment" data-gate="47" data-channel="64-47" d="M 445 262 L 445 218"/>
+  <path id="gate-61-to-24-segment" class="gate-segment" data-gate="61" data-channel="61-24" d="M 483 174 L 483 218"/>
+  <path id="gate-24-to-61-segment" class="gate-segment" data-gate="24" data-channel="61-24" d="M 483 262 L 483 218"/>
+  <path id="gate-63-to-4-segment" class="gate-segment" data-gate="63" data-channel="63-4" d="M 522 174 L 522 218"/>
+  <path id="gate-4-to-63-segment" class="gate-segment" data-gate="4" data-channel="63-4" d="M 522 262 L 522 218"/>
+  <path id="gate-17-to-62-segment" class="gate-segment" data-gate="17" data-channel="17-62" d="M 430 318 C 429 344 429.8 372 431 401"/>
+  <path id="gate-62-to-17-segment" class="gate-segment" data-gate="62" data-channel="17-62" d="M 435 490 C 434 460 432.2 430 431 401"/>
+  <path id="gate-43-to-23-segment" class="gate-segment" data-gate="43" data-channel="43-23" d="M 483 383 L 483 436.5"/>
+  <path id="gate-23-to-43-segment" class="gate-segment" data-gate="23" data-channel="43-23" d="M 483 490 L 483 436.5"/>
+  <path id="gate-11-to-56-segment" class="gate-segment" data-gate="11" data-channel="11-56" d="M 535 318 C 536.5 344 535.8 372 534.5 401"/>
+  <path id="gate-56-to-11-segment" class="gate-segment" data-gate="56" data-channel="11-56" d="M 531 490 C 531.5 460 533.2 430 534.5 401"/>
+  <path id="gate-31-to-7-segment" class="gate-segment" data-gate="31" data-channel="31-7" d="M 420 640 L 432.5 707.5"/>
+  <path id="gate-7-to-31-segment" class="gate-segment" data-gate="7" data-channel="31-7" d="M 445 775 L 432.5 707.5"/>
+  <path id="gate-8-to-1-segment" class="gate-segment" data-gate="8" data-channel="8-1" d="M 483 640 L 483 686"/>
+  <path id="gate-1-to-8-segment" class="gate-segment" data-gate="1" data-channel="8-1" d="M 483 732 L 483 686"/>
+  <path id="gate-33-to-13-segment" class="gate-segment" data-gate="33" data-channel="33-13" d="M 520 640 L 521 707.5"/>
+  <path id="gate-13-to-33-segment" class="gate-segment" data-gate="13" data-channel="33-13" d="M 522 775 L 521 707.5"/>
+  <path id="gate-16-to-48-segment" class="gate-segment" data-gate="16" data-channel="16-48" d="M 405 525 C 327.5 572.5 258.2 650 203.4 748.5"/>
+  <path id="gate-48-to-16-segment" class="gate-segment" data-gate="48" data-channel="16-48" d="M 88 1098 C 108 966.5 148.5 847 203.4 748.5"/>
+  <path id="gate-20-to-57-segment" class="gate-segment" data-gate="20" data-channel="20-57" d="M 405 570 C 337.5 630 284.8 712.5 240.2 807.2"/>
+  <path id="gate-57-to-20-segment" class="gate-segment" data-gate="57" data-channel="20-57" d="M 125 1118 C 159.5 1009 195.8 902 240.2 807.2"/>
+  <path id="gate-20-to-34-segment" class="gate-segment" data-gate="20" data-channel="20-34" d="M 405 570 C 375 665 362.5 772.5 364 873.8"/>
+  <path id="gate-34-to-20-segment" class="gate-segment" data-gate="34" data-channel="20-34" d="M 407 1140 C 381 1070 365.5 975 364 873.8"/>
+  <path id="gate-20-to-10-segment" class="gate-segment" data-gate="20" data-channel="20-10" d="M 405 570 C 407.5 610 403.8 655 400.9 700.5"/>
+  <path id="gate-10-to-20-segment" class="gate-segment" data-gate="10" data-channel="20-10" d="M 402 834 C 396 792 398 746 400.9 700.5"/>
+  <path id="gate-45-to-21-segment" class="gate-segment" data-gate="45" data-channel="45-21" d="M 555 610 C 600 645 635 690 660.9 737.2"/>
+  <path id="gate-21-to-45-segment" class="gate-segment" data-gate="21" data-channel="45-21" d="M 712 878 C 703.5 834 686.8 784.5 660.9 737.2"/>
+  <path id="gate-12-to-22-segment" class="gate-segment" data-gate="12" data-channel="12-22" d="M 560 570 C 630 640 691.2 725 739.6 819.1"/>
+  <path id="gate-22-to-12-segment" class="gate-segment" data-gate="22" data-channel="12-22" d="M 842 1123 C 823.5 1016.5 788 913.2 739.6 819.1"/>
+  <path id="gate-35-to-36-segment" class="gate-segment" data-gate="35" data-channel="35-36" d="M 560 525 C 642.5 587.5 713.8 665 768.8 759.8"/>
+  <path id="gate-36-to-35-segment" class="gate-segment" data-gate="36" data-channel="35-36" d="M 880 1098 C 862.5 966.5 823.8 854.5 768.8 759.8"/>
+  <path id="gate-15-to-5-segment" class="gate-segment" data-gate="15" data-channel="15-5" d="M 445 890 L 437.5 994"/>
+  <path id="gate-5-to-15-segment" class="gate-segment" data-gate="5" data-channel="15-5" d="M 430 1098 L 437.5 994"/>
+  <path id="gate-2-to-14-segment" class="gate-segment" data-gate="2" data-channel="2-14" d="M 483 928 L 483 1013"/>
+  <path id="gate-14-to-2-segment" class="gate-segment" data-gate="14" data-channel="2-14" d="M 483 1098 L 483 1013"/>
+  <path id="gate-46-to-29-segment" class="gate-segment" data-gate="46" data-channel="46-29" d="M 522 890 L 528.5 994"/>
+  <path id="gate-29-to-46-segment" class="gate-segment" data-gate="29" data-channel="46-29" d="M 535 1098 L 528.5 994"/>
+  <path id="gate-25-to-51-segment" class="gate-segment" data-gate="25" data-channel="25-51" d="M 564 834 L 619 873.5"/>
+  <path id="gate-51-to-25-segment" class="gate-segment" data-gate="51" data-channel="25-51" d="M 674 913 L 619 873.5"/>
+  <path id="gate-10-to-57-segment" class="gate-segment" data-gate="10" data-channel="10-57" d="M 402 834 C 351 872 304.2 914.8 259 962.1"/>
+  <path id="gate-57-to-10-segment" class="gate-segment" data-gate="57" data-channel="10-57" d="M 125 1118 C 170 1061.5 213.8 1009.5 259 962.1"/>
+  <path id="gate-10-to-34-segment" class="gate-segment" data-gate="10" data-channel="10-34" d="M 402 834 C 381 882 375 937.2 377.9 991.1"/>
+  <path id="gate-34-to-10-segment" class="gate-segment" data-gate="34" data-channel="10-34" d="M 407 1140 C 392.5 1097.5 380.8 1045 377.9 991.1"/>
+  <path id="gate-57-to-34-segment" class="gate-segment" data-gate="57" data-channel="57-34" d="M 125 1118 C 170 1061.5 226.2 1053.2 278.4 1066"/>
+  <path id="gate-34-to-57-segment" class="gate-segment" data-gate="34" data-channel="57-34" d="M 407 1140 C 378.5 1112.5 330.5 1078.8 278.4 1066"/>
+  <path id="gate-44-to-26-segment" class="gate-segment" data-gate="44" data-channel="44-26" d="M 124 1146 C 227 1075.5 321 1021.5 408.2 989.4"/>
+  <path id="gate-26-to-44-segment" class="gate-segment" data-gate="26" data-channel="44-26" d="M 652 964 C 576 947 495.5 957.2 408.2 989.4"/>
+  <path id="gate-37-to-40-segment" class="gate-segment" data-gate="37" data-channel="37-40" d="M 817 1145 C 801 1112.5 783 1081.2 766.5 1052.1"/>
+  <path id="gate-40-to-37-segment" class="gate-segment" data-gate="40" data-channel="37-40" d="M 725 972 C 735 996 750 1023 766.5 1052.1"/>
+  <path id="gate-27-to-50-segment" class="gate-segment" data-gate="27" data-channel="27-50" d="M 430 1212 C 385 1198.5 338.8 1188 289.1 1180.6"/>
+  <path id="gate-50-to-27-segment" class="gate-segment" data-gate="50" data-channel="27-50" d="M 128 1168 C 186.5 1169 239.5 1173.2 289.1 1180.6"/>
+  <path id="gate-59-to-6-segment" class="gate-segment" data-gate="59" data-channel="59-6" d="M 560 1165 C 605 1162.5 645 1161.2 683.4 1160.9"/>
+  <path id="gate-6-to-59-segment" class="gate-segment" data-gate="6" data-channel="59-6" d="M 797 1162 C 758.5 1161 721.8 1160.5 683.4 1160.9"/>
+  <path id="gate-18-to-58-segment" class="gate-segment" data-gate="18" data-channel="18-58" d="M 66 1234 C 100.5 1284.5 151.5 1338.5 212.6 1383"/>
+  <path id="gate-58-to-18-segment" class="gate-segment" data-gate="58" data-channel="18-58" d="M 420 1475 C 345 1462.5 273.8 1427.5 212.6 1383"/>
+  <path id="gate-28-to-38-segment" class="gate-segment" data-gate="28" data-channel="28-38" d="M 88 1216 C 124 1273 172 1320.2 228.5 1357"/>
+  <path id="gate-38-to-28-segment" class="gate-segment" data-gate="38" data-channel="28-38" d="M 420 1435 C 350 1420 285 1393.8 228.5 1357"/>
+  <path id="gate-32-to-54-segment" class="gate-segment" data-gate="32" data-channel="32-54" d="M 112 1194 C 158.5 1254.5 209.2 1301 261.5 1334.2"/>
+  <path id="gate-54-to-32-segment" class="gate-segment" data-gate="54" data-channel="32-54" d="M 420 1395 C 367.5 1387.5 313.8 1367.5 261.5 1334.2"/>
+  <path id="gate-42-to-53-segment" class="gate-segment" data-gate="42" data-channel="42-53" d="M 455 1244 L 442.5 1296"/>
+  <path id="gate-53-to-42-segment" class="gate-segment" data-gate="53" data-channel="42-53" d="M 430 1348 L 442.5 1296"/>
+  <path id="gate-3-to-60-segment" class="gate-segment" data-gate="3" data-channel="3-60" d="M 499 1244 L 491 1296"/>
+  <path id="gate-60-to-3-segment" class="gate-segment" data-gate="60" data-channel="3-60" d="M 483 1348 L 491 1296"/>
+  <path id="gate-9-to-52-segment" class="gate-segment" data-gate="9" data-channel="9-52" d="M 540 1244 L 537.5 1296"/>
+  <path id="gate-52-to-9-segment" class="gate-segment" data-gate="52" data-channel="9-52" d="M 535 1348 L 537.5 1296"/>
+  <path id="gate-19-to-49-segment" class="gate-segment" data-gate="19" data-channel="19-49" d="M 545 1395 C 597.5 1390 650 1371.2 697.8 1337.8"/>
+  <path id="gate-49-to-19-segment" class="gate-segment" data-gate="49" data-channel="19-49" d="M 822 1192 C 788.5 1256 745.5 1304.2 697.8 1337.8"/>
+  <path id="gate-39-to-55-segment" class="gate-segment" data-gate="39" data-channel="39-55" d="M 545 1435 C 597.5 1427.5 651.2 1406.2 704.1 1370.1"/>
+  <path id="gate-55-to-39-segment" class="gate-segment" data-gate="55" data-channel="39-55" d="M 858 1216 C 809 1283 757 1334 704.1 1370.1"/>
+  <path id="gate-41-to-30-segment" class="gate-segment" data-gate="41" data-channel="41-30" d="M 545 1475 C 607.5 1467.5 668.8 1443.8 727.9 1403.6"/>
+  <path id="gate-30-to-41-segment" class="gate-segment" data-gate="30" data-channel="41-30" d="M 898 1234 C 844 1307 787 1363.5 727.9 1403.6"/>
+</g>
+<g id="centers" aria-label="Nine centers">
+  <polygon id="center-head" class="center" data-center="head" points="483.0,31.0 388.0,185.0 578.0,185.0"/>
+  <polygon id="center-ajna" class="center" data-center="ajna" points="388.0,252.0 578.0,252.0 483.0,407.0"/>
+  <rect id="center-throat" class="center" data-center="throat" x="386" y="474" width="190" height="190" rx="22"/>
+  <polygon id="center-g" class="center" data-center="g" points="483.0,708.0 360.0,829.0 483.0,951.0 605.0,829.0"/>
+  <polygon id="center-heart" class="center" data-center="heart" points="711.0,838.0 614.0,971.0 766.0,1005.0"/>
+  <polygon id="center-spleen" class="center" data-center="spleen" points="40.0,1045.0 222.0,1160.0 40.0,1275.0"/>
+  <polygon id="center-solar" class="center" data-center="solar" points="926.0,1045.0 744.0,1160.0 926.0,1275.0"/>
+  <rect id="center-sacral" class="center" data-center="sacral" x="386" y="1074" width="190" height="190" rx="22"/>
+  <rect id="center-root" class="center" data-center="root" x="386" y="1326" width="190" height="190" rx="22"/>
+</g>
+<g id="gate-labels" aria-label="Gate numbers">
+  <text id="gate-1" class="gate-label" data-gate="1" x="483" y="732">1</text>
+  <text id="gate-2" class="gate-label" data-gate="2" x="483" y="929">2</text>
+  <text id="gate-3" class="gate-label" data-gate="3" x="500" y="1244">3</text>
+  <text id="gate-4" class="gate-label" data-gate="4" x="522" y="262">4</text>
+  <text id="gate-5" class="gate-label" data-gate="5" x="430" y="1098">5</text>
+  <text id="gate-6" class="gate-label" data-gate="6" x="798" y="1164">6</text>
+  <text id="gate-7" class="gate-label" data-gate="7" x="445" y="775">7</text>
+  <text id="gate-8" class="gate-label" data-gate="8" x="483" y="640">8</text>
+  <text id="gate-9" class="gate-label" data-gate="9" x="537" y="1244">9</text>
+  <text id="gate-10" class="gate-label" data-gate="10" x="401" y="835">10</text>
+  <text id="gate-11" class="gate-label" data-gate="11" x="535" y="320">11</text>
+  <text id="gate-12" class="gate-label" data-gate="12" x="560" y="572">12</text>
+  <text id="gate-13" class="gate-label" data-gate="13" x="522" y="775">13</text>
+  <text id="gate-14" class="gate-label" data-gate="14" x="483" y="1098">14</text>
+  <text id="gate-15" class="gate-label" data-gate="15" x="445" y="890">15</text>
+  <text id="gate-16" class="gate-label" data-gate="16" x="404" y="527">16</text>
+  <text id="gate-17" class="gate-label" data-gate="17" x="434" y="319">17</text>
+  <text id="gate-18" class="gate-label" data-gate="18" x="66" y="1235">18</text>
+  <text id="gate-19" class="gate-label" data-gate="19" x="545" y="1397">19</text>
+  <text id="gate-20" class="gate-label" data-gate="20" x="404" y="570">20</text>
+  <text id="gate-21" class="gate-label" data-gate="21" x="712" y="878">21</text>
+  <text id="gate-22" class="gate-label" data-gate="22" x="842" y="1123">22</text>
+  <text id="gate-23" class="gate-label" data-gate="23" x="483" y="490">23</text>
+  <text id="gate-24" class="gate-label" data-gate="24" x="483" y="261">24</text>
+  <text id="gate-25" class="gate-label" data-gate="25" x="564" y="835">25</text>
+  <text id="gate-26" class="gate-label" data-gate="26" x="652" y="964">26</text>
+  <text id="gate-27" class="gate-label" data-gate="27" x="430" y="1212">27</text>
+  <text id="gate-28" class="gate-label" data-gate="28" x="88" y="1216">28</text>
+  <text id="gate-29" class="gate-label" data-gate="29" x="536" y="1098">29</text>
+  <text id="gate-30" class="gate-label" data-gate="30" x="898" y="1234">30</text>
+  <text id="gate-31" class="gate-label" data-gate="31" x="422" y="640">31</text>
+  <text id="gate-32" class="gate-label" data-gate="32" x="112" y="1194">32</text>
+  <text id="gate-33" class="gate-label" data-gate="33" x="520" y="640">33</text>
+  <text id="gate-34" class="gate-label" data-gate="34" x="408" y="1140">34</text>
+  <text id="gate-35" class="gate-label" data-gate="35" x="560" y="527">35</text>
+  <text id="gate-36" class="gate-label" data-gate="36" x="880" y="1098">36</text>
+  <text id="gate-37" class="gate-label" data-gate="37" x="817" y="1145">37</text>
+  <text id="gate-38" class="gate-label" data-gate="38" x="420" y="1435">38</text>
+  <text id="gate-39" class="gate-label" data-gate="39" x="545" y="1435">39</text>
+  <text id="gate-40" class="gate-label" data-gate="40" x="726" y="972">40</text>
+  <text id="gate-41" class="gate-label" data-gate="41" x="545" y="1475">41</text>
+  <text id="gate-42" class="gate-label" data-gate="42" x="455" y="1244">42</text>
+  <text id="gate-43" class="gate-label" data-gate="43" x="483" y="383">43</text>
+  <text id="gate-44" class="gate-label" data-gate="44" x="124" y="1146">44</text>
+  <text id="gate-45" class="gate-label" data-gate="45" x="557" y="610">45</text>
+  <text id="gate-46" class="gate-label" data-gate="46" x="522" y="890">46</text>
+  <text id="gate-47" class="gate-label" data-gate="47" x="445" y="262">47</text>
+  <text id="gate-48" class="gate-label" data-gate="48" x="88" y="1098">48</text>
+  <text id="gate-49" class="gate-label" data-gate="49" x="822" y="1192">49</text>
+  <text id="gate-50" class="gate-label" data-gate="50" x="128" y="1168">50</text>
+  <text id="gate-51" class="gate-label" data-gate="51" x="674" y="913">51</text>
+  <text id="gate-52" class="gate-label" data-gate="52" x="535" y="1348">52</text>
+  <text id="gate-53" class="gate-label" data-gate="53" x="430" y="1348">53</text>
+  <text id="gate-54" class="gate-label" data-gate="54" x="420" y="1395">54</text>
+  <text id="gate-55" class="gate-label" data-gate="55" x="858" y="1216">55</text>
+  <text id="gate-56" class="gate-label" data-gate="56" x="531" y="490">56</text>
+  <text id="gate-57" class="gate-label" data-gate="57" x="125" y="1118">57</text>
+  <text id="gate-58" class="gate-label" data-gate="58" x="420" y="1475">58</text>
+  <text id="gate-59" class="gate-label" data-gate="59" x="560" y="1164">59</text>
+  <text id="gate-60" class="gate-label" data-gate="60" x="483" y="1348">60</text>
+  <text id="gate-61" class="gate-label" data-gate="61" x="483" y="174">61</text>
+  <text id="gate-62" class="gate-label" data-gate="62" x="435" y="490">62</text>
+  <text id="gate-63" class="gate-label" data-gate="63" x="521" y="174">63</text>
+  <text id="gate-64" class="gate-label" data-gate="64" x="445" y="174">64</text>
+</g>
+
+          </svg>
+
+          <!-- mandala wheel (built by JS), drawn AFTER the bodygraph so its
+               gate ring/ticks are never hidden behind the bodygraph. -->
+          <g id="mandala-group" class="dimmable" style="opacity:0" aria-hidden="true"></g>
+
+          <!-- cross connector on the wheel (built by JS), also above the bodygraph -->
+          <g id="cross-group" style="opacity:0"></g>
+        </g>
+      </g>
+    </svg>
+
+    <div class="controls">
+      <button class="nav-btn" id="prev-btn" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="nav-btn" id="next-btn" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+    <div class="step-label" id="step-label">
+      <span class="n" id="step-n">1</span> / <span id="step-total">34</span>
+    </div>
+  </div>
+
+  <div class="step-modal" id="step-modal">
+    <div class="step-panel">
+      <h2>Jump to a beat</h2>
+      <div class="step-grid" id="step-grid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Chart Walkthrough - engine.
+   Data below is copied verbatim from her chart JSON (see data/chart.json)
+   and from HDR-OS/cheatsheet/data/quarters.json - no invented values.
+   Embedded inline so dist/index.html can be a single self-contained file. */
+
+const CHART = {"schema_version":"1.0","meta":{"engine":"hd-engine-js 0.1.0","ephemeris":"moshier","node_type":"true","birth_local":"1991-07-30T16:10:00","timezone":"Europe/Prague","utc_offset_hours":2,"birth_utc":"1991-07-30T14:10:00Z","design_utc":"1991-04-29T18:06:12Z","place":"tess","latitude":50.4116187,"longitude":14.9031301,"zodiac_sun_sign":"Leo"},"type":"Projector","strategy":"Wait for the Invitation","authority":{"code":"outer","name":"No Inner Authority (Mental)"},"profile":{"personality_line":6,"design_line":2,"name":"6/2 Role Model / Hermit"},"definition":{"value":1,"name":"Single Definition"},"incarnation_cross":{"personality_sun":31,"personality_earth":41,"design_sun":24,"design_earth":44,"angle":"Left Angle","name":"The Left Angle Cross of the Alpha (1)"},"signature":"Success","not_self_theme":"Bitterness","aura":"Focused & Absorbing","planets":{"personality":[{"body":"Sun","longitude":126.924386,"gate":31,"line":6,"color":2,"tone":4,"base":1},{"body":"Earth","longitude":306.924386,"gate":41,"line":6,"color":2,"tone":4,"base":1},{"body":"Moon","longitude":349.906797,"gate":22,"line":4,"color":1,"tone":4,"base":4},{"body":"North_Node","longitude":288.849998,"gate":54,"line":4,"color":6,"tone":6,"base":1},{"body":"South_Node","longitude":108.849998,"gate":53,"line":4,"color":6,"tone":6,"base":1},{"body":"Mercury","longitude":153.075391,"gate":59,"line":4,"color":1,"tone":6,"base":2},{"body":"Venus","longitude":157.258654,"gate":40,"line":2,"color":4,"tone":4,"base":5},{"body":"Mars","longitude":159.317524,"gate":40,"line":4,"color":5,"tone":5,"base":5},{"body":"Jupiter","longitude":140.516377,"gate":4,"line":2,"color":5,"tone":4,"base":1},{"body":"Saturn","longitude":303.242307,"gate":41,"line":2,"color":2,"tone":6,"base":4},{"body":"Uranus","longitude":280.814361,"gate":38,"line":2,"color":3,"tone":3,"base":3},{"body":"Neptune","longitude":284.788923,"gate":38,"line":6,"color":4,"tone":6,"base":1},{"body":"Pluto","longitude":227.564189,"gate":1,"line":5,"color":4,"tone":4,"base":4}],"design":[{"body":"Sun","longitude":38.924386,"gate":24,"line":2,"color":3,"tone":2,"base":5},{"body":"Earth","longitude":218.924386,"gate":44,"line":2,"color":3,"tone":2,"base":5},{"body":"Moon","longitude":228.992883,"gate":43,"line":1,"color":1,"tone":5,"base":3},{"body":"North_Node","longitude":291.680693,"gate":61,"line":1,"color":6,"tone":6,"base":4},{"body":"South_Node","longitude":111.680693,"gate":62,"line":1,"color":6,"tone":6,"base":4},{"body":"Mercury","longitude":18.057659,"gate":51,"line":4,"color":1,"tone":5,"base":4},{"body":"Venus","longitude":79.455542,"gate":45,"line":3,"color":4,"tone":5,"base":2},{"body":"Mars","longitude":104.628269,"gate":39,"line":6,"color":3,"tone":5,"base":5},{"body":"Jupiter","longitude":124.939391,"gate":31,"line":4,"color":1,"tone":5,"base":5},{"body":"Saturn","longitude":306.594447,"gate":41,"line":5,"color":6,"tone":3,"base":3},{"body":"Uranus","longitude":283.761812,"gate":38,"line":5,"color":4,"tone":2,"base":4},{"body":"Neptune","longitude":286.733435,"gate":54,"line":2,"color":5,"tone":2,"base":4},{"body":"Pluto","longitude":229.279557,"gate":43,"line":1,"color":3,"tone":4,"base":3}]},"centers":{"defined":["AA","HD"],"undefined":["GC","HT","RT","SL","SN","SP","TT"],"open":[],"names":{"HD":"Head","AA":"Ajna","TT":"Throat","GC":"G-Center","SL":"Sacral","SN":"Spleen","SP":"Solar Plexus","RT":"Root","HT":"Heart"}},"channels":[{"gates":[24,61],"centers":["HD","AA"],"name":"The Channel of Awareness (A Design of a Thinker)"}],"variables":{"short_code":"PRR DLR","experimental":true,"note":"Variables depend on exact birth time (Base changes every 18.75 arc-seconds).","digestion":{"variable":"Digestion","aspect":"Design (Brain)","source":"design_sun_earth","arrow":"left","orientation":"Active","gate":24,"line":2,"color":3,"tone":2,"base":5,"theme":"Hot Thirst","sub_axis":"Thirst","cognition":"Taste"},"environment":{"variable":"Environment","aspect":"Design (Body)","source":"design_nodes","arrow":"right","orientation":"Observer","gate":61,"line":1,"color":6,"tone":6,"base":4,"theme":"Artificial Shores","family":"Shores","sense":"Touch"},"motivation":{"variable":"Motivation","aspect":"Personality (Mind)","source":"personality_sun_earth","arrow":"right","orientation":"Receptive","gate":31,"line":6,"color":2,"tone":4,"base":1,"theme":"Hope","transference":"Guilt","sense":"Meditation"},"perspective":{"variable":"Perspective","aspect":"Personality (View)","source":"personality_nodes","arrow":"right","orientation":"Peripheral","gate":54,"line":4,"color":6,"tone":6,"base":1,"theme":"Personal","distraction":"Power","sense":"Acceptance"}}};
+
+/* Quarter names + gate lists, trimmed straight from quarters.json
+   (only the fields this piece uses: display name from her script's words,
+   and gateNumbers). */
+const QUARTERS = [{"id":"q1","name":"Quarter of Initiation","gates":[3,13,17,21,22,24,25,27,30,36,37,42,49,51,55,63]},{"id":"q2","name":"Quarter of Civilization","gates":[2,8,12,15,16,20,23,31,33,35,39,45,52,53,56,62]},{"id":"q3","name":"Quarter of Duality","gates":[4,6,7,18,28,29,32,40,44,46,47,48,50,57,59,64]},{"id":"q4","name":"Quarter of Mutation","gates":[1,5,9,10,11,14,19,26,34,38,41,43,54,58,60,61]}];
+
+/* Rave Mandala order, 64 gates, standard sequence starting at gate 41 -
+   verbatim from SPEC.md. Validated against quarters.json at build time:
+   every quarter is one contiguous 16-gate arc of this sequence. */
+const MANDALA_SEQUENCE = [
+  41,19,13,49,30,55,37,63,22,36,25,17,21,51,42,3,27,24,2,23,8,20,16,35,45,12,15,52,39,53,62,56,
+  31,33,7,4,29,59,40,64,47,6,46,18,48,57,32,50,28,44,1,43,14,34,9,5,26,11,10,58,38,54,61,60
+];
+
+const GLYPH = {
+  Sun: '☉', Earth: '⊕', North_Node: '☊', South_Node: '☋',
+  Moon: '☽', Mercury: '☿', Venus: '♀', Mars: '♂',
+  Jupiter: '♃', Saturn: '♄', Uranus: '♅', Neptune: '♆', Pluto: '♇'
+};
+const LABEL = {
+  Sun: 'Sun', Earth: 'Earth', North_Node: 'N. Node', South_Node: 'S. Node',
+  Moon: 'Moon', Mercury: 'Mercury', Venus: 'Venus', Mars: 'Mars',
+  Jupiter: 'Jupiter', Saturn: 'Saturn', Uranus: 'Uranus', Neptune: 'Neptune', Pluto: 'Pluto'
+};
+const ROW_ORDER = ['Sun','Earth','North_Node','South_Node','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+
+/* v2 split-stage layout: the chart lives entirely in the RIGHT panel, its
+   own SVG with viewBox "0 0 1056 1080" (55% of the 1920-wide stage, full
+   height). The LEFT 45% is a separate plain-HTML text panel - the two
+   never overlap, so there is no band/backdrop concern any more. */
+const PANEL_W = 1056, PANEL_H = 1080;
+const BODY_X = 255, BODY_Y = 110, BODY_W = 547, BODY_H = 870;
+const BODY_SCALE_X = BODY_W / 966, BODY_SCALE_Y = BODY_H / 1536;
+function bgPoint(localX, localY) {
+  return { x: BODY_X + localX * BODY_SCALE_X, y: BODY_Y + localY * BODY_SCALE_Y };
+}
+
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, children) {
+  const n = document.createElementNS(SVGNS, tag);
+  if (attrs) for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (children) children.forEach(c => n.appendChild(c));
+  return n;
+}
+function text(tag_attrs, str) {
+  const t = el('text', tag_attrs);
+  t.textContent = str;
+  return t;
+}
+
+/* ---------------------------------------------------------------------
+   Derive activation state purely from the chart JSON + the real gate
+   partner-pairs already present in the embedded bodygraph SVG
+   (data-gate / data-channel on .gate-segment elements). No hardcoded
+   HD gate-to-gate table - read straight from the geometry that is on
+   the page.
+--------------------------------------------------------------------- */
+function deriveState(bodygraphRoot) {
+  const perSet = new Set(CHART.planets.personality.map(p => p.gate));
+  const desSet = new Set(CHART.planets.design.map(p => p.gate));
+  const activeGates = new Map(); // gate -> 'personality'|'design'|'both'
+  perSet.forEach(g => activeGates.set(g, desSet.has(g) ? 'both' : 'personality'));
+  desSet.forEach(g => { if (!activeGates.has(g)) activeGates.set(g, 'design'); });
+
+  // partner map from the real SVG: gate -> partner gate (other end of its channel track)
+  const partner = new Map();
+  bodygraphRoot.querySelectorAll('.gate-segment').forEach(seg => {
+    const g = Number(seg.getAttribute('data-gate'));
+    const ch = seg.getAttribute('data-channel'); // "a-b"
+    const [a, b] = ch.split('-').map(Number);
+    partner.set(g, g === a ? b : a);
+  });
+
+  const definedChannelGateSet = new Set();
+  CHART.channels.forEach(c => c.gates.forEach(g => definedChannelGateSet.add(g)));
+
+  // hanging = activated gate whose partner is NOT activated (not part of a
+  // fully defined channel)
+  const hanging = new Set();
+  activeGates.forEach((_, g) => {
+    if (!definedChannelGateSet.has(g)) hanging.add(g);
+  });
+
+  return { activeGates, partner, definedChannelGateSet, hanging };
+}
+
+/* Point-in-shape containment, derived from the real center geometry
+   already on the page (polygon points / rect x,y,w,h) - used only to
+   decide whether a gate number needs dark ink for contrast against a
+   filled center. */
+function pointInPolygon(x, y, pts) {
+  let inside = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const xi = pts[i][0], yi = pts[i][1], xj = pts[j][0], yj = pts[j][1];
+    const intersect = ((yi > y) !== (yj > y)) &&
+      (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+function centerShapes(bodygraphRoot) {
+  const shapes = [];
+  bodygraphRoot.querySelectorAll('#centers .center').forEach(c => {
+    if (c.tagName === 'polygon') {
+      const pts = c.getAttribute('points').trim().split(/\s+/).map(p => p.split(',').map(Number));
+      shapes.push({ id: c.id, kind: 'poly', pts });
+    } else {
+      const x = Number(c.getAttribute('x')), y = Number(c.getAttribute('y'));
+      const w = Number(c.getAttribute('width')), h = Number(c.getAttribute('height'));
+      shapes.push({ id: c.id, kind: 'rect', x, y, w, h });
+    }
+  });
+  return shapes;
+}
+function shapeContains(shape, x, y) {
+  if (shape.kind === 'poly') return pointInPolygon(x, y, shape.pts);
+  return x >= shape.x && x <= shape.x + shape.w && y >= shape.y && y <= shape.y + shape.h;
+}
+
+/* ---------------------------------------------------------------------
+   Build
+--------------------------------------------------------------------- */
+function init() {
+  const bodygraph = document.getElementById('bodygraph');
+  const state = deriveState(bodygraph);
+  const shapes = centerShapes(bodygraph);
+  const definedCenterIds = new Set(
+    CHART.centers.defined.map(code => CENTER_CODE_TO_ID[code])
+  );
+
+  // 1. Centers: defined -> gradient fill; all others -> filled ivory
+  //    ("Some are coloured. Some are white.") - both readable, neither left
+  //    as plain transparent-on-dark.
+  bodygraph.querySelectorAll('#centers .center').forEach(c => {
+    if (definedCenterIds.has(c.id)) {
+      c.classList.add('defined');
+    } else {
+      c.classList.add('undefined-fill');
+    }
+  });
+
+  // 2. Gate labels + gate-segments: active/inactive, personality/design/both
+  bodygraph.querySelectorAll('.gate-label').forEach(t => {
+    const g = Number(t.getAttribute('data-gate'));
+    const s = state.activeGates.get(g);
+    if (s) {
+      t.classList.add('active', s);
+      const gx = Number(t.getAttribute('x')), gy = Number(t.getAttribute('y'));
+      for (const shape of shapes) {
+        if (shapeContains(shape, gx, gy)) { t.classList.add('on-defined'); break; }
+      }
+    }
+  });
+  bodygraph.querySelectorAll('.gate-segment').forEach(seg => {
+    const g = Number(seg.getAttribute('data-gate'));
+    const s = state.activeGates.get(g);
+    if (s && !state.hanging.has(g)) {
+      // both ends of this gate's channel are active -> full channel, colour by
+      // combined state of the two gate ends
+      const ch = seg.getAttribute('data-channel');
+      const [a, b] = ch.split('-').map(Number);
+      const sa = state.activeGates.get(a), sb = state.activeGates.get(b);
+      const combined = (sa === sb) ? sa : 'both';
+      seg.classList.add(combined, 'on');
+    } else if (s && state.hanging.has(g)) {
+      seg.classList.add(s, 'on');
+    }
+  });
+  // colour the shared channel-track for any fully defined channel
+  CHART.channels.forEach(c => {
+    const [a, b] = c.gates;
+    const sa = state.activeGates.get(a), sb = state.activeGates.get(b);
+    const combined = (sa === sb) ? sa : 'both';
+    const track = bodygraph.querySelector(`.channel-track[data-channel="${a}-${b}"], .channel-track[data-channel="${b}-${a}"]`);
+    if (track) track.classList.add(`defined-${combined}`);
+  });
+
+  // small activation discs next to each active gate number
+  const gateDotsGroup = el('g', { id: 'gate-dots' });
+  bodygraph.querySelectorAll('.gate-label.active').forEach(t => {
+    const g = Number(t.getAttribute('data-gate'));
+    const s = state.activeGates.get(g);
+    const x = Number(t.getAttribute('x')), y = Number(t.getAttribute('y'));
+    const dx = x + 13, dy = y - 10;
+    let fill = s === 'personality' ? 'var(--bone)' : s === 'design' ? 'var(--red)' : 'url(#grad-defined)';
+    gateDotsGroup.appendChild(el('circle', { class: 'gate-dot', cx: dx, cy: dy, r: 4.5, fill }));
+  });
+  bodygraph.querySelector('#gate-labels').parentNode.appendChild(gateDotsGroup);
+
+  renderPlanetColumns(state);
+  renderVariables();
+  const wheelInfo = renderMandala();
+  renderCross(wheelInfo);
+
+  return { state, shapes, wheelInfo };
+}
+
+const CENTER_CODE_TO_ID = {
+  HD: 'center-head', AA: 'center-ajna', TT: 'center-throat', GC: 'center-g',
+  HT: 'center-heart', SL: 'center-sacral', SN: 'center-spleen', SP: 'center-solar', RT: 'center-root'
+};
+
+/* ---------------------------------------------------------------------
+   Planet columns - DESIGN left (red), PERSONALITY right (ivory)
+--------------------------------------------------------------------- */
+const COL_TOP = BODY_Y + 12, COL_BOTTOM = BODY_Y + BODY_H - 15;
+const COL_ROW_H = (COL_BOTTOM - COL_TOP) / 13;
+const DESIGN_GLYPH_X = 195, DESIGN_NUM_X = 157;
+const PER_GLYPH_X = 862, PER_NUM_X = 900;
+
+function renderPlanetColumns(state) {
+  const designCol = document.getElementById('design-col');
+  const perCol = document.getElementById('personality-col');
+
+  const top = COL_TOP, rowH = COL_ROW_H;
+  const headerY = top - 26;
+
+  designCol.appendChild(text({ x: DESIGN_GLYPH_X, y: headerY, class: 'col-header', 'text-anchor': 'end', fill: 'var(--red)', 'font-size': 18 }, 'DESIGN'));
+  perCol.appendChild(text({ x: PER_GLYPH_X, y: headerY, class: 'col-header', 'text-anchor': 'start', fill: 'var(--bone)', 'font-size': 18 }, 'PERSONALITY'));
+
+  const perByBody = Object.fromEntries(CHART.planets.personality.map(p => [p.body, p]));
+  const desByBody = Object.fromEntries(CHART.planets.design.map(p => [p.body, p]));
+
+  ROW_ORDER.forEach((body, i) => {
+    const y = top + i * rowH + rowH * 0.62;
+
+    const dp = desByBody[body];
+    const dRow = el('g', { class: 'row', id: `row-design-${body}`, 'data-body': body });
+    dRow.appendChild(text({ x: DESIGN_GLYPH_X, y, class: 'row-glyph', 'text-anchor': 'end', fill: 'var(--red)', 'font-size': 26 }, GLYPH[body]));
+    dRow.appendChild(text({ x: DESIGN_GLYPH_X, y: y + 15, class: 'row-name', 'text-anchor': 'end', fill: 'var(--muted)', 'font-size': 11, 'letter-spacing': '.04em' }, LABEL[body].toUpperCase()));
+    const dNum = text({ x: DESIGN_NUM_X, y, class: 'row-num', 'text-anchor': 'end', fill: 'var(--red)', 'font-size': 34 }, `${dp.gate}.${dp.line}`);
+    dRow.appendChild(dNum);
+    designCol.appendChild(dRow);
+
+    const pp = perByBody[body];
+    const pRow = el('g', { class: 'row', id: `row-personality-${body}`, 'data-body': body });
+    pRow.appendChild(text({ x: PER_GLYPH_X, y, class: 'row-glyph', 'text-anchor': 'start', fill: 'var(--bone)', 'font-size': 26 }, GLYPH[body]));
+    pRow.appendChild(text({ x: PER_GLYPH_X, y: y + 15, class: 'row-name', 'text-anchor': 'start', fill: 'var(--muted)', 'font-size': 11, 'letter-spacing': '.04em' }, LABEL[body].toUpperCase()));
+    pRow.appendChild(text({ x: PER_NUM_X, y, class: 'row-num', 'text-anchor': 'start', fill: 'var(--bone)', 'font-size': 34 }, `${pp.gate}.${pp.line}`));
+    perCol.appendChild(pRow);
+  });
+
+  // rebuild gate.line strings with the line-number in its own tspan so beat
+  // 21 (Profile) can spotlight just the digit after the dot
+  function splitGateLine(rowGroup, gate, line, x, anchor, color) {
+    const numEl = rowGroup.querySelector('.row-num');
+    while (numEl.firstChild) numEl.removeChild(numEl.firstChild);
+    numEl.appendChild(document.createTextNode(`${gate}.`));
+    const lineSpan = document.createElementNS(SVGNS, 'tspan');
+    lineSpan.setAttribute('class', 'profile-line');
+    lineSpan.textContent = String(line);
+    numEl.appendChild(lineSpan);
+  }
+  splitGateLine(document.getElementById('row-personality-Sun'), perByBody.Sun.gate, perByBody.Sun.line);
+  splitGateLine(document.getElementById('row-design-Sun'), desByBody.Sun.gate, desByBody.Sun.line);
+}
+
+/* ---------------------------------------------------------------------
+   Variables - four small flag/pill arrows above the head, direction from
+   the JSON `arrow` field. Deliberately NOT a bare chevron: a bare "<"/">"
+   glyph at this size reads as a nav-button icon, so each variable gets a
+   rounded pill body with a short shaft + arrowhead inside it, sitting in
+   a 2x2 grid (columns = Design/Personality, rows = top/bottom pair).
+--------------------------------------------------------------------- */
+function pillArrowHead(direction, w) {
+  // shaft + arrowhead, in the SAME local space as the pill rect (x: 0..w,
+  // y centred on 0) - no post-hoc coordinate shifting.
+  const pad = 14;
+  const x0 = pad, x1 = w - pad;
+  return direction === 'left'
+    ? `M ${x1} 0 L ${x0} 0 M ${x0 + 9} -6 L ${x0} 0 L ${x0 + 9} 6`
+    : `M ${x0} 0 L ${x1} 0 M ${x1 - 9} -6 L ${x1} 0 L ${x1 - 9} 6`;
+}
+function renderVariables() {
+  const g = document.getElementById('variables-group');
+  const v = CHART.variables;
+  // Compact: the whole 2x2 grid must fit above the bodygraph, centred on
+  // the chart panel's own centre (PANEL_W/2), between the top margin and
+  // BODY_Y.
+  const PW = 82, PH = 17, GAP_X = 12, GAP_Y = 6;
+  const cx = PANEL_W / 2;
+  const colXs = [cx - GAP_X / 2 - PW, cx + GAP_X / 2];
+  const rowYs = [40, 40 + PH + GAP_Y];
+  const specs = [
+    { key: 'digestion', col: 0, row: 0, side: 'design' },
+    { key: 'environment', col: 0, row: 1, side: 'design' },
+    { key: 'motivation', col: 1, row: 0, side: 'personality' },
+    { key: 'perspective', col: 1, row: 1, side: 'personality' }
+  ];
+  specs.forEach(s => {
+    const data = v[s.key];
+    const posX = colXs[s.col], posY = rowYs[s.row];
+    const colour = s.side === 'design' ? 'var(--red)' : 'var(--bone)';
+    const arrow = el('g', { class: `dimmable var-arrow var-${s.key}`, id: `var-${s.key}`, transform: `translate(${posX},${posY})` });
+    arrow.appendChild(el('rect', { class: 'var-pill', x: 0, y: -PH / 2, width: PW, height: PH, rx: PH / 2 }));
+    arrow.appendChild(el('path', {
+      class: 'var-head', d: pillArrowHead(data.arrow, PW),
+      stroke: colour, 'stroke-width': 2.6
+    }));
+    // Anchor design labels toward the outer (left) edge and personality
+    // labels toward the outer (right) edge, so the two columns' labels
+    // spread apart instead of both centring into the narrow gap between
+    // the pills and colliding (v2: pills sit close together at panel centre).
+    const labelY = s.row === 0 ? -PH / 2 - 8 : PH / 2 + 18;
+    const labelAnchor = s.side === 'design' ? 'end' : 'start';
+    const labelX = s.side === 'design' ? PW : 0;
+    arrow.appendChild(text({
+      x: labelX, y: labelY, class: 'var-label var-label-text', 'text-anchor': labelAnchor,
+      'font-size': 12, fill: colour, opacity: 0
+    }, s.key.toUpperCase()));
+    g.appendChild(arrow);
+  });
+}
+
+/* ---------------------------------------------------------------------
+   Mandala wheel - 64 gates in MANDALA_SEQUENCE order, four quarter arcs,
+   her four cross gates marked. Hidden by default.
+--------------------------------------------------------------------- */
+const WHEEL_CX = PANEL_W / 2, WHEEL_CY = BODY_Y + BODY_H / 2; // aligned to the bodygraph's own vertical centre
+const WHEEL_R_ARC = 320, WHEEL_R_TICK_IN = 335, WHEEL_R_TICK_OUT = 352, WHEEL_R_NUM = 378, WHEEL_R_LABEL = 408;
+
+function renderMandala() {
+  const g = document.getElementById('mandala-group');
+  const cx = WHEEL_CX, cy = WHEEL_CY;
+  const rNum = WHEEL_R_NUM, rTickOut = WHEEL_R_TICK_OUT, rTickIn = WHEEL_R_TICK_IN, rArc = WHEEL_R_ARC;
+  const n = 64;
+
+  const QUARTER_COLORS = ['url(#grad-defined)', 'var(--bone)', 'url(#grad-defined)', 'var(--bone)'];
+
+  // arcs
+  const quarterArcsGroup = el('g', { id: 'mandala-arcs' });
+  QUARTERS.forEach((q, qi) => {
+    const idxs = q.gates.map(gg => MANDALA_SEQUENCE.indexOf(gg)).sort((a, b) => a - b);
+    // contiguous circular arc: find start (after the single big gap)
+    let startIdx = idxs[0];
+    for (let i = 0; i < idxs.length; i++) {
+      const cur = idxs[i], nextI = idxs[(i + 1) % idxs.length];
+      const d = ((nextI - cur) + n) % n;
+      if (d !== 1) { startIdx = nextI; break; }
+    }
+    const a0 = (startIdx / n) * 360 - 90;
+    const a1 = a0 + (16 / n) * 360;
+    const path = arcPath(cx, cy, rArc, a0, a1);
+    const p = el('path', {
+      d: path, fill: 'none', stroke: QUARTER_COLORS[qi], 'stroke-width': 14,
+      opacity: 0.85, class: `dimmable quarter-arc quarter-${q.id}`, id: `arc-${q.id}`
+    });
+    quarterArcsGroup.appendChild(p);
+    const midA = (a0 + a1) / 2;
+    const lx = cx + WHEEL_R_LABEL * Math.cos(midA * Math.PI / 180);
+    const ly = cy + WHEEL_R_LABEL * Math.sin(midA * Math.PI / 180);
+    const lbl = text({
+      x: lx, y: ly, class: `mandala-label dimmable quarter-label quarter-label-${q.id}`,
+      'text-anchor': 'middle', 'font-size': 16, fill: 'var(--soft)'
+    }, q.name);
+    quarterArcsGroup.appendChild(lbl);
+  });
+  g.appendChild(quarterArcsGroup);
+
+  // ticks + numbers
+  const gatesGroup = el('g', { id: 'mandala-gates' });
+  const gatePos = {};
+  MANDALA_SEQUENCE.forEach((gate, i) => {
+    const a = (i / n) * 360 - 90;
+    const rad = a * Math.PI / 180;
+    const x1 = cx + rTickIn * Math.cos(rad), y1 = cy + rTickIn * Math.sin(rad);
+    const x2 = cx + rTickOut * Math.cos(rad), y2 = cy + rTickOut * Math.sin(rad);
+    const xn = cx + rNum * Math.cos(rad), yn = cy + rNum * Math.sin(rad);
+    gatePos[gate] = { x: xn, y: yn, angle: a };
+    gatesGroup.appendChild(el('line', { x1, y1, x2, y2, stroke: 'rgba(242,237,232,.35)', 'stroke-width': 2, class: 'dimmable mandala-tick', id: `wheel-tick-${gate}` }));
+    gatesGroup.appendChild(text({
+      x: xn, y: yn, class: `mandala-gate-num dimmable wheel-gate wheel-gate-${gate}`,
+      'text-anchor': 'middle', 'dominant-baseline': 'middle', 'font-size': 14, fill: 'var(--soft)'
+    }, String(gate)));
+  });
+  g.appendChild(gatesGroup);
+
+  return { cx, cy, gatePos };
+}
+function arcPath(cx, cy, r, a0, a1) {
+  const r0 = a0 * Math.PI / 180, r1 = a1 * Math.PI / 180;
+  const x0 = cx + r * Math.cos(r0), y0 = cy + r * Math.sin(r0);
+  const x1 = cx + r * Math.cos(r1), y1 = cy + r * Math.sin(r1);
+  const large = (a1 - a0) > 180 ? 1 : 0;
+  return `M ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1}`;
+}
+
+/* Cross connector: Sun and Earth are always exactly opposite each other on
+   the wheel (180 degrees apart), so the cross is two straight lines through
+   the wheel centre: Personality Sun to Personality Earth, and Design Sun to
+   Design Earth (only shown for beat 16). */
+function renderCross(wheelInfo) {
+  const g = document.getElementById('cross-group');
+  const ic = CHART.incarnation_cross;
+  const gates = [ic.personality_sun, ic.personality_earth, ic.design_sun, ic.design_earth];
+  const pts = gates.map(gt => wheelInfo.gatePos[gt]);
+  pts.forEach((p, i) => {
+    const gate = gates[i];
+    g.appendChild(el('circle', { cx: p.x, cy: p.y, r: 11, fill: 'none', stroke: 'url(#grad-defined)', 'stroke-width': 3, class: `cross-ring cross-ring-${gate}` }));
+  });
+  const [pSun, pEarth, dSun, dEarth] = pts;
+  g.insertBefore(el('line', { x1: pSun.x, y1: pSun.y, x2: pEarth.x, y2: pEarth.y, stroke: 'var(--bone)', 'stroke-width': 2, 'stroke-dasharray': '3 6', opacity: 0.85, id: 'cross-line-personality' }), g.firstChild);
+  g.insertBefore(el('line', { x1: dSun.x, y1: dSun.y, x2: dEarth.x, y2: dEarth.y, stroke: 'var(--red)', 'stroke-width': 2, 'stroke-dasharray': '3 6', opacity: 0.85, id: 'cross-line-design' }), g.firstChild);
+}
+
+
+/* ---------------------------------------------------------------------
+   Beats
+--------------------------------------------------------------------- */
+const PANEL_ASPECT = PANEL_W / PANEL_H;
+function cam(cx, cy, w) {
+  const h = w / PANEL_ASPECT;
+  return { x: cx - w / 2, y: cy - h / 2, w, h };
+}
+/* Build a camera rect (matching the chart panel's own aspect ratio) that
+   comfortably covers a set of real stage points (a wheel-gate position, a
+   bodygraph gate label, a column row). Used instead of hand-guessed
+   centers so beats that must land on one specific gate actually land on
+   it. */
+function camCover(points, minW, padX = 120, padY = 90) {
+  const xs = points.map(p => p.x), ys = points.map(p => p.y);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+  let w = Math.max(minW, (x1 - x0) + padX * 2);
+  let h = w / PANEL_ASPECT;
+  const neededH = (y1 - y0) + padY * 2;
+  if (neededH > h) { h = neededH; w = h * PANEL_ASPECT; }
+  return cam(cx, cy, w);
+}
+/* The entire chart panel, unscaled. */
+const FULL = cam(PANEL_W / 2, PANEL_H / 2, PANEL_W);
+/* A tighter "compact chart" framing of the bodygraph + both columns as one
+   unit, used for the detail beats that aren't the wide establishing shot. */
+const WHOLE_CHART = cam(PANEL_W / 2, WHEEL_CY, 900);
+/* One fixed camera for the whole mandala section (beats 10-20): the wheel,
+   centred on the bodygraph's own centre, sized to fit its full height
+   (gate labels and quarter names included). Beats 15 and 17-20 reuse this
+   exact camera - no camera move, only a pulsing gate + a side callout in
+   the left text panel change per beat. */
+const MANDALA_CAM = cam(WHEEL_CX, WHEEL_CY, 990);
+
+function quarterOf(gate) {
+  return QUARTERS.find(q => q.gates.includes(gate));
+}
+
+const ARROWS_CAM = cam(PANEL_W / 2, 55, 480);
+const PROFILE_CAM = WHOLE_CHART;
+
+function buildBeats(built) {
+  const ic = CHART.incarnation_cross;
+  const perSunQ = quarterOf(ic.personality_sun);
+
+  // precise camera anchors, derived from the real bodygraph geometry via
+  // bgPoint() rather than hand-guessed stage coordinates
+  const throatBox = [bgPoint(360, 474), bgPoint(605, 664)]; // throat rect, generous
+  const gTop = bgPoint(360, 660), gBottom = bgPoint(605, 951); // G-centre diamond
+  const headAjnaPt = bgPoint(483, 219); // midpoint of head (y31-185) + ajna (y252-407)
+  const gate4Pt = bgPoint(522, 262);    // gate-4 label position
+  const wheelPt = built.wheelInfo.gatePos; // { gate: {x,y,angle} } on the mandala wheel
+
+  const perByBody = Object.fromEntries(CHART.planets.personality.map(p => [p.body, p]));
+  const desByBody = Object.fromEntries(CHART.planets.design.map(p => [p.body, p]));
+  const CALLOUTS = {
+    pSun: { gate: ic.personality_sun, line: perByBody.Sun.line, glyph: GLYPH.Sun, label: 'Conscious Sun', side: 'right' },
+    pEarth: { gate: ic.personality_earth, line: perByBody.Earth.line, glyph: GLYPH.Earth, label: 'Conscious Earth', side: 'right' },
+    dSun: { gate: ic.design_sun, line: desByBody.Sun.line, glyph: GLYPH.Sun, label: 'Unconscious Sun', side: 'left' },
+    dEarth: { gate: ic.design_earth, line: desByBody.Earth.line, glyph: GLYPH.Earth, label: 'Unconscious Earth', side: 'left' }
+  };
+
+  // real column bounding boxes (header + all 13 rows), for beats 7/8 so the
+  // whole column is always framed with margin, nothing cropped
+  const designBox = document.getElementById('design-col').getBBox();
+  const perBox = document.getElementById('personality-col').getBBox();
+  const cam7 = camCover(
+    [{ x: perBox.x, y: perBox.y }, { x: perBox.x + perBox.width, y: perBox.y + perBox.height }],
+    900, 90, 70
+  );
+  const cam8 = camCover(
+    [{ x: designBox.x, y: designBox.y }, { x: designBox.x + designBox.width, y: designBox.y + designBox.height }],
+    900, 90, 70
+  );
+  const cam4 = camCover([throatBox[0], gBottom], 700, 190, 120);
+
+  const beats = [];
+  const step = (n, tag) => `${String(n).padStart(2, '0')} · ${tag}`;
+  const H = (txt) => txt; // headline already carries its own <span class="grad">
+
+  beats.push({ // 1
+    camera: FULL, mandala: false, dim: [],
+    step: step(1, 'INTRO'), headline: H('So you have your chart. <span class="grad">Now what?</span>'),
+    bullets: ['Let me show you what you are looking at.', 'How the parts fit together.', 'What you can use this for.']
+  });
+  beats.push({ // 2
+    camera: WHOLE_CHART, mandala: false,
+    dim: ['design-col', 'personality-col', 'variables-group'], bgGlow: true,
+    step: step(2, 'BODYGRAPH'), headline: H('This is your <span class="grad">bodygraph</span>.'),
+    bullets: ['The diagram in the middle.']
+  });
+  beats.push({ // 3
+    camera: WHOLE_CHART, mandala: false,
+    dim: ['design-col', 'personality-col', 'variables-group'],
+    pulseSelector: '#bodygraph #centers .center',
+    step: step(3, 'CENTRES'), headline: H('The nine shapes are <span class="grad">centres</span>.'),
+    bullets: ['Think of them as control rooms.', 'Each connected to a different area of your experience.']
+  });
+  beats.push({ // 4
+    camera: cam4, mandala: false,
+    dim: ['design-col', 'personality-col', 'variables-group'],
+    pulseSelector: '#bodygraph #gate-labels .gate-label',
+    step: step(4, 'GATES'), headline: H('The numbers are <span class="grad">gates</span>.'),
+    bullets: ['A gift, a drive, a fear.', 'A recurring pattern we can explore.']
+  });
+  beats.push({ // 5
+    camera: WHOLE_CHART, mandala: false,
+    dim: ['design-col', 'personality-col', 'variables-group'],
+    pulseSelector: '#bodygraph .channel-track',
+    step: step(5, 'CHANNELS'), headline: H('The lines are <span class="grad">channels</span>.'),
+    bullets: ['Like highways between control rooms.', 'Bringing two gate themes together.']
+  });
+  beats.push({ // 6
+    camera: WHOLE_CHART, mandala: false, dim: [],
+    pulseSelector: '#design-col .row-num, #personality-col .row-num',
+    step: step(6, 'PLANETS'), headline: H('Planetary <span class="grad">symbols and numbers</span>.'),
+    bullets: ['On either side.', 'Which gates are activated in your chart.']
+  });
+  const rowY = (i) => COL_TOP + i * COL_ROW_H + COL_ROW_H * 0.62;
+
+  beats.push({ // 7
+    camera: cam7, mandala: false, dim: ['design-col', 'variables-group'],
+    step: step(7, 'PERSONALITY'), headline: H('<span class="grad">Personality</span>'),
+    bullets: ['The more conscious side.']
+  });
+  beats.push({ // 8
+    camera: cam8, mandala: false, dim: ['personality-col', 'variables-group'],
+    step: step(8, 'DESIGN'), headline: H('<span class="grad">Design</span>'),
+    bullets: ['The less conscious side.', 'What others recognise in you first.']
+  });
+  beats.push({ // 9
+    camera: ARROWS_CAM, mandala: false, dim: ['design-col', 'personality-col'],
+    step: step(9, 'VARIABLES'), headline: H('These are called <span class="grad">Variables</span>.'),
+    bullets: ['Four arrows.', 'We will come back to those.']
+  });
+  beats.push({ // 10
+    camera: MANDALA_CAM, mandala: true,
+    dim: ['design-col', 'personality-col', 'variables-group'], quarterFocus: 'all',
+    step: step(10, 'THE WHEEL'), headline: H('The <span class="grad">Four Quarters</span>.'),
+    bullets: ['Your real design starts here.', 'The foundation of your purpose.']
+  });
+  const Q_TEXT = {
+    q1: ['purpose through ideas', 'Exploring, discovering, understanding.'],
+    q2: ['purpose through building', 'Giving things form. Making something people can use.'],
+    q3: ['purpose through relationships', 'What you create through connecting with another person.'],
+    q4: ['purpose through transformation', 'Working with change and endings.']
+  };
+  QUARTERS.forEach((q) => {
+    beats.push({ // 11-14
+      camera: MANDALA_CAM, mandala: true,
+      dim: ['design-col', 'personality-col', 'variables-group'], quarterFocus: q.id,
+      step: step(10 + QUARTERS.indexOf(q) + 1, q.plainName ? q.plainName.toUpperCase() : q.name.toUpperCase()),
+      headline: H(`Quarter of <span class="grad">${q.name.replace('Quarter of ', '')}</span>`),
+      bullets: [Q_TEXT[q.id][0], Q_TEXT[q.id][1]]
+    });
+  });
+  beats.push({ // 15
+    camera: MANDALA_CAM, mandala: true,
+    dim: ['design-col', 'personality-col', 'variables-group'], quarterFocus: perSunQ.id,
+    focusWheelGates: [ic.personality_sun], sideCallout: CALLOUTS.pSun,
+    step: step(15, 'YOUR QUARTER'), headline: H('Your <span class="grad">Quarter</span>.'),
+    bullets: ['Your conscious Sun gate tells us which Quarter your Cross belongs to.']
+  });
+  beats.push({ // 16
+    camera: MANDALA_CAM, mandala: true,
+    dim: ['design-col', 'personality-col', 'variables-group'], crossOn: true,
+    focusWheelGates: [ic.personality_sun, ic.personality_earth, ic.design_sun, ic.design_earth],
+    step: step(16, 'THE CROSS'), headline: H('Your <span class="grad">Incarnation Cross</span>.'),
+    bullets: ['Made from four gates: conscious Sun, conscious Earth, unconscious Sun, unconscious Earth.', 'A recurring storyline.']
+  });
+  beats.push({ // 17
+    camera: MANDALA_CAM, mandala: true,
+    dim: ['design-col', 'personality-col', 'variables-group'], crossOn: true,
+    focusWheelGates: [ic.personality_sun], sideCallout: CALLOUTS.pSun,
+    step: step(17, 'CONSCIOUS SUN'), headline: H('Conscious <span class="grad">Sun</span>'),
+    bullets: ['A central theme comes into focus.', 'How you may recognise yourself expressing.']
+  });
+  beats.push({ // 18
+    camera: MANDALA_CAM, mandala: true,
+    dim: ['design-col', 'personality-col', 'variables-group'], crossOn: true,
+    focusWheelGates: [ic.personality_earth], sideCallout: CALLOUTS.pEarth,
+    step: step(18, 'CONSCIOUS EARTH'), headline: H('Conscious <span class="grad">Earth</span>'),
+    bullets: ['Grounding that expression in everyday life.']
+  });
+  beats.push({ // 19
+    camera: MANDALA_CAM, mandala: true,
+    dim: ['design-col', 'personality-col', 'variables-group'], crossOn: true,
+    focusWheelGates: [ic.design_sun], sideCallout: CALLOUTS.dSun,
+    step: step(19, 'UNCONSCIOUS SUN'), headline: H('Unconscious <span class="grad">Sun</span>'),
+    bullets: ['Gifts you bring naturally.', 'Sometimes without realising you are doing anything special.']
+  });
+  beats.push({ // 20
+    camera: MANDALA_CAM, mandala: true,
+    dim: ['design-col', 'personality-col', 'variables-group'], crossOn: true,
+    focusWheelGates: [ic.design_earth], sideCallout: CALLOUTS.dEarth,
+    step: step(20, 'UNCONSCIOUS EARTH'), headline: H('Unconscious <span class="grad">Earth</span>'),
+    bullets: ['Grounding on the less conscious side.']
+  });
+  beats.push({ // 21
+    camera: PROFILE_CAM, mandala: false, dim: ['variables-group'],
+    focusRows: ['row-personality-Sun', 'row-design-Sun'], profileOn: true,
+    sideBigNum: `${CHART.profile.personality_line}/${CHART.profile.design_line}`,
+    step: step(21, 'PROFILE'), headline: H('Your <span class="grad">Profile</span>.'),
+    bullets: ['The line numbers after the dots on both Suns.', 'The character you play while walking that path.']
+  });
+  beats.push({ // 22
+    camera: FULL, mandala: false, dim: [],
+    step: step(22, 'TYPE / STRATEGY / AUTHORITY'),
+    headline: H('<span class="grad">Type</span>, <span class="grad">Strategy</span>, <span class="grad">Authority</span>.'),
+    bullets: [CHART.type, CHART.strategy, CHART.authority.name]
+  });
+  beats.push({ // 23
+    camera: WHOLE_CHART, mandala: false,
+    dim: ['design-col', 'personality-col', 'variables-group'],
+    pulseSelector: '#bodygraph #centers .center',
+    step: step(23, 'COLOURED / WHITE'), headline: H('Some are coloured. Some are <span class="grad">white</span>.'),
+    bullets: ['We all have all nine centres.', 'Coloured: defined. White: undefined or open.']
+  });
+  beats.push({ // 24
+    camera: cam4, mandala: false,
+    dim: ['design-col', 'personality-col', 'variables-group'],
+    step: step(24, 'THROAT'), headline: H('An undefined <span class="grad">Throat</span>.'),
+    bullets: ['Does not mean you have no voice.', 'How you express yourself may be more fluid.']
+  });
+  beats.push({ // 25
+    camera: WHOLE_CHART, mandala: false,
+    dim: ['design-col', 'personality-col', 'variables-group'],
+    pulseSelector: '#bodygraph #centers .center.undefined-fill, #bodygraph .gate-label.active:not(#gate-24):not(#gate-61)',
+    step: step(25, 'ACTIVATED GATES'), headline: H('Undefined centres still have <span class="grad">activated gates</span>.'),
+    bullets: ['Those gates still matter, even when the centre is white.']
+  });
+  beats.push({ // 26
+    camera: cam(headAjnaPt.x, headAjnaPt.y, 480), mandala: false,
+    dim: ['design-col', 'personality-col', 'variables-group'], channelTrace: [24, 61],
+    step: step(26, 'A COMPLETE CHANNEL'), headline: H('<span class="grad">Head and Ajna</span> connect.'),
+    bullets: ['When both gates of a channel activate.', 'That defines the centres at either end.']
+  });
+  beats.push({ // 27
+    camera: camCover([gate4Pt, { x: PER_NUM_X + 130, y: rowY(8) }], 850, 90, 70), mandala: false,
+    dim: ['design-col', 'variables-group'],
+    focusRows: ['row-personality-Jupiter'], focusGates: [4], connector: { from: 'row-personality-Jupiter', toGate: 4 },
+    step: step(27, 'GATE TO GATE'), headline: H('The same number, in the <span class="grad">bodygraph</span>.'),
+    bullets: ['The gate tells us the theme.', 'The planet gives it a role. The line adds detail.']
+  });
+  beats.push({ // 28
+    camera: ARROWS_CAM, mandala: false, dim: ['design-col', 'personality-col'], varLabelsOn: true,
+    step: step(28, 'THE VARIABLES'), headline: H('Digestion, Environment, Perspective, <span class="grad">Motivation</span>.'),
+    bullets: ['How you take things in, what supports you, what you notice.']
+  });
+  beats.push({ // 29
+    camera: FULL, mandala: false, dim: [],
+    step: step(29, 'USE IT'), headline: H('So what can you do with this <span class="grad">chart</span>?'),
+    bullets: ['Let me show you how I think about it.']
+  });
+  beats.push({ // 30
+    camera: FULL, mandala: false, dim: [], softMode: true,
+    step: step(30, 'SELF'), headline: H('Start with <span class="grad">yourself</span>.'),
+    bullets: ['Deconditioning work, shadow work, activation.', 'Read the gifts and read the shadows.']
+  });
+  beats.push({ // 31
+    camera: ARROWS_CAM, mandala: false, dim: ['design-col', 'personality-col'],
+    step: step(31, 'BODY'), headline: H('<span class="grad">Body and wellbeing</span>.'),
+    bullets: ['This is where the Variables come in.', 'Experiments, not rules.']
+  });
+  beats.push({ // 32
+    camera: ARROWS_CAM, mandala: false, dim: ['design-col', 'personality-col'],
+    focusVarKeys: ['motivation', 'perspective'],
+    step: step(32, 'BUSINESS'), headline: H('<span class="grad">Business</span>.'),
+    bullets: ['Motivation, perspective, and the transference.', 'Hope · Guilt · Personal']
+  });
+  beats.push({ // 33
+    camera: FULL, mandala: false, dim: [], softMode: true,
+    step: step(33, 'RELATIONSHIPS'), headline: H('<span class="grad">Relationships</span>.'),
+    bullets: ['Different needs, different ways of processing.']
+  });
+  beats.push({ // 34
+    camera: FULL, mandala: false, dim: [],
+    step: step(34, 'CLOSING'), headline: H('As much as possible with as <span class="grad">little as possible</span>.'),
+    bullets: []
+  });
+
+  return beats;
+}
+
+/* ---------------------------------------------------------------------
+   Runtime
+--------------------------------------------------------------------- */
+let beats, cur = 0, built;
+const DIMMABLE_IDS = ['design-col', 'personality-col', 'variables-group', 'mandala-group'];
+
+function clearBeatState() {
+  DIMMABLE_IDS.forEach(id => document.getElementById(id).classList.remove('dim', 'focus'));
+  document.querySelectorAll('.pulse').forEach(n => n.classList.remove('pulse'));
+  document.getElementById('bodygraph').classList.remove('bg-glow');
+  document.querySelectorAll('.row').forEach(r => r.classList.remove('row-focus', 'row-dim'));
+  document.querySelectorAll('.quarter-arc, .quarter-label').forEach(n => { n.classList.remove('dim', 'focus'); n.style.opacity = 0.85; });
+  document.querySelectorAll('.wheel-gate, .mandala-tick').forEach(n => n.classList.remove('dim', 'focus'));
+  document.getElementById('cross-group').style.opacity = 0;
+  document.querySelectorAll('.cross-ring').forEach(n => n.style.opacity = 1);
+  document.querySelectorAll('.var-label-text').forEach(n => n.setAttribute('opacity', 0));
+  document.querySelectorAll('.var-arrow').forEach(n => n.classList.remove('dim'));
+  document.querySelectorAll('.profile-line').forEach(n => n.classList.remove('spotlight'));
+  document.getElementById('side-callout').style.display = 'none';
+  document.getElementById('side-big-num').style.display = 'none';
+  const conn = document.getElementById('dyn-connector');
+  if (conn) conn.remove();
+  const trace = document.getElementById('channel-trace-fx');
+  if (trace) trace.remove();
+}
+
+function applyBeat(i) {
+  const b = beats[i];
+  clearBeatState();
+
+  // camera: transform the fixed 1920x1080 stage so rect c fills it
+  const c = b.camera;
+  const scale = PANEL_W / c.w;
+  const tx = -c.x * scale, ty = -c.y * scale;
+  document.getElementById('camera').setAttribute('transform', `translate(${tx},${ty}) scale(${scale})`);
+
+  // mandala
+  document.getElementById('mandala-group').style.opacity = b.mandala ? 1 : 0;
+  document.getElementById('mandala-group').style.pointerEvents = b.mandala ? 'auto' : 'none';
+
+  // generic dim set
+  (b.dim || []).forEach(id => document.getElementById(id).classList.add('dim'));
+
+  if (b.bgGlow) {
+    document.getElementById('bodygraph').classList.add('bg-glow');
+  }
+  if (b.pulseSelector) {
+    document.querySelectorAll(b.pulseSelector).forEach(n => n.classList.add('pulse'));
+  }
+  if (b.focusRows) {
+    document.querySelectorAll('.row').forEach(r => {
+      if (b.focusRows.includes(r.id)) r.classList.add('row-focus');
+      else r.classList.add('row-dim');
+    });
+  }
+  if (b.focusGates) {
+    b.focusGates.forEach(g => {
+      const t = document.getElementById(`gate-${g}`);
+      if (t) t.classList.add('pulse');
+    });
+  }
+  if (b.quarterFocus) {
+    QUARTERS.forEach(q => {
+      const arc = document.getElementById(`arc-${q.id}`);
+      const lbl = document.querySelector(`.quarter-label-${q.id}`);
+      const focused = b.quarterFocus === 'all' || b.quarterFocus === q.id;
+      arc.style.opacity = focused ? 1 : 0.18;
+      lbl.style.opacity = focused ? 1 : 0.18;
+      if (focused && b.quarterFocus !== 'all') { arc.classList.add('pulse'); }
+    });
+  }
+  if (b.focusWheelGates) {
+    document.querySelectorAll('.wheel-gate').forEach(n => n.classList.add('dim'));
+    document.querySelectorAll('.mandala-tick').forEach(n => n.classList.add('dim'));
+    b.focusWheelGates.forEach(g => {
+      const wg = document.querySelector(`.wheel-gate-${g}`);
+      const wt = document.getElementById(`wheel-tick-${g}`);
+      if (wg) { wg.classList.remove('dim'); wg.classList.add('focus', 'pulse'); }
+      if (wt) { wt.classList.remove('dim'); wt.classList.add('focus'); }
+    });
+    // when the cross rings are also showing, make it obvious which of the
+    // four this particular beat means: pulse the target ring(s), dim the
+    // other three so they read as context rather than competing focal points
+    if (b.crossOn) {
+      document.querySelectorAll('.cross-ring').forEach(n => {
+        const g = Number(n.className.baseVal.match(/cross-ring-(\d+)/)[1]);
+        if (b.focusWheelGates.includes(g)) { n.style.opacity = 1; n.classList.add('pulse'); }
+        else { n.style.opacity = 0.3; }
+      });
+    }
+  }
+  if (b.crossOn) {
+    document.getElementById('cross-group').style.opacity = 1;
+  }
+  if (b.profileOn) {
+    document.querySelectorAll('.profile-line').forEach(n => n.classList.add('spotlight'));
+  }
+  if (b.sideBigNum) {
+    const big = document.getElementById('side-big-num');
+    big.textContent = b.sideBigNum;
+    big.style.display = 'block';
+  }
+  if (b.sideCallout) {
+    const card = document.getElementById('side-callout');
+    const info = b.sideCallout;
+    card.innerHTML = `<span class="glyph">${info.glyph}</span><span class="num">${info.gate}.${info.line}</span><span class="lbl">${info.label}</span>`;
+    card.style.display = 'inline-flex';
+  }
+  if (b.channelTrace) {
+    const [a, bb] = b.channelTrace;
+    const bg = document.getElementById('bodygraph');
+    const seg1 = bg.querySelector(`[id="gate-${a}-to-${bb}-segment"]`);
+    const seg2 = bg.querySelector(`[id="gate-${bb}-to-${a}-segment"]`);
+    [seg1, seg2].forEach(s => { if (s) s.classList.add('pulse'); });
+    const gl1 = document.getElementById(`gate-${a}`), gl2 = document.getElementById(`gate-${bb}`);
+    [gl1, gl2].forEach(s => { if (s) s.classList.add('pulse'); });
+    const ch1 = document.getElementById('center-head'), ch2 = document.getElementById('center-ajna');
+    [ch1, ch2].forEach(s => { if (s) s.classList.add('pulse'); });
+  }
+  if (b.connector) {
+    // both elements live in the same local (pre-camera-transform) SVG user
+    // space, so plain getBBox() gives comparable coordinates without any
+    // screen/viewBox conversion.
+    const rowEl = document.getElementById(b.connector.from);
+    const gateText = document.getElementById(`gate-${b.connector.toGate}`);
+    const bodygraphSvg = document.getElementById('bodygraph');
+    if (rowEl && gateText && bodygraphSvg) {
+      const rBox = rowEl.getBBox();
+      const gBoxLocal = gateText.getBBox(); // in #bodygraph's own viewBox (0 0 966 1536)
+      const bgX = Number(bodygraphSvg.getAttribute('x')), bgY = Number(bodygraphSvg.getAttribute('y'));
+      const bgW = Number(bodygraphSvg.getAttribute('width')), bgH = Number(bodygraphSvg.getAttribute('height'));
+      const sx = bgW / 966, sy = bgH / 1536;
+      const p1 = { x: rBox.x + (rBox.x < PANEL_W / 2 ? rBox.width : 0), y: rBox.y + rBox.height / 2 };
+      const p2 = {
+        x: bgX + (gBoxLocal.x + gBoxLocal.width / 2) * sx,
+        y: bgY + (gBoxLocal.y + gBoxLocal.height / 2) * sy
+      };
+      const path = el('path', {
+        id: 'dyn-connector',
+        d: `M ${p1.x} ${p1.y} C ${(p1.x + p2.x) / 2} ${p1.y}, ${(p1.x + p2.x) / 2} ${p2.y}, ${p2.x} ${p2.y}`,
+        fill: 'none', stroke: 'url(#grad-defined)', 'stroke-width': 2.5, 'stroke-dasharray': '2 7',
+        opacity: 0.9, class: 'pulse'
+      });
+      document.getElementById('viewport').appendChild(path);
+      gateText.classList.add('pulse');
+    }
+  }
+  if (b.varLabelsOn) {
+    document.querySelectorAll('.var-label-text').forEach(n => n.setAttribute('opacity', 1));
+  }
+  if (b.focusVarKeys) {
+    document.querySelectorAll('.var-arrow').forEach(n => {
+      const isFocus = b.focusVarKeys.some(k => n.classList.contains(`var-${k}`));
+      if (!isFocus) n.classList.add('dim');
+    });
+    document.querySelectorAll('.var-label-text').forEach(n => {
+      const isFocus = b.focusVarKeys.some(k => n.closest(`.var-arrow`).classList.contains(`var-${k}`));
+      n.setAttribute('opacity', isFocus ? 1 : 0);
+    });
+  }
+  if (b.softMode) {
+    document.querySelectorAll('#bodygraph .gate-label, #bodygraph .channel-track, #bodygraph .gate-segment').forEach(n => n.style.opacity = 0.45);
+  } else {
+    document.querySelectorAll('#bodygraph .gate-label, #bodygraph .channel-track, #bodygraph .gate-segment').forEach(n => n.style.opacity = '');
+  }
+
+  // left panel text
+  document.getElementById('step-mini').textContent = b.step;
+  document.getElementById('headline').innerHTML = b.headline;
+  const bulletsEl = document.getElementById('bullets');
+  bulletsEl.innerHTML = (b.bullets || []).map(t => `<li>${t}</li>`).join('');
+
+  document.getElementById('step-n').textContent = String(i + 1);
+  history.replaceState(null, '', `#${i + 1}`);
+  document.getElementById('prev-btn').disabled = i === 0;
+  document.getElementById('next-btn').disabled = i === beats.length - 1;
+
+  buildStepList(i);
+}
+
+function buildStepList(current) {
+  const grid = document.getElementById('step-grid');
+  if (grid.childElementCount === beats.length) {
+    grid.querySelectorAll('.step-item').forEach((n, idx) => n.classList.toggle('current', idx === current));
+    return;
+  }
+  grid.innerHTML = '';
+  beats.forEach((b, idx) => {
+    const item = document.createElement('div');
+    item.className = 'step-item' + (idx === current ? ' current' : '');
+    const plain = b.headline.replace(/<[^>]+>/g, '');
+    item.innerHTML = `<span class="idx">${idx + 1}</span><span>${plain}</span>`;
+    item.addEventListener('click', () => { goTo(idx); closeStepModal(); });
+    grid.appendChild(item);
+  });
+}
+
+function goTo(i) {
+  i = Math.max(0, Math.min(beats.length - 1, i));
+  if (i === cur) return;
+  cur = i;
+  applyBeat(cur);
+}
+function next() { goTo(cur + 1); }
+function prev() { goTo(cur - 1); }
+
+function openStepModal() { buildStepList(cur); document.getElementById('step-modal').classList.add('open'); }
+function closeStepModal() { document.getElementById('step-modal').classList.remove('open'); }
+
+let idleTimer = null;
+function resetIdle() {
+  document.body.classList.remove('idle');
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => document.body.classList.add('idle'), 2000);
+}
+
+function wireUI() {
+  document.getElementById('next-btn').addEventListener('click', next);
+  document.getElementById('prev-btn').addEventListener('click', prev);
+  document.addEventListener('keydown', (e) => {
+    if (document.getElementById('step-modal').classList.contains('open')) {
+      if (e.key === 'Escape' || e.key.toLowerCase() === 's') closeStepModal();
+      return;
+    }
+    switch (e.key) {
+      case 'ArrowRight': case ' ': case 'PageDown': e.preventDefault(); next(); break;
+      case 'ArrowLeft': case 'PageUp': prev(); break;
+      case 'h': case 'H': document.body.classList.toggle('ui-hidden'); break;
+      case 'c': case 'C': document.body.classList.toggle('captions-off'); break;
+      case 's': case 'S': openStepModal(); break;
+      case 'f': case 'F':
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+        else document.exitFullscreen().catch(() => {});
+        break;
+    }
+  });
+  document.getElementById('step-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'step-modal') closeStepModal();
+  });
+  ['mousemove', 'mousedown', 'touchstart'].forEach(evt => document.addEventListener(evt, resetIdle));
+  resetIdle();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  built = init();
+  beats = buildBeats(built);
+  document.getElementById('step-total').textContent = String(beats.length);
+  wireUI();
+  const hashN = parseInt((location.hash || '').replace('#', ''), 10);
+  cur = (hashN >= 1 && hashN <= beats.length) ? hashN - 1 : 0;
+  applyBeat(cur); // first paint: no transition yet
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    document.querySelector('.stage-wrap').classList.add('cam-anim');
+  }));
+});
+
+</script>
+</body>
+</html>
