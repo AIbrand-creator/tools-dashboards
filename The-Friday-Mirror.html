@@ -456,7 +456,7 @@ function setBack(c,g,ri,i,w,h){const k=w/g.cw,b=c.querySelector('.back'),size=`$
 function visualKeys(){return S.cands.slice(S.page*PAGE_SIZE,(S.page+1)*PAGE_SIZE).map(a=>a.key);}
 function layout(){
   const ph=phone(),reveal=S.phase==='reveal',choosing=S.phase==='pick',slot=$('spreadSlot'),width=slot.clientWidth;
-  const mobileGrid=ph&&choosing,columns=3,gap=12,cell=(width-gap*(columns-1))/columns;
+  const mobileGrid=ph&&choosing,columns=width>=480?4:3,gap=12,cell=(width-gap*(columns-1))/columns;
   const want=width/(ph?2.04:2.4);
   slot.style.height=(mobileGrid?Math.ceil(PAGE_SIZE/columns)*(cell/RATIO+gap)-gap:ph?want:Math.max(reveal?150:260,Math.min(want,innerHeight-(reveal?500:S.phase==='chart'?420:390))))+'px';
   if(!$('faceBox').hidden){
